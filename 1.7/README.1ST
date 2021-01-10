@@ -1,0 +1,47 @@
+Fast Assembler 1.7
+
+This is the original Fast Assembler
+package delivered with SpartaDOS X
+Toolkit Disk.
+
+The original FA documentation was
+written in 1995. These sections
+of the 1995 original, which are now
+likely to be long out dated: the
+author's address and details on how
+to get te registered version.
+
+If all this is really out dated, we
+do not know. It is still worth
+considering sending the author the
+shareware fee (having it possibly
+adjusted for prices raised since
+1995), but, if you want to do that,
+please make sure first that the
+address is valid.
+
+In any case the FA version which is
+being distributed on the SpartaDOS X
+Toolkit disk is already registered
+and we have the author's explicit
+permission for that.
+
+Also, the documentation mentions FA
+2.0 being in development. As far as
+anyone knows, this has never been
+finished and FA 2.0 does not exist.
+
+WARNING
+
+Fast Assembler uses undocumented
+features for parameter parsing.
+These features have been removed
+with SpartaDOS X 4.47 and
+reintroduced with 4.49e. For this
+it will only work with versions
+below 4.47 or above 4.49d.
+
+With version 1.8 of Fast Assembler
+the use of undocumented features have
+been removed an all releases of
+SparataDOS X are supported.
