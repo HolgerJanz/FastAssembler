@@ -1,6 +1,6 @@
 
-Fast Assembler v.1.5 by MMMG Soft '95
-=====================================
+Fast Assembler 1.8
+==================
 
 Purpose
 -------
