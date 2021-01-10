@@ -1,0 +1,658 @@
+
+Fast Asembler v.1.5 by MMMG Soft '95
+------------------------------------
+
+Hinweis:
+
+ Dies ist eine DEMO-Version vom
+ Shareware-Programm. Wenn Sie ein 
+ Vollversionen erhalten moechten,
+ senden sie bitte 7 zl(neu).
+
+ Fuer die vollstaendige SDX-
+ Dokumentation (130 Seiten)
+ Diskette, senden sie zusaetzliche
+ 3 zl(neu), oder 5 zl, wenn sie nur
+ an der Dokumentation interessiert
+ sind.
+
+ Wenn sie die neue Version 2.0 von
+ FA erhalten wollen, sobald sie
+ verfuegbar ist, senden sie bitte
+ zusaetzliche 5 zl (Version FA 2.0
+ wird Makros unterstuetzen).
+
+ Bitte senden sie das Geld und alle
+ Anmerkungen an:
+
+ Marek M.M. Goderski
+ os. Armii Krajowej 51/7
+ 61-377 Poznan.
+
+ Hinweis: Nach dem Versenden des
+ Geldes werden keine Beschwerden
+ beruecksichtigt. Der Autor des
+ Programms stellt sicher, dass die
+ Vollversion von FA die vollstaendig
+ Funktionalitaet zu Verfuegung
+ stellt, ohne die Einschraenkungen
+ der DEMO Version, wie die
+ Begrenzung der Anzahl von Zeilen
+ usw. Beschwerden werden jedoch aus
+ anderen Gruenden akzeptiert, wie
+ z.B.: durch den Postweg,
+ Beschaedigung des Datentraegers
+ usw.
+
+ Hinweis: Bitte geben Sie Ihre
+ persoenlichen Daten und Ihre
+ ADRESSE klar und deutlich auf der
+ Postanweisungen im
+ Korrespondenzbereich an.
+
+ Der Autor tauscht auch Public
+ Domain Programme sowie kleine
+ Hilfsprogramme fuer SDX und DEMOs
+ usw. aus. Informationen erhalten
+ sie mit dem Versenden der Diskette
+ und/oder im Rueckumschlag.
+
+ Demnaechst verfuegbar:
+
+        FD Fast Disassembler,
+        FE Fast Editor,
+ SDX TOMS  neuer Treiber fuer TOMS,
+ SDX CACHE ein SDX Disketten Cache,
+    IBMDOS ein Programm zum Lesen
+           von IBM Disketten
+           unter SDX,
+
+ und alle MMMG Soft DEMOs auf einer
+ Diskette.
+
+Fast Assembler ist, wie der Name
+schon sagt, ein Assembler, wenn auch
+nicht so schnell wie man annehmen
+moechte (Hmm).
+
+Der Assembler funktioniert mit allen
+DOS Versionen, ist aber speziell
+fuer SDX entwickelt worden.
+
+Er ist vollstaendig kompatibel mit
+Quick Assembler v.1.0 und hat viele
+seiner Vorteile, ist aber nicht
+kompatibel mit MAC/65.
+
+Aufrufsyntax :
+
+Hinweis:
+ [opt]   - optionale Angabe,
+ op1|op2 - alternative Angaben.
+
+FA src[.ext] dst[.ext] [/a] [/b]
+
+ src - Quelltext in ATASCII,
+ dst - Zieldatei.
+
+ Die Standarderweiterungen sind .ASM
+ und .OBJ. Es koennen aber andere
+ verwendet werden. Laufwerk und Pfad
+ werden vom Ort des Aufruf des
+ Assemblers uebernommen.
+
+ /a     - es werden alle
+          Programmzeilen bei der
+          Assemblierung ausgegeben,
+ /b     - es werden nur
+          Programmzeilen mit Fehlern
+          ausgegeben.
+
+Ein paar Worte zur Assemblierung.
+
+Der Quelltext wird mindestens
+zweimal durchlaufen. Nach jedem
+Durchlauf werden alle Bezeichner
+aufgefuehrt, die noch nicht
+aufgeloest werden konnten. Manchmal
+muessen mehr als zwei Durchlaeuft
+ausgefuehrt werden, z.B. nach
+folgender Definition:
+
+ a  equ b
+ b  equ c
+ c  equ 100
+
+ Im ersten Durchgang wird c
+ bestimmt, im Zweiten von b und
+ im Dritten von a.
+
+ Es sollte darauf geachtet werden,
+ so etwas zu vermeiden, da sich
+ dadurch die Assemblierungszeiten
+ unnoetig verlaengern (durch die
+ Anzahl der Durchlaeufe).
+
+Unterstuetzte Symbole:
+
+ label - ein Bezeichnername,
+ text  - Textausdruecke werden durch
+         Anfuehrungszeichen
+         definiert (' oder ")
+
+ Um Anfuehrungszeichen in einem
+ Textausdruck darzustellen, muessen
+ zwei aufeinander folgende benutzt
+ werden, z.B.:
+
+        'Windows ''95'
+
+ Andere Ausdruecke:
+
+  b - fuer ein Byte,
+  a - fuer bis zu zwei Bytes,
+  e - fuer bis zu drei Bytes,
+  f - fuer bis zu vier Bytes.
+
+ Zahlen in Ausdruecken:
+
+  -Binaere Zahlen mit % z.B.:
+           %101
+
+  -Hexadezimale Zahlen mit $ z.B.:
+           $FDAACDE
+
+  -Dezimalzahlen z.B.:
+           23454
+
+  Zahlen duerfen maximal 4 Bytes
+  lang werden.
+
+  -Zeichenwort in ATASCII z.B.:
+           'A' oder '''' fuer '
+
+  -Zeichenwort in interner
+   Darstellung z.B.:
+           "I" oder """" fuer "
+
+  Textausdruecke sind immer ein Byte
+  lang und haben den Wert des ersten
+  Zeichens, z.B.:
+
+           'A' und 'ABC' haben den
+           gleichen Wert A.
+
+ Zusaetzlich koennen folgende
+ Operatoren verwendet werden:
+
+  & - Operator AND,
+  | - Operator ORA,
+  ^ - Operator EOR,
+  * - Multiplikation,
+  / - Division,
+  + - Addition,
+  - - Subtraktion.
+
+ Sequenzen von Operatoren werden
+ nach der oben genannten
+ Prioritaeten ausgewertet (AND
+ hoechste, Subtraktion niedrigste).
+ Es wird immer mit 4 Bytes
+ gerechnet. Maximal 32 Operatoren
+ koennen pro Ausdruck verwendet
+ werden. Dir Prioritaet kann
+ innerhalb eines Ausdrucks mit den
+ eckigen Klammern geaendert
+ werden z.B.:
+
+       [[4+5]*[256/21]]&$FF
+
+ Es gibt zwei weitere Sonderzeichen:
+
+  *,! - liefern den aktuellen
+        Programmzaehler.
+
+ * kann nur fuer am Anfang verwendet
+ werden (wie in QA), waehrend !
+ allgemein verwendet werden kann
+ z.B.:
+
+       *+4
+       !-22
+       $2300+!
+
+I. QA Kompatible Symbole:
+
+ OPT b
+
+  - Assemblierungsparameter, wobei
+    die Bis folgende Bedeutung
+    haben :
+
+       76543210
+             xx - Listausgabe
+             00 - keine,
+             01 - nur Fehler,
+             10 - gesamter Quelltext
+                  und Fehler.
+       xx  - Objekttyp,
+       11  - ohne Header,
+           - mit DOS Header.
+
+ ORG a
+
+  - Definiert einen neuen Block und
+    erzeugt einen Header wie mit OPT
+    eingestellt (Standard DOS).
+
+ ICL source[.ext]
+
+  - Fuegt den Quelltext einer Datei
+    ein, Laufwerk und Pfad werden
+    standardmaessig vom Aufrufort
+    von FA uebernommen (NICHT DER
+    SOURCE !).
+
+ END
+
+  - Ende der Quell- oder Include-
+    Datei.
+
+ label EQU a
+
+  - Weist einem Namen einen Wert zu,
+    Der Name darf maximal 240 lang
+    sein.
+
+ [label] DTA x
+
+  - Generiert Daten, wobei x wie
+    folgt definiert werden kann:
+
+   b(b) - Byte,
+   a(a) - Adresse (2 Bytes),
+   l(a) - niederwertiges Byte von a,
+   h(a) - hoeherwertiges Byte von a,
+
+   c'ATASCI' - Text in ATASCII,
+   d'INTERN' - Text in interner
+               Darstellung.
+
+II. Zusaetzliche Symbole:
+
+ [label] DTA x
+
+  - neue Typen fuer x:
+
+   v(a) - Adress a, bedeutet fuer
+          Reloc-Bloecke, dass sie
+          aktualisiert werden muss,
+          fuer andere Bloecke
+          entspricht es a(a),
+   e(e) - 3 Byte Wert,
+   f(f) - 4 Byte Wert,
+   g(f) - 4 Byte Wert in umgekehrter
+          Darstellung.
+
+ Zusaetzlich koennen numerische
+ Daten als durch Komma getrennte
+ Ausdruecke angegeben werden, z.B.
+
+   dta e(0,15000,$FFAACC) etc.
+
+ LST All|Bad|Not
+
+  - Option fuer die Auflistung bei
+    der Assemblierung :
+
+    N[ot] - keine Auflistung,
+    A[ll] - kompletten Quelltext,
+    B[ad] - nur bei Fehlern.
+
+ BLK x
+
+  - deklariert einen neuen
+    Programmblock,
+    Gesamtzahl der Bloecke ist auf
+    256 begrenzt, Blockarten x:
+
+  BLK N[one] a
+
+   - Block ohne Header,
+     Programmzaehler wird auf a
+     gesetzt.
+
+  BLK D[os] a
+
+   - DOS-Block mit $FFFF-Header oder
+     ohne Header, wenn der
+     Programmzaehler schon auf a
+     steht.
+
+  BLK S[parta] a
+
+   - Block mit festen Ladeadressen
+     mit Header $FFFA,
+     Programmzaehler auf a.
+
+  BLK R[eloc] M[ain]|E[xtended]
+
+   - verschiebbarer Block im
+     Haupt- (M[ain]) oder
+     Extended-Speicher
+     (E[xtended]).
+
+  BLK E[mpty] a M[ain]|E[xtended]
+
+   - Verschiebbarer Block, um Bytes
+     im Haupt- oder Ext-Speicher zu
+     reservieren. Hinweis: Der
+     Programmzaehler wird sofort um
+     ein Byte erhoeht.
+
+  BLK U[pdate] S[ymbols]
+
+   - Block, der die SDX-
+     Symboladressen in frueheren
+     SPARTA- oder RELOC-Bloecken
+     aktualisiert.
+
+  BLK U[pdate] A[dress]
+
+   - Block zum Aktualisieren von
+     Adressen in RELOC-Bloecken.
+
+  BLK U[pdate] N[ew] a text
+
+   - Block, der ein neues
+     Textsymbol text in einem
+     RELOC-Block mit der Adresse a
+     deklariert.
+     Wenn dem Symbolnamen ein @
+     vorangestellt ist und die
+     Adresse aus dem Hauptspeicher
+     stammt, kann ein solches Symbol
+     ueber COMMAND.COM aufgerufen
+     werden.
+
+ label SMB text
+
+  - Deklaration des Names als SDX-
+    Symbol. Nach der Verwendung von
+    BLK UPDATE SYMBOLS generiert der
+    Assembler den richtigen
+    Symbolaktualisierungsblock z.B.:
+
+       pf  smb 'PRINTF'
+           jsr pf
+           ...
+
+       fuegt nach jsr die richtige
+       SDX Symboladresse ein.
+
+       Hinweis: Diese Deklaration
+       ist nicht transitiv, d.h.
+       folgende Beispiel fuehrt zu
+       Fehlern bei der
+       Assemblierung:
+
+       cm  smb 'COMTAB'
+       wp  equ cm-1     (Error !)
+
+           sta wp
+
+       Stattdessen sollte man wie
+       folgt vorgehen:
+
+       cm  smb 'COMTAB'
+
+           sta cm-1       (ok !)
+
+       Hinweis: Alle
+       Symboldeklarationen muessen
+       vor allen anderen
+       Deklarationen sowie vor dem
+       eigentlichen Programm
+       definiert werden!
+
+ Ein paar Worte zu neuen Bloecken :
+
+  Die wichtigste Neuheit in SDX fuer
+  einen Entwickler ist die
+  Moeglichkeit, einfach
+  verschiebbare Programme zu
+  schreiben. Da der MOS 6502-
+  Prozessor keine relative
+  Adressierung aufweist (mit
+  Ausnahme von kurzen bedingten
+  Spruengen), verwendeten die ICD-
+  Programmierer spezielle
+  Prozess zum Laden von
+  Programmbloecken.
+  Der gesamte Prozess laedt einen
+  Block und dann einen speziellen
+  Block zum Aktualisieren von
+  Adressen. Alle Adressen im
+  Programmblock sind nullbasiert.
+  Es reicht also aus, den Memlo-Wert
+  zu addieren, um die richtige
+  Adresse zu erhalten. Welche
+  Adressen sollen erhoeht und welche
+  belassen werden? Dafuer gibt es
+  einen speziellen
+  Aktualisierungsblock, der Zeiger
+  (speziell kodiert) auf diese
+  Adressen enthaelt. Nach dem RELOC-
+  Block oder den RELOC-Bloecken muss
+  UPDATE ADRESS ausgefuehrt werden,
+  damit das Programm ordnungsgemaess
+  ausgefuehrt werden kann. Auch nach
+  SPARTA-Bloecken, bei denen sich
+  Befehle (oder Vektoren) auf RELOC-
+  oder EMPTY-Bloecke beziehen, ist
+  UPDATE ADDRESS obligatorisch.
+
+  Die naechste Neuerung ist die
+  Einfuehrung von Symbolen. Einige
+  SDX-Serviceroutinen werden durch
+  Namen definiert! Diese Namen sind
+  immer 8 Buchstaben lang (ebenso
+  wie Dateinamen). Anstelle von
+  Vektor- oder Sprungarrays (wie im
+  Betriebssystem) werden von SMB
+  definierte Symbole verwendet. Nach
+  dem Lesen eines Blocks oder von
+  Programmbloecken laedt SDX den
+  Symbolaktualisierungsblock und
+  tauscht auf aehnliche Weise wie
+  bei verschiebbare Bloecke Adressen
+  im Programm aus. Symbole koennen
+  in RELOC- und SPARTA-Bloecke
+  verwendet werden.
+
+  Der Programmierer kann seine
+  eigenen Symbole definieren, um SDX
+  Symbole zu ersetzen, oder voellig
+  neue Symbole, die von anderen
+  Programmen verwendet werden. Dies
+  erfolgt ueber den Block UPDATE
+  NEW. Neue Symbole muessen jedoch
+  im RELOC-Block definiert werden.
+
+  Die Anzahl von verschiebaren und
+  leeren Bloecke wird von SDX auf 7
+  begrenzt.
+
+  Solche Bloecke koennen zu Ketten
+  kombiniert werden, z.B.:
+
+       blk sparta $600
+       ...
+
+       blk reloc main
+       ...
+
+       blk empty $100 main
+       ...
+
+       blk reloc extended
+       ...
+
+       blk empty $200 extended
+
+  Dies bedeutet, dass sich Befehle
+  in diesen Bloecken auf alle
+  Bloecke in der Kette beziehen
+  koennen.
+
+  Diese Kette wird nicht durch
+  Adress- oder
+  Symbolaktualisierungen
+  zerstoert, sondern nur durch neue
+  Symboldefinitionen oder einer
+  anderen Blockart (z.B. DOS).
+
+  Hinweis:
+  Eine solche Kette ist nur dann
+  sinnvoll, wenn alle Bloecke in
+  denselben Speicher geladen werden
+  oder wenn das Programm den
+  Speicher entsprechend wechselt.
+
+  Hinweis:
+  Befehle und Vektoren in RELOC- und
+  EMPTY-Bloecken sollten sich nicht
+  auf SPARTA-Bloecke beziehen! Dies
+  kann zu einem Fehler fuehren, wenn
+  das Programm mit dem Befehl LOAD
+  geladen wird und erst spaeter
+  verwendet wird. Waehrend RELOC-
+  und EMPTY-Bloecke sicher sind, ist
+  nicht sicher, was sich im Speicher
+  befindet, in dem sich der letzte
+  SPARTA-Block befand!
+
+  Es ist ebenso gefaehrlich, RELOC-
+  und EMPTY-Blockreferenzen von
+  SPARTA-Bloecken zu verwenden
+  (Grund wie oben). Bei der
+  Installation von Overlays (* .sys)
+  mit INSTALL ist dies jedoch
+  manchmal erforderlich und daher
+  zulaessig. Sie koennen auch einen
+  SPARTA-Block initialisieren (ueber
+  $2E2). Er wird immer ausgefuehrt
+  und ist dann redundant.
+
+  Hinweis:
+  Adresskollisionen koennen zwischen
+  SPARTA-, RELOC- und EMPTY-Bloecken
+  auftreten! FA erkennt Verweise auf
+  andere Bloecke anhand der Adresse,
+  wobei PC fuer RELOC und EMPTY ab
+  $1000 angenommen wird. Beim
+  Mischen dieser Bloecke, sollten
+  sichergestellen werden, dass
+  SPARTA unter $1000 (z. B. $600)
+  oder ueber dem letzten
+  verschiebbaren Block liegt. In der
+  Regel reicht $4000 aus. Dieser
+  Fehler wird vom Assembler nicht
+  erkannt!
+
+Fehlermeldungen, die beim
+Assemblieren auftreten koennen:
+
+ Undeclared label or symbol
+   Undefinierter Name oder Symbol
+   oder rekursive Definition.
+
+ Label declared twice
+   Name oder Symbol wurde zweimal
+   definiert.
+
+ Unexpected eol
+   Unerwarteter Zeilenumbruch, die
+   Zeile muss mindestens ein Zeichen
+   oder einen Parameter enthalten.
+
+ Too many passes
+   Zu viele Durchlaeufe beim
+   Assemblieren, die Anzahl von 255
+   Durchlaeufen wurde
+   ueberschritten. 
+
+ Too big number
+   Zahl zu gross, die Zahl hat den
+   zulaessigen 4-Byte-Bereich
+   ueberschritten.
+
+ String error
+   Fehler im Textausdruck, keine
+   geschlossenen Anfuehrungszeichen
+   oder leerer Ausdruck.
+
+ Illegal symbol
+   Unzulaessiges Zeichen in der
+   Zeile.
+
+ Branch to far
+   Der relative Sprung liegt
+   ausserhalb des Bereichs +/-128
+   Bytes.
+
+ Importer type
+   Adressierungstyp fuer den
+   angegebenen Befehl nicht
+   zulaessig.
+
+ Label missing
+   Fehlender Name, einer EQU oder
+   SMB Definition muss immer ein
+   Name vorangestellt werden.
+
+ Expression expected
+   Ausdruck erwartet, Operanden
+   von mathematischen Operationen
+   muessen numerische Ausruecke
+   sein.
+
+ Too many blocks
+   Zu viele Bloecke, die Gesamtzahl
+   der Bloecke darf 256 nicht
+   ueberschreiten, und die Anzahl
+   der RELOC- und EMPTY-Bloecke darf
+   7 nicht ueberschreiten.
+
+ Undefined or long
+   Name undefiniert oder zu lang,
+   bei der Definition von Bloecken
+   muss ein Name vergeben werden und
+   die Adresse darf nicht groesser
+   als 2 Byte sein.
+
+ Importer block type
+   Ungueltiger Blocktyp, Z.B. darf
+   eine UPDATE NEW Block nicht
+   einem DOS Block folgen.
+
+ Long or symbol
+   Der Ausdruck ist zu gross oder
+   enthaelt ein ungueltiges Symbol.
+
+ Parenthesis not balanced
+   Keine geschlossenen Klammern.
+
+ Too many operations
+   Zu viele Operationen im Ausdruck,
+   die Anzahl der Operationen ist
+   auf 32 begrenzt.
+
+ Unexpected symbol
+   Unerwartetes Symbol, Symbole
+   koennen nicht in anderen Bloecken
+   als SPARTA oder RELOC und in
+   Blockdefinitionen verwendet
+   werden.
+
+Ende der FA Dokumentation.
