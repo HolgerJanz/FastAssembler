@@ -1,0 +1,361 @@
+
+ Uzyteczne rejestry i procedury SDX.
+
+ Opis rejestrow SDX:
+
+ $700 1  s_flag   Gdy Sparta zawiera
+                  'S'.
+ $701 1  s_ver    Zawiera numer
+                  wersji SpartaDOS, w
+                  postaci kodu DBC.
+ $760 1  siocbidx Indeks aktualnie
+                  uzywanego kanalu
+                  IO SDX.
+ $761 1  device   Urzadzenie i jego
+                  numer (4 mlodsze
+                  bity):
+
+                      DSK: - $0x
+                      CLK: - $1x
+                      CAR: - $2x
+                      CON: - $3x
+                      PRN: - $4x
+                      COM: - $5x
+
+ $762 11 name     Nazwa pliku i roz-
+                  szerzenie pliku.
+ $76D 11 names    Nazwa pliku dla
+                  operacji zmiany
+                  nazwy.
+ $778 1  opmode   Tryb otwarcia
+                  pliku:
+
+                  $x4 - odczyt,
+                  $x8 - zapis,
+                  $xC - zapis i
+                   odczyt,
+
+                  $0x - plik,
+                  $1x - katalog,
+
+                  +$2x - z przeszuki-
+                  waniem szlaku.
+
+ $779 1  fatr1    Atrybuty pliku:
+
+           bit znaczenie
+             0 P  - zabezpieczony,
+             1 H  - ukryty,
+             2 A  - archiwalny,
+             3 S  - podkatalog,
+             4 nP - nie zabezpiczony,
+             5 nH - nie ukryty,
+             6 nA - nie archiwalny,
+             7 nS - nie podkatalog.
+
+ $77A 1  fatr2    Atrybuty dla zmiany
+                  atrybutow lub utwo-
+                  rzenia pliku. Zna-
+                  czenie takie samo
+                  jak FATR1.
+ $77B 3  date     Czas utworzenia
+                  pliku w formacie
+                  DDMMYY.
+ $77E 3  time     Czas utworzenia
+                  pliku w formacie
+                  HHMMSS.
+ $781 1  dateset  Gdy 0 otwierany do
+                  zapisu plik otrzy-
+                  muje nowy czas i
+                  date.
+ $782 1  faux1    Bajty pomocnicze.
+ $783 1  faux2
+ $784 1  faux3
+ $785 1  faux4
+ $786 1  syscall  Indeks pamieci dla
+                  operacji IO, dla
+                  main rowne 0 dla
+                  extended 2 !
+ $789 32 dirbuf   Wpis katalogowy
+                  ostatnio otwartego
+                  pliku.
+ $789 1  dirfatr  Status pliku, usta-
+                  wione bity znacza:
+
+     bit   znaczenie
+       0 - plik zabezpieczony,
+       1 - plik ukryty,
+       2 - plik archiwalny,
+       3 - plik uzywany,
+       4 - plik skasowany,
+       5 - plik jest podkatalogiem,
+       6 - bit nieuzywany,
+       7 - plik otwarty do zapisu.
+
+ $78A 2  dirf1sec Numer pierwszego
+                  sektora mapy sekto-
+                  row pliku.
+ $78C 3  dirflen  Dlugosc pliku w
+                  bajtach.
+ $78F 11 dirfname Nazwa i rozszerze-
+                  nie pliku.
+ $79A 3  dirfdate Data utworzenia lub
+                  modyfikacji pliku.
+ $79D 3  dirftime Czas utworzenia lub
+                  modyfikacji pliku.
+
+ $7A0 64 path     Scierzka dostepu do
+                  pliku.
+ $7A0 16 chkdsk   Wpis dysku.
+ $7A0 1  dskver   Wersja dysku
+                  (0-ATARI DOS).
+ $7A1 1  bpsec    Liczba bajtow w
+                  sektorze (0=256).
+ $7A2 2  sectot   Calkowita liczba
+                  sektorow na dysku.
+ $7A4 2  secfree  Liczba wolnych
+                  sektorow.
+ $7A6 8  dskname  Nazwa dysku.
+ $7AE 1  dskns    Sekwencyjny numer
+                  dysku.
+ $7AF 1  dsknr    Losowy numer dysku.
+
+ $B57 4  v3_32    Bufory 4 bajtowych
+ $B5B 4  v2_32    liczb procedur
+ $B5F 4  v1_32    uslugowych MUL_32 i
+                  DIV_32. Liczby te
+                  zapisane sa w
+                  odwrotnej kolejno-
+                  sci starszy-mlodszy
+                  bajt !
+
+ Tablica skokow glownych SDX:
+
+ $703 3  jkernel  Skok do serca
+                  systemu SDX.
+ $706 3  jpsio    Skok do fizycznych
+                  operacji sektoro-
+                  wych SDX.
+ $709 3  jmisc    Skok do uslugowych
+                  funkcji SDX.
+ $70C 3  jlsio    Skok do logicznych
+                  operacji sektoro-
+                  wych SDX.
+
+ Tablica wektorow i skokow pomo-
+ cniczych SDX:
+
+ $7E0    hdosini  Skok do inicjacji
+                  DOSa, identyczny z
+                  jmp ($C).
+ $7E3    vdos     Wektor powrotu do
+                  DOSa, identyczny z
+                  jmp ($A).
+ $7E5    vcio     Wektor do CIO. SDX
+                  zamienia wywolania
+                  urzadzen poprzez
+                  D na standardowe.
+                  (Patrz CIO_).
+ $7E7    vedit    Wektor do procedury
+                  EDIT_.
+ $7E9    vcrunch  Wektor do CRUNCH_.
+                  (Patrz ZCRUNCH i
+                  CRUNCH_).
+ $7EA    reserved Wektor zareze-
+                  rwowany dla przy-
+                  szlych zastosowan.
+ $7EE    jmdosvec Skok inicjujacy
+                  ta wlasnie tablice
+                  skokow i wektorow.
+ $7F1    jext_on  Skok do procedury
+                  przelaczajacej pa-
+                  miec na extended.
+ $7F4    jext_off Skok do procedury
+                  przelaczajacej pa-
+                  miec na main.
+ $7F7    jext_sw  Skok do procedury
+                  przelaczajacej pa-
+                  miec na dowolna.
+ $7FA    jcar_on  Skok do procedury
+                  wlaczajacej modul
+                  SDX.
+ $7FD    jcar_off Skok do procedury
+                  wylaczajacej modul
+                  SDX.
+
+  Uwaga: jcar_on i jcar_off musza byc
+  zdefiniowane przez uzytkownika.
+
+ Rejestry SDX opisane symbolami:
+
+ EXTENDED 1  Flaga uzywania pamieci
+             EXTENDED.
+ STATUS   1  Status ladowania i wyko-
+             nania ostatniego progra-
+             mu.
+ INSTAL   1  Flaga instalacji nakla-
+             dek, $FF oznacza ze
+             ostatnio zaladowany pro-
+             gram jest nakladka.
+ FILE_P   2  Wskaznik do nazwy pro-
+             gramu.
+ FLAG     1  Rejestr trybu pracy
+             programu U_LOAD.
+ CURDEV   1  Domyslne urzadzenie ope-
+             racji IO.
+ SYSLEVEL 1  Poziom pracy systemu
+             SDX:
+    0 - procedury systemowe,
+    1 - nakladki systemowe,
+    2 - programy uzytkowe.
+
+ PUT_V    2  Wskaznik do szybkich
+             operacji IO na ekranie.
+
+ H_FENCE  12 Wskazniki pamieci
+             memlo dla poziomow SDX:
+
+          +0  2 main
+          +2  2 extended dla systemu
+
+          +4  2 main
+          +6  2 extended dla nakladek
+
+          +8  2 main
+          +10 2 extended dla programow
+
+ T_       25 Tablica wartosci przela-
+             czajacych banki pamieci.
+
+         +0  Cztery bajty bankow dla
+             ATARI 800 i rejestru
+             przelaczajacego $CFFF
+             (abank - Axlon bank).
+         +4  Cztery bajty bankow dla
+             innych ATARI i rejestru
+             przelaczajacego $D301
+             (potrb).
+
+             Banki te sa przelaczane
+             przez procedury ext_on,
+             ext_off i ext_sw. Zerowy
+             bank zarezerwowany jest
+             dla MAIN, a 2 dla banku
+             EXTENDED. Dwa pozostale
+             bajt (1 i 3) sa uzywane
+             przez RAMDISK itp.
+
+         +8  16 bajtow wartosci prze-
+             laczajacych 16 bankow
+             pamieci dodatkowej opa-
+             rtej na PORTB.
+
+         +24 Maska bitow waznych dla
+             pamieci EXTENDED:
+
+             dla NONE 0,
+             dla OSRAM 1,
+             dla BANKED kopia reje-
+             stru pbmask (patrz
+             COMTAB).
+
+ SYMBOL   13 Pole symbolu SDX
+
+       +0  2 Wskaznik do nastepnego
+             symbolu.
+       +2  8 Nazwa symbolu.
+       +10 1 Indeks pamieci symbolu.
+       +11 2 Adres obiektu zdefinowa-
+             nego symbolem.
+
+ COMTAB   wskazywana takze przez
+          dosvec=$A
+
+ -19  decout    8  Zawiera uzupelnio-
+                   na spacjami liczbe
+                   zamieniona przez
+                   procedury misc z
+                   divend.
+ -10  lsio      3  Skok do szybkich
+                   operacji sektoro-
+                   wych.
+ -6   divend    3  Trzy bajtowa
+                   liczba zamieniana
+                   na decout.
+ -3   caropt    1  Opcja dzialania
+                   programu CAR:
+                   2 - basic,
+                   3 - inny modul.
+ -2   wrtcmd    1  Rozkaz nagrywania
+                   sektorow dla SDX
+                   (P lub W).
+ +0   comtab    3  Wejscie do DOSu.
+ +3   zcrname   3  Skok do procedury
+                   zamieniajacej na-
+                   stepny parametr
+                   wiersza polecen na
+                   nazwe urzadzenia,
+                   sciezki i pliku
+                   (patrz CRUNCH_).
+ +6   conch_i   2  Aktywny kanal IO
+                   dla konsoli.
+                   Pierwszy bajt dla
+                   zapisu, drugi dla
+                   odczytu.
+ +8   conswflg  2  Gdy nie jest wla-
+                   czone kierowanie
+                   IO to $FF. W innym
+                   przypadku numer
+                   starego kanalu
+                   konsoli (pierwszy
+                   bajt zapis, drugi
+                   odczyt). (Patrz
+                   DIVIO).
+ +10  bufoff    1  Wskaznik do naste-
+                   pnego parametru
+                   wiersza polecen.
+ +13  dater     3  Data, aktualizo-
+                   wana przez VGETTD.
+ +16  timer     3  Czas, aktualizo-
+                   wany przez VGETTD.
+ +26  trails    1  Dlugosc parametru
+                   w confnam.
+ +27  _800flg   1  Gdy ATARI 800
+                   rowne $FF.
+ +28  pbmask    1  Maska bitow
+                   waznych dla parze-
+                   laczania bankow
+                   pamieci na
+                   extended (patrz
+                   T_).
+ +29  nbnks     1  Liczba wolnych
+                   bankow pamieci
+                   extended.
+ +30  bankflg   1  Gdy SDX zaladowany
+                   do pamieci w doda-
+                   tkowych bankach to
+                   $FF.
+ +31  osrmflg   1  Gdy SDX zaladowany
+                   do pamieci pod
+                   ROM to $FF.
+ +32  dosflg    1  Flaga DOSu, zawsze
+                   $FF.
+ +33  confnam   20 Docelowy bufor
+                   zcrname i procedur
+                   pobierajacych
+                   parametry. Dlugosc
+                   parametru w
+                   TRAILS.
+ +63  lbuff     64 Bufor wiersza
+                   polecen. Wskaznik
+                   do nastepnego
+                   parametru w
+                   BUFOFF.
+ +127 minibuf   64 Mini bufory dla
+                   operacji IO.(patrz
+                   FPUTC i FGETC).
+ +191 cionbuf   64 Bufor pobierania
+                   parametrow (patrz
+                   U_PARAM).
+
+ end of REGISTERS.

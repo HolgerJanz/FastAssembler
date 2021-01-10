@@ -1,0 +1,69 @@
+* Przykladowy program dla FA.
+* W celu kompilacji wykonaj
+* FA _odb.doc odb.com
+
+* Odbiorca parametrow FLAG.
+* (patrz NAD.DOC)
+* Mnozy on parametr z FLAG *8 i
+* zwraca jako swoj status wykonania.
+
+         lst bad
+
+* definicja symboli SDX
+
+printf   smb 'printf'
+flag     smb 'flag'
+status   smb 'status'
+mul      smb 'mul_32'
+
+* definicja rejestrow SDX
+
+v1_32    equ $B5F
+v2_32    equ $B5B
+v3_32    equ $B57
+
+* blok relokowalny
+
+         blk reloc main
+
+* wyswietlenie co otrzymal odbiorca
+
+odb      jsr printf
+         dta b($9b),c' ODBIORCA: flag: %2x',b($9B,0)
+         dta v(flag)
+
+* zerowanie rejestrow mnozenia
+
+         lda #0
+
+         ldx #3
+odb_0    sta v2_32,x
+         sta v3_32,x
+         dex
+         bpl odb_0
+
+* ustawienie rejestrow mnozenia
+
+         lda #8
+         sta v2_32+3
+         lda flag
+         sta v3_32+3
+
+* mnozenie
+
+         jsr MUL
+
+* ustawienie statusu
+
+         lda v1_32+3
+         sta status
+         rts
+
+* aktualizacja adresow, symboli i
+* nowego symbolu
+
+         blk update adress
+         blk update symbols
+         blk update new odb '@ODB'
+
+         end

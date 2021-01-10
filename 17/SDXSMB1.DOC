@@ -1,0 +1,583 @@
+
+ Procedury uslugowe SDX zdefiniowane
+ symbolami.
+ Uwaga: Przez skrot P: oznaczylem
+ parametry, a przez S: sygnalizacje
+ rezultatow (bledow) dzialania.
+
+ Grupa systemowa :
+
+ _INITZ   - procedura inicjuje SDX,
+    podobnie jak jmp ($C).
+
+    P:
+    brak
+    S:
+    brak
+
+ _DOS     - procedura powrotu do dosu
+    programow uzytkowych, jak
+    jmp ($A).
+
+    Uwaga: gdy program ma zwracac
+    bajt statusu do programow go
+    wywolujacych powninien wracac do
+    DOSa poprzez rts (patrz LOAD)
+
+    P:
+    brak
+    S:
+    brak
+
+ S_ADDIZ  - procedura dodajaca do
+    systemowej kolejki inicjacji
+    wektor procedury majacej byc
+    kazdorazowo uruchamianej w fazie
+    inicjowania DOSu (po nacisnieciu
+    reset lub wywolaniu _INITZ).
+
+    P:
+    AX adres procedury.
+    S:
+    C=1 proba nieudana, brak miejsca
+    w kolejce.
+
+ S_LOOKUP - procedura odszukuje
+    symbol o nazwie podanej w SYMBOL
+    w pamieci i ustawia pozostale
+    rejstry tego pola.
+
+    P:
+    SYMBOL+2 nazwa symbolu.
+    S:
+    Z=1 symbol nie znaleziony
+
+ MALLOC   - rezerwuje obszar pamieci
+    rozpoczynajacy sie od memlo i
+    zwieksza memlo o zadana ilosc
+    bajtow.
+
+    P:
+    Y zawsze $00 !!
+    faux4 (2) liczba rezerwowanych
+     bajtow,
+    X preferowana pamiec:
+     2 - w obszarze extended, gdy tam
+     brakuje pamieci, to main.
+     0 - pamiec main.
+
+    S:
+    x=2 przydzielona w extended,
+    x=0 przydzielona w main,
+    x=$FE, N=1 nie przydzielono.
+
+ Obsluga bledow:
+
+ U_SFAIL  - procedura zakladajaca
+    pulapke programu uzytkownika.
+    Zalozona pulapka przechwytuje
+    wszystkie zglaszane przez U_FAIL
+    bledy, zachowuje ona wskaznik
+    stosu identyczny z jej wywola-
+    niem, co pozwale na latwe
+    operowanie bledami.
+
+    P:
+    AX adres pulapki.
+    S:
+    brak
+
+ U_XFAIL  - procedura zdejmuje osta-
+    tnio zalozona pulapke.
+
+    P:
+    brak
+    S:
+    brak
+
+ U_FAIL   - procedura zglaszajaca
+    blad do systemu SDX lub wlasnej
+    procedury o ile jest zalozona
+    przez U_SFAIL, automatycznie
+    dezaktywuje pulapke.
+
+    P:
+    A numer bledu.
+    S:
+    brak
+
+ U_ERROR  - procedura wyswietla
+    systemowy komunikat o bledzie.
+
+    P:
+    Y numer bledu.
+    S:
+    brak
+
+ Obsluga zmiennych srodowiskowych:
+
+ NUMENV   - procedura pobiera z
+    buforu systemowego zmienna
+    srodowiskowa o danym numerze i
+    umieszcza ja pod adresem $580.
+
+    P:
+    A numer zmiennej srodowiskowej.
+    S:
+    N=1 gdy zmienna nie znaleziona.
+
+ GETENV   - procedura pobiera zmienna
+    srodowiskowa o podanej nazwie.
+
+    P:
+    AX adres do nazwy zmiennej.
+    S:
+    N=1 gdy zmienna nie znaleziona.
+
+ PUTENV   - procedura dodaje zmienna
+    srodowiskowa do buforu SDX, lub
+    kasuje ja gdy podana jest tylko
+    nazwa zmiennej.
+
+    P:
+    AX adres nowej deklaracji.
+    S:
+    brak
+
+ Ladowanie programow:
+
+ U_LOAD   - procedura ladujaca plik
+    binarny we wszystkich formatach
+    SDX. Potrafi tez przekazywac
+    parametr zwracany przez urucho-
+    miony plik, jest on niesiony w A.
+    Program zwracajacy parametr musi
+    go umiescic w STATUS i wrocic
+    do DOSu poprzez RTS.
+
+    Uwaga:
+    Gdy program jest nakladka syste-
+    mowa i ma byc umieszczony w pa-
+    mieci na stale musi zmniejszyc
+    rejestr INSTALL.
+
+    P:
+    FILE_P wskaznik do nazwy pliku
+    FLAG tryb ladowania i parametr
+     dla pliku:
+     - gdy ustawiony jest najstarszy
+     bit, program jest tylko ladowany
+     i zatrzymywany w pamieci.
+     - cztery mlodze bity zostaja
+     zachowywane i przekazywane do
+     uruchomionego pliku (w FLAG).
+    A i STATUS wynik dzialania
+     programu.
+    S:
+    poprzez U_FAIL.
+
+ U_UNLOAD - zwalnia pamiec zajmowana
+    przez zaladowane programy.
+
+    P:
+    brak
+    S:
+    brak
+
+ Uslugi rozne (!):
+
+ MUL_32   - procedura mnozy dwie 32
+    bitowe liczby bez znaku, wynik
+    operacji w V1_32 w odwroconej
+    kolejnosci bajtow (najstarszy-
+    najmlodszy) !
+
+    P:
+    V2_32, v3_32 4 bajtowe czynniki
+     iloczynu w odwroconej
+     kolejnosci.
+    S:
+    C=1 wynik poza zakresem 32 bitow.
+
+ DIV_32   - procedura dzieli dwie 32
+    bitowe liczby bez znaku, wynik
+    w V1_32 (patrz MUL_32).
+
+    P:
+    V2_32 4 bajtowy dzielnik,
+    V3_32 4 bajtowa dzielna.
+    S:
+    C=1 dzielenie przez zero.
+
+ TOUPPER  - procedura zamienia male
+    znaki na duze. Wynik w A.
+
+    P:
+    A znak do zamiany.
+    S:
+    brak
+
+ Grupa obrobki nazw plikow:
+
+ U_GEPATH - procedura ustawia DEVICE
+    i PATH na urzadzenie i scierzke z
+    nazwa (o ile jest podana).
+    Gdy nie podano urzadzenia lub
+    jego numeru, procedura przyjmuje
+    urzadzenie domyslne z CURDEV.
+
+    P:
+    FILE_P - wskaznik do nazwy pliku.
+    S:
+    gdy bledna nazwa urzadzenia przez
+    U_FAIL.
+
+ U_GEFINA - procedura ustawia DEVICE,
+    PATH i NAME na urzadzenie, scie-
+    rzke i nazwe (patrz U_GEPATH).
+
+    P:
+    FILE_p wskaznik do nazwy.
+    S:
+    gdy bledna nazwa urzadzenia przez
+    U_FAIL.
+    A='<',Z=1 gdy nie podano nazwy
+    pliku (tylko sciezke).
+
+ PRO_NAME - procedura ustawia nazwe
+    pliku w NAME, gdy podana nazwa
+    poprzedzona sciezka w NAME
+    ustawione bedzie nazwa pierwszego
+    katalogu (lub urzadzenia).
+
+    P:
+    bufadr wskaznik do nazwy pliku
+    Y offset wzgledem bufadr zmniej-
+    szony o jeden.
+
+    S:
+    Z=1 gdy nie podano nazwy pliku,
+    A='<' gdy nie podano nazwy, a
+     nazwe katalogu.
+    A=':' gdy nie podano nazwy, a
+     nazwe urzadzenia.
+    Y offset ostaniego znaku nazwy
+     umieszczonej w NAME.
+
+ U_EXPAND - procedura odwrotna do
+    PRO_NAME, przepisuje ona zawarosc
+    NAME do podanego bufora w formie
+    typowej dla programow (to znaczy
+    nazwy rozdzielonej kropka z
+    rozszerzeniem).
+
+    P:
+    AX adres bufora na nazwe,
+    Y offset bufora.
+
+ U_FSPEC  - procedura dodaje do para-
+    metru w CONFNAM jokery *.* o ile
+    parametr zakonczony jest znakiem
+    katalogu.
+
+    P:
+    brak
+    S:
+    brak
+
+ CHKSPC   - procedura porownuje znak
+    do znakow specjalnych nazwy tz
+    ':>\<'.
+
+    P:
+    A znak do porownania.
+    S:
+    Z=1 znak specjalny.
+
+ _CRUNCH  - procedura zamienia naste-
+    pny parametr z lbuff, na nazwe
+    urzadzenia, scierzke i nazwe
+    pliku zgodna ze standardem
+    ATARI DOS, umieszczona w CONFNAM,
+    o dlugosci w TRAILS.
+    Gdy nie ma nastepnego parametru
+    w CONFNAM umieszczona jest tylko
+    nazwa urzadzenia. Gdy nie podano
+    urzadzenia ustawiane jest urzadze-
+    nie domyslne z CURDEV.
+
+    P:
+    brak
+    S:
+    Z=1 brak parametru.
+
+ Grupa pobierania parametrow :
+
+ U_GETPAR - procedura pobiera naste-
+    pny parametr z lbuff i przenosi
+    go do CONFNAM i CIONBUF, ustawia
+    tez FILE_P na CONFNAM, pomija
+    parametr rozpoczynajacy sie od
+    ukosnika !
+
+    P:
+    brak
+    S:
+    Z=1 brak parametru, lub parametr
+     z ukosnikiem.
+
+ U_GETATR - procedura pobiera naste
+    -pny parametr z lbuff, sprawdza
+    czy definiuje on atrybuty pliku,
+    gdy tak jest procedura ustawia
+    rejestr fatr1. Procedura dziala
+    w petli tz tak dlugo pobiera
+    parametry jak dlugo definuja one
+    atrybuty. Gdy zaden parametr tego
+    nie robi ustawia atrybuty
+    domyslne. Ostatni pobrany para-
+    metr nie bedacy definicja atry-
+    butow procedura umieszcza w
+    CIONBUF i CONFNAM, ustawia takze
+    FILE_P na CONFNAM.
+
+    P:
+    A atrybuty domyslne.
+    S:
+    Z=1 brak parametru, lub parametr
+     z ukosnikiem.
+
+ U_PARAM  - procedura pobiera
+    parametr z wiersza polecen lbuff
+    i umieszcza go w CIONBUF.
+
+    P:
+    brak
+    S:
+    brak
+
+ U_SLASH  - procedura pobiera naste-
+    pny parametr z lbuff i gdy
+    zaczyna sie od ukosnika porownuje
+    go z tabica ukosnikow ustawiajac
+    falge wystapienia parametru.
+    Format tablicy dla U_SLASH.
+     dta b(0),c'A',b(0),c'B'
+     gdzie A i B to dozwolone
+     parametry a zera to flagi
+     wystapien. (Flagi sa zawsze
+     zerowane przez procedure.)
+
+
+    P:
+    AX adres tablicy dozwolonych
+     parametrow,
+    Y dlugosc tablicy w bajtach.
+    S:
+    Z=0 gdy parametr nie byl
+     ukosnikiem
+    Poprzez U_FAIL gdy ukosnik nie
+     znajdowal sie w tablicy.
+
+ U_GETNUM - procedura sprawdza czy
+    nastepny parametr jest liczba
+    i gdy tak jest pobiera go i
+    zamienia liczbe na postac
+    binarna umieszczjac wynik w
+    DIVEND oraz AX. Procedura
+    rozpoznaje liczby dziesietne i
+    szesnastkowe bez znaku ograni-
+    czone wielkoscia do dwoch bajtow.
+
+    P:
+    bark
+    S:
+    Z=1 gdy parametr nie byl liczba.
+
+ U_GONOFF - procedura pobiera para-
+    metr i sprawdza czy jest on typu
+    ON/OFF.
+
+    P:
+    brak
+    S:
+    C=1 gdy ON,
+    C=0 gdy OFF,
+    gdy inny poprzez U_FAIL.
+
+ U_TOKEN  - procedura sprawdza czy
+    parametr w CONFNAM jest zamie-
+    szczony w tablicy parametrow.
+    Format tablicu dla U_TOKEN
+     dta c'PIERWSZÙDRUGÉTRZECÉ',b(0)
+     Lista parametrow zakonczona
+     zerem !.
+
+    P:
+    AX adres tablicy parametrow.
+    S:
+    C=0 brak parametru w tablicy,
+    C=1 parametr znaleziony o numerze
+     w A.
+
+ Procedury IO:
+
+ Procedury otwierajace pliki:
+
+ FOPEN    - procedura otwiera plik
+    z przeszukiwaniem szlaku. Zwraca
+    ona numer kanalu w SIOCBIDX.
+
+    P:
+    FILE_P wskaznik do nazwy pliku,
+    OPMODE tryb otwarcia pliku:
+     $x4 - odczyt,
+     $x8 - zapis,
+     $xC - zapis i odczyt,
+
+     $0x - plik,
+     $1x - katalog,
+
+     +$20 - z przeszukiwaniem
+     szlaku.
+    FATR1 dozwolone atrybuty pliku.
+    S:
+    A=0 gdy otwarcie ze szlakiem,
+    poprzez U_FAIL.
+
+ FFIRST   - procedura otwiera katalog
+    i poszukuje w nim zadanych plikow
+    o okreslonej nazwie i atrybutach.
+    Spelniajacy warunki wpis katalogu
+    jest umieszczany w DIRBUF. Naste-
+    pne wpisy sa odnajdowane przez
+    FNEXT.  Zwraca ona numer kanalu
+    w SIOCBIDX.
+
+    P:
+    FILE_P wskaznik do nazwy pliku,
+    FATR1 dozwolone atrybuty.
+    S:
+    N=1 brak pliku spelniajacego
+     okreslone warunki,
+    poprzez U_FAIL.
+
+ FDOPEN   - procedura otwiera katalog
+    do odczytu tekstowego, poprzez
+    FDGETC. Zwraca ona numer kanalu
+    w SIOCBIDX.
+
+    P:
+    FILE_P wskaznik do nazwy pliku,
+    FATR1 dozwolone atrybuty,
+    OPMODE tryb formatowania:
+     $00 standard ATARI DOS,
+     $80 SPARTA DOS.
+    S:
+    poprzez U_FAIL.
+
+ Procedury wymagajace otwartych
+ plikow ustawionych w SIOCBIDX.
+
+ FPUTC    - procedura wysyla do
+    otwartego kanalu jeden bajt.
+    Procedura zachowuje wszystkie
+    rejsetry procesora ! Gdy numer
+    kanalu rowny 100, wykonuje
+    szybkie operacje ekranowe (musza
+    one byc uprzednio zdefiniowane).
+
+    P:
+    A bajt do wyslania.
+    S:
+    poprzez U_FAIL.
+
+ FGETC    - procedura pobiera bajt
+    z otwartego kanalu. Pobrany bajt
+    w A. Zachowuje rejestr Y.
+
+    P:
+    brak
+    S:
+    X=$FF,N=1 wystapil blad End of
+     file (#136),
+    poprzez U_FAIL.
+
+ Procedury FPUTC i FGETC uzywaja dla
+ przyspieszenia IO dodatkowych mini-
+ buforow.
+
+ FPUTS    - procedura zapisuje do
+    pliku rekord tekstowy. Rekord
+    moze miec okreslona dlugosc.
+
+    P:
+    AX adres rekordu,
+    Y dlugosc rekordu w bajtach.
+    S:
+    poprzez U_FAIL.
+
+ FGETS    - procedura czyta z pliku
+    rekord tekstowy. Rekord moze miec
+    okreslona dlugosc jednak znak
+    EOL (#$9b) konczy odczyt.
+
+    P:
+    AX adres rekordu,
+    Y dlugosc rekordu w bajtach.
+    S:
+    A=$FF wystapil nadmiar danych,
+    poprzez U_FAIL.
+
+ FWRITE   - procedura zapisuje blok
+    danych do pliku.
+
+    P:
+    faux1 (2) adres bufora danych,
+    faux4 (2) dlugosc bufora w
+     bajtach,
+    syscall preferowana pamiec
+     2 pamiec extended,
+     0 pamiec main.
+    S:
+    poprzez U_FAIL.
+
+ FREAD    - procedura czyta blok
+    danych z pliku.
+
+    P:
+    faux1 (2) adres bufora danych,
+    faux4 (2) dlugosc bufora w
+     bajtach,
+    syscall preferowana pamiec
+     2 pamiec extended,
+     0 pamiec main.
+    S:
+    X=$FF,N=1 wystapil blad End of
+     file (#136),
+    poprzez U_FAIL.
+
+ FNEXT    - procedura czyta otwarty
+    przez FFIRST katalog i ustawia
+    nastepny wpis spelniajacy zadane
+    przez FFIRST warunki w DIRBUF.
+    Nie wymaga ustawienia SIOCBIDX.
+    Uwaga, kanalu takiego sie nie
+    zamyka lecz trzeba przeczytac
+    wszystkie wpisy katalogu.
+
+    P:
+    brak
+    S:
+    N=1,X=$FF koniec katalogu.
+
+ FDGETC   - procedura pobiera jeden
+    bajt sformatowanego katalogu i
+    zwraca go w A.
+
+    P:
+    brak
+    S:
+    N=1,X=$FF koniec katalogu.
+
+ end of SYMBOLS part 1.

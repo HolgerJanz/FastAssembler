@@ -1,0 +1,264 @@
+
+ Operacje IO wszystkich urzadzen sa
+ mozliwe do przeprowadzenia nie tylko
+ poprzez IOCB ATARI OS, ale takze
+ przez KERNEL SDX ($703 jmp kernel).
+ Kod operacji powinien byc niesiony
+ w Y, po wykonaniu funkcji status
+ wykonania operacji (nr bledu) znaj-
+ duje sie w A. A oto funkcje rozpo-
+ znawane przez urzadzenia:
+
+ Funkcje o numerach 0-7 wymagaja
+ pliku otwartego, i ustawionego na
+ numer tego pliku SIOCBIDX.
+
+ Y   funkcja
+
+ 0   read      laduje blok danych
+ 1   write     zapisuje blok danych
+
+     P:
+     faux1 (2) adres bufora,
+     faux4 (2) dlugosc bufora,
+     syscal preferowana pamiec
+      0 - main, 2 - extended.
+
+     Operacji faux4 zawiera ilosc
+     bajtow dla ktorych procedury
+     przebiegaly bezblednie.
+
+ 2   seek      ustawia wskaznik pliku
+               na bajt dla nastepnej
+               operacji.
+
+     P:
+     faux1 (3) 3 bajtowy wskaznik.
+
+ 3   teel      pobiera z pliku aktua-
+               lny wskaznik, ustawia
+               go w faux1 (3).
+
+ 4   lenght    pobiera calkowita dlu-
+               gosc pliku, ustawia ja
+               w faux1 (3).
+
+ 5   next      czyta z katalogu
+               otwartego ffirst 24
+               bajty nastepnego wpisu
+               spelniajacego warunki
+               podane przy otwieraniu
+               i umieszcza je w
+               DIRBUF. Nie trzeba
+               ustawiac siocbidx
+               ktory zostaje przez
+               funkcje zachowany.
+
+ 7   close     zamyka plik.
+
+ Funkcja specjalna.
+
+ 8   init      inicjuje sterownik
+               urzadzenia.
+
+ Nastepne funkcje wymagaja ustawienia
+ DEVICE, PATH i NAME oraz FATR1.
+
+ 9   open      otwiera plik, zwraca
+               numer kanalu w
+               SIOCBIDX. Gdy plik
+               otwierany do zapisu
+               ustawia nowe atrybuty
+               jak FATR2. Tryb otwa-
+               rcia w OPMODE.
+
+ 10  ffirst    otwiera katalog do
+               czytania i sprawdza
+               czy poszczegolne wpisy
+               spelniaja warunki
+               podane w NAME i FATR1.
+               Jesli tak ustawia
+               pierwszy taki wpis w
+               DIRBUF. Nie zmienia
+               SIOCBIDX.
+
+ 11  rename    wymaga drugiej nazwy w
+               NAMES, zamienia nazwy
+               spelniajace warunki
+               NAME i FATR1 na NAMES.
+
+ 12  delete    kasuje plik(i).
+
+ 13  chatr     zmienia trybuty pliku
+               (ow) na podane FATR2.
+
+ 14  mkdir     tworzy nowy katalog.
+
+ 15  rmdir     usowa katalog.
+
+ 16  chdir     zmienia katalog robo-
+               czy, wymaga tylko
+               DEVICE i PATH.
+
+ 17  getcwd    podaje pelna scierzke
+               do katalogu roboczego,
+               wymaga tylko DEVICE i
+               PATH.
+
+ 18  boot      ustawia plik jako
+               boot.
+
+ 19  dfree     pobiera z 1 sektora
+               dysku dane o nim i
+               umieszcza je w PATH,
+               wymaga tylko DEVICE.
+
+ SDX udostepnia takze inne funkcje
+ poprzez wektor misc ($70C jmp misc).
+ Kod funkcji powinien byc niesiony w
+ A, po jej wykonaniu tam niesiony
+ jest status operacji.
+
+ A   funkcja
+
+ 0   init      inicjowanie MISC
+
+ 1   getfina   ustawia DEVICE,PATH i
+               NAME wg danych z
+               CIONBUF.
+
+ 2   getpath   ustawia DEVICE i PATH
+               wg danych z CIONBUF.
+
+ 5   convdec   zamienia liczbe w
+               divend na liczbe
+               podana w kodach ATASCI
+               w decout.
+
+ 6   fdopen    procedura otwiera
+               katalog do czytania w
+               trybie tekstowym. Nie
+               zmienia SIOCBIDX.
+
+     P:
+     OPMODE tryb formatowania:
+      0   standard ATARI DOS,
+      $80 SPARTA DOS.
+     DEVICE,PATH,NAME urzadzenie,
+      scierzka i nazwa katalogu do
+      czytania,
+     FATR1 atrybuty plikow majacych
+      byc wyswielonych.
+
+ 7   fdgetc    procedura pobiera
+               jeden bajt sformatowa-
+               nego katalogu i
+               umieszcza go w icax1z
+               ($2F).
+
+ 8   fdclose   procedura zamyka
+               kanal formatowanego
+               katalogu.
+
+ Uzywanie tak zdefinowanych funkcji
+ nie jest latwe ale daje zgodnosc
+ z wczesniejszymi wersjami SD.
+
+ Ponadto mozliwe jest przez program
+ uzytkownika przelaczanie bankow
+ pamieci poprzez procedury ext_on,
+ ext_off i ext_sw.
+
+ ext_off - procedura wylacza pamiec
+           extended.
+ ext_on  - procedura wlacza pamiec
+           extended.
+
+ Procedury zachowuja wszystkie
+ rejestry procesora (lacznie z
+ rejestrem flagowym).
+
+ ext_sw  - procedura przelacza
+           pamiec. Indeks pamieci
+           niesiony w A (od 0 do 3).
+           Do przeloaczania pamieci
+           MAIN i EXTENDED lepiej
+           uzywac ext_off lub ext_on.
+           Procedura jest niezwykle
+           grozna, wywolana ze zlym
+           indeksem zawiesza system.
+
+ Bledy zwracane przez procedury IO:
+
+ $80 - User break abort
+       Nacisniety break.
+ $81 - File already open
+       Plik juz otwary.
+ $82 - Nonexistant device
+       Nieistniejace urzadzenie.
+ $83 - Chanel or IOCB not open for
+       input
+       Kanal nie otwarty do czytania.
+ $84 - No device handler installed
+       Urzadzenie nie zainstalowane.
+ $85 - Chanel or IOCB not open
+       Nie otwarty kanal.
+ $86 - Bad IOCB number
+       Zly numer kanalu IOCB.
+ $87 - Chanel or IOCB not open for
+       output
+       Kanal nie otwary do zapisu.
+ $88 - End of file
+       Koniec zbioru.
+ $89 - Trucated record error
+       Zbyt maly bufor dla rekordu -
+       utracone dane.
+ $8A - Drive not present
+       Nieistniejace urzadzenie SIO.
+ $8B - Drive NAK
+       Blad urzadzenia SIO.
+ $8C - Serial framing error
+       Blad urzadzenia SIO.
+ $8E - SIO serial bus overrun error
+       Blad urzadzenia SIO.
+ $8F - SIO checksum error
+       Blad sumy kontrolnej SIO.
+ $90 - Write protected or bad sector
+       Zabroniony zapis lub uszkodzo-
+       ny sektor.
+ $92 - No function in device handler
+       Urzadzenie nie obsluguje danej
+       funkcji.
+ $94 - Unrecognized diskette format
+       Zly format dysku
+ $96 - Directory not found
+       Nie znaleziony katalog.
+ $97 - File exists
+       Plik zabezpieczony lub
+       katalog.
+ $98 - Not binary file
+       Nie binarny plik.
+ $9A - Loader: symbol not defined
+       Plik zawiera nie zdefinowane
+       symbole.
+ $9C - Bad parameter
+       Zly parametr.
+ $9E - Out of memory
+       Zbyt malo pamieci.
+ $A1 - Too many chanels open
+       Zbyt wiele otwartych kanalow.
+ $A2 - Disk full
+       Dysk pelny.
+ $A3 - Illegal wildcard in name
+       Zle jokery w nazwie.
+ $A5 - Bad filename
+       Zla nazwa.
+ $A6 - Position range error
+       Wskaznik pliku poza plikiem.
+ $A7 - Can't delete directory
+       Niemozliwe skasowanie
+       katalogu.
+ $A8 - File not found
+       Plik nieodnaleziony.
+
+ end of KERNEL.

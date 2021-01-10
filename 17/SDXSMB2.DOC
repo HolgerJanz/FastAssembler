@@ -1,0 +1,309 @@
+
+ Inne procedury wymagajace otwartych
+ plikow i numeru kanalu w SIOCBIDX:
+
+ FTELL    - procedura ustawia w faux1
+    aktualna wartosc wskaznika pliku.
+
+    P:
+    brak
+    S:
+    poprzez U_FAIL.
+
+ FILELENG - procedura ustawia w faux1
+    dlugosc pliku.
+
+    P:
+    brak
+    S:
+    poprzez U_FAIL.
+
+ FSEEK    - procedura ustawia nowa
+    warosc wskaznika pliku.
+    Uwaga: mozna ustawic wskaznik za
+    plikiem, nie powoduje to bledu.
+
+    P:
+    faux1 (3) nowy wskaznik pliku.
+    S:
+    poprzez U_FAIL.
+
+ Procedury zamykajace plik:
+
+ FCLOSE   - procedura zamyka plik
+    w kanale SIOCBIDX. Dotyczy plikow
+    otwartych przez FOPEN jak i
+    FFIRST.
+
+    P:
+    brak
+    S:
+    brak
+
+ FDCLOSE  - procedura zamyka kanal
+    czytania sformatowanego katalogu.
+    Numer kanalu w SIOCBIDX.
+
+    P:
+    brak
+    S:
+    brak
+
+ FCLOSEAL - procedura zamyka wszy-
+    stkie otwarte pliki.
+
+    P:
+    brak
+    S:
+    brak
+
+ FCLEVEL  - procedura kieruje dzia-
+    laniem FCLOSEAL. Po jej wywolaniu
+    z wartoscia $FF w A, plik ktorego
+    numer jest w SIOCBIDX nie bedzie
+    zamkniety przez FCLOSEAL. Aby
+    zamknac taki plik trzeba wywolac
+    FCLOSE lub FCLEVEL z watoscia
+    SYSLEVEL w A, a nastepnie
+    FCLOSEAL. Uwaga: SYSLEVEL jest
+    bardzo waznym rejestrem SDX i
+    nie nalezy go modyfikowac !
+
+    P:
+    A =$FF lub SYSLEVEL
+    S:
+    brak
+
+ Inne procedury IO :
+
+ REMOVE   - procedura kasuje plik.
+
+    P:
+    FILE_P wskaznik do nazwy,
+    FATR1 dozwolone atrybuty.
+    S:
+    poprzez U_FAIL.
+
+ MKDIR    - tworzy nowy katalog.
+
+    P:
+    FILE_P wskaznik do nazwy.
+    S:
+    poprzez U_FAIL.
+
+ RMDIR    - usuwa katalog.
+
+    P:
+    FILE_P wskaznik do nazwy.
+    S:
+    poprzez U_FAIL.
+
+ GETDFREE - pobiera naglowek dysku do
+            PATH.
+
+    P:
+    FILE_P wskaznik do nazwy.
+    S:
+    poprzez U_FAIL.
+
+ SETBOOT  - ustawia plik bootowy.
+
+    P:
+    FILE_P wskaznik do nazwy,
+    FATR1 dozwolone atrybuty.
+    S:
+    poprzez U_FAIL.
+
+ CHMOD    - zmienia atrybuty pliku.
+
+    P:
+    FILE_P wskaznik do nazwy,
+    FATR1 dozwolone atrybuty,
+    FATR2 dodawane lub kasowane
+     atrybuty pliku.
+    S:
+    poprzez U_FAIL.
+
+ RENAME   - zmienia nazwe pliku.
+    Nazwy pliku odzielone sa spacja
+    lub przecinkiem.
+
+    P:
+    FILE_P wskaznik do nazw pliku,
+    FATR1 dozwolone atrybuty.
+    S:
+    poprzez U_FAIL.
+
+ CHDIR    - zmienia bierzacy katalog.
+
+    P:
+    FILE_P wskaznik do nazwy pliku.
+    S:
+    poprzez U_FAIL.
+
+ GETCWD   - pobiera scierzke prowa-
+    dzaca do danego katalogu, wynik
+    w PATH.
+
+    P:
+    FILE_P wskaznik do nazwy pliku.
+    S:
+    poprzez U_FAIL.
+
+ Procedury IO dla ekranu, ich cecha
+ wspolna jest to iz nie trzeba otwie-
+ rac kanalu i ustawiac SIOCBIDX,
+ procedury tez nie zmieniaja. Poza
+ tym mozliwe jest przez to kierowanie
+ IO ekranowych do i z plikow.
+ Sygnalizacja bledow i zwracanymi
+ parametrami nie roznia sie od swych
+ plikowych odpowiednikow stad tylko
+ skrotowy ich opis:
+
+ PUTC     - procedura wysyla bajt
+    na ekran (patrz FPUTC).
+
+ GETC     - procedura pobiera bajt
+    z klawiatury (FGETS).
+
+ PUTS     - procedura wysyla na ekran
+    rekord tekstowy (FPUTS).
+
+ GETS     - procedura pobiera z kla-
+    wiatury rekord tekstowy (FGETS).
+
+ Ciekawa mozliwoscia SDX jest kiero-
+ wanie IO ekranu, umozliwiaja to
+ funkcje:
+
+ DIVIO    - przydziela kanal i powia-
+    zany z nim plik dla IO ekranu.
+
+    P:
+    Y typ kanalu:
+     0 dla operacji wyjscia,
+     1 dla operacji wejscia.
+    FILE_P wskaznik do nazwy pliku
+     zastepujacego konsole.
+    S:
+    N=0 kanal juz zastapiony,
+    poprzez U_FAIL.
+
+ XDIVIO   - zwalnia zastapiony przez
+    DIVIO kanal i przywraca normalny
+    tryb pracy konsoli. Zamyka taz
+    kanal zastepujacy.
+
+    P:
+    Y typ kanalu:
+     0 dla operacji wyjscia,
+     1 dla operacji wejscia.
+    S:
+    N=1 kanal juz zwolniony.
+
+ Procedura specjalna PRINTF:
+
+ PRINTF   - wysyla na ekran formato-
+    wany rekord tekstowy. Jako
+    znak specjalny uzywany jest %.
+    Po nim wystapic liczba oznacza-
+    jaca dlugosc podciagu, przy wy-
+    druku liczb poprzedzona zerem
+    nakazuje drukowanie malo znacza-
+    cych zer. Zamiast liczby okrasla-
+    jacej dlugosc mozna tez podac
+    znak * oznaczajacy iz dlugosc ta
+    okreslona jest parametrem poprze-
+    dzajacym parametr wlasciwy.
+    Nastepnie trzba podac znak okre-
+    slajacy typ podciagu:
+
+     b - bajt postaci dziesietnej,
+     d - dwa bajty dziesietnie,
+     e - trzy bajty dziesietnie,
+     x - dwa bajty szesnastkowo,
+     c - znak ATASCI,
+     s - rekord tekstowy,
+     p - rekord tekstowy.
+
+    Kazdy formatowany rekord trzeba
+    zakonczyc zerem ! Po nim naste-
+    puje lista wskaznikow do parame-
+    trow. Wyjatkiem jest %p gdzie
+    gdzie rekord jest wskazywany
+    przez wskaznik ktory jest wskazy-
+    wany przez wskaznik w liscie
+    (wskaznik do wskaznika).
+
+    Ciekawe jest wywolanie funkcji.
+    Musi sie ono odbywac poprzez
+    rozkaz JSR ! Po nim to nastepuje
+    rekord i lista parametrow.
+
+    Przyklad:
+
+    jsr printf
+    dta c'Napis',b(0)
+
+    jsr printf
+    dta c'Napis i liczba %d',b(0)
+    dta v(liczba)
+
+    Po nim moze wystapic znak *
+    oznaczajacy dlugosc podciagu
+    padana parametrem.
+
+ FPRINTF  - odmiana PRINTF wysylajaca
+    rekord do pliku, wymaga ustawio-
+    nego SIOCBIDX.
+
+ VPRINTF  - procedura dziala z szy-
+    bkimi procedurami ekranu (musza
+    one byc zdefiniowane przez
+    uzytkownika).
+
+ Pozostaly jeszcze dwie procedury
+ ktorych wywolanie jest nieco
+ odmienne. Umieszczone sa one w banku
+ 0 modulu, a nie w pierwszym jak
+ pozostale. Tak wiec w celu ich
+ wywolania nalezy najpierw przelaczyc
+ bank na 0, wywolac funkcje i prze-
+ laczyc bank na pierwszy. Przela-
+ czanie bankow uzyskujemy poprzez
+ umieszczenie dowolnej wartosci w
+ rejestrach :
+
+  $D5E0 - bank 0,
+  $D5E1 - bank 1.
+
+ FORMAT   - procedura wywoluje
+    program formatujacy (jak po
+    komendzie format).
+
+    P:
+    brak
+    S:
+    brak
+
+ BUILDDIR - procedura buduje nowy
+    katalog na dysku.
+
+    P:
+    AX wskaznik do nazwy dysku,
+    ddevic,dunit ($300,$301) nazwa i
+     numer urzadzenia w standardzie
+     ATARI Device Control Block.
+    S:
+    N=1 blad podczas nagrywania
+     katalogu.
+    dstat numer bledu.
+
+ Uwaga: Procedury FORMAT i BUILDDIR
+ wykorzystuja obszar minibuforow
+ procedur FPUTC i FGETC. W zwiaku z
+ tym przed ich uzyciem trzeba zamknac
+ kanaly IO uzywajace tych procedur !
+
+ end of SYMBOL part 2.

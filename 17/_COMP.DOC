@@ -1,0 +1,309 @@
+* Przykladowy program dla FA.
+
+* Bedzie to program porownywania
+* zawartosci 2 plikow, bedzie on
+* zwracal do programu nadrzednego
+* (zazwyczaj command.com) wartosci
+* w status 0-blad parametrow,
+*          1 pliki identyczne
+*          2 pliki rozne
+*       inny numer bledu IO.
+
+* Wywolywany z wiersza plecen bedzie
+* pobieral parametry :
+
+* Atrybuty i nazwy plikow oraz
+* maksymalna liczbe wyswietlanych
+* roznic w programie,
+* ponadto liczba 0 uwzgledniana jest
+* jako nielimitowana liczba roznic.
+
+* jak kazdy dobry program po podaniu
+* zlych parametrow podaje ich odpo-
+* wiednie znaczenie i kolejnosc.
+
+* A oto ten program (uwaga w celu
+* skompilowania wersja FA DEMO
+* kompiluj _COMP._AS
+* poprzez wywolanie :
+* FA _comp._as comp.com ):
+
+* listowanie tylko blednych wierszy
+         lst bad
+
+* definicja symboli SDX urzywanych w
+* programie
+
+pf       smb 'printf'
+gatr     smb 'u_getatr'
+gnum     smb 'u_getnum'
+fopen    smb 'fopen'
+fget     smb 'fgetc'
+fca      smb 'fcloseal'
+ftell    smb 'ftell'
+flen     smb 'fileleng'
+dos      smb '_DOS'
+sfail    smb 'u_sfail'
+fail     smb 'u_fail'
+xfail    smb 'u_xfail'
+status   smb 'status'
+putc     smb 'putc'
+
+* definicja etykiet rejsetrow SDX
+
+siocbidx equ $760
+faux1    equ $782
+
+* blok relokowalny
+
+         blk reloc main
+
+* poczatek programu,
+* (domyslny start)
+
+* zainstalowanie pulapki ktorej adres
+* znajduje sie w vtrap (z uwagi na
+* relokowalnosc kodu nie mozna uzyc
+* lda <trap i ldx >trap poniewaz
+* w czasie kompilacji nie wiemy gdzie
+* program bedzie umieszczony w
+* pamieci !)
+
+comp     lda vtrap
+         ldx vtrap+1
+         jsr sfail
+
+* wyswietla naglowek programu
+
+         jsr pf
+         dta b($9B),c'File COMParator v.1.0',b($9B)
+         dta c'(c) MMMG Soft ''95'
+         dta b($9B,$9b,0)
+
+* ustawienie zmiennych programu,
+* numerow plikow, liczby niezgodnosci
+* oraz maksymalnej liczby niezgo-
+* dnosci (domyslnej)
+
+         ldx #1
+         stx fnum
+         dex
+         stx fdif
+         stx fdif+1
+         stx fmax+1
+         ldx #16
+         stx fmax
+
+* dwokrotne pobranie atrybotow, nazwy
+* i iformaja na ekran
+
+         jsr finit
+         inc fnum
+         jsr finit
+
+* wyswietlenie znaku EOL w celach
+* "estetycznych"
+
+         lda #$9B
+         jsr putc
+
+* pobranie maksymalnej liczby niezgo-
+* dnosci
+
+         jsr gnum
+         beq comp_lp
+
+* gdy zostala podana (Z=0) jej usta-
+* wienie
+
+         sta fmax
+         stx fmax+1
+
+* glowna petla porownawcza
+
+* pobranie pierwszego bajtu z kanalu
+* pliku pierwszego, gdy koniec pliku
+* (N=1) wyskocz z petli
+
+comp_lp  ldx fileids
+         stx siocbidx
+         jsr fget
+         bmi comp_ex
+
+* powtorzenie operacji dla pliku 2
+
+         sta f1byte
+         ldx fileids+1
+         stx siocbidx
+         jsr fget
+         bmi comp_ex
+
+* porownaj bajty z plikow i gdy takie
+* same powtarzaj w petli
+
+         cmp f1byte
+         beq comp_lp
+         sta f2byte
+
+* gdy rozne sprawdz pozycje pliku i
+* wyswietl stosowny komunikat
+
+         jsr ftell
+         jsr pf
+         dta c'Different at %e : $%2x $%2x',b($9b,0)
+         dta v(faux1,f1byte,f2byte)
+
+* zwieksz liczbe niezgodnosci
+
+         inc fdif
+         bne *+5
+         inc fdif+1
+
+* gdy maksymalna liczba nielimitowana
+* (fmax=0) powtarzaj petle
+
+         lda fmax
+         ora fmax+1
+         beq comp_lp
+
+* gdy limitowana sprawdz czy osia-
+* gniety limit, gdy nie powtarzaj
+* w petli
+
+         lda fdif
+         cmp fmax
+         lda fdif+1
+         sbc fmax+1
+         bcc comp_lp
+
+* gdy osiagnieto limit lub koniec
+* jednego z plikow, sprawdz czy
+* wystapily roznice (ustaw status na
+* 1=OK)
+
+comp_ex  lda #1
+         sta status
+         lda fdif
+         ora fdif+1
+         beq comp_ok
+
+* jesli tak wyswietl komunikat i
+* zwieksz status (2=DIFFERENT)
+
+         jsr pf
+         dta b($9b),c'File different',b($9B,0)
+         inc status
+         jmp comp_ed
+
+* gdy nie rowniez wyswietl komunikat
+
+comp_ok  jsr pf
+         dta b($9b),c'No differences',b($9B,0)
+
+* zdejmij pulapke, zamknij wszystkie
+* pliki i koncz program
+
+comp_ed  jsr xfail
+         jmp fca
+
+* procedura pobiera atrybuty (w A
+* atrybuty domyslne)
+
+finit    lda #$A0
+         jsr gatr
+         bne finit_0
+
+* gdy brak nazwy pliku (Z=1) wywolaj
+* blad: bad paramters
+
+         lda #$9C
+         jmp fail
+
+* inaczej otworz plik
+
+finit_0  jsr fopen
+
+* i zapamietaj jego numer kanalu
+* w odpowiedniej zmiennej
+
+         ldx fnum
+         lda siocbidx
+         sta fileids-1,x
+
+* teraz pobierz jego dlugosc
+
+         jsr flen
+
+* wszystko ladnie wyswietl i koncz
+
+         jsr pf
+         dta c'File #%1x len: %e bytes',b($9b,0)
+         dta v(fnum,faux1)
+         rts
+
+* wektor do pulapki
+
+vtrap    dta v(trap)
+
+* pulapka, ustawia status
+* sprawdza czy blad parametrow
+
+
+trap     cmp #$9C
+         beq trap_0
+         jmp trap_1
+
+* gdy tak jest wyswietla komunikat i
+* kasuje status
+
+trap_0   jsr pf
+         dta c'Usage:',b($9b)
+         dta c' COMP [atr] fspec1 [atr] fspec2 [max]'
+         dta b($9b,$9b)
+         dta c'atr   : file attributes,',b($9B)
+         dta c'fspec : file name,',b($9b)
+         dta c'max   : maximum number of mismatches,',b($9B)
+         dta c'        0 allows an unlimited number.',b($9B,0)
+
+         lda #0
+
+* traz pulapka zamyka wszystkie
+* pliki i konczy program
+
+trap_1   sta status
+         jmp fca
+
+* rezerwujemy obszar danych w bloku
+* empty
+
+estr     equ *
+
+fileids  equ estr       2
+f1byte   equ fileids+2  1
+f2byte   equ f1byte+1   1
+fnum     equ f2byte+1   1
+fdif     equ fnum+1     2
+fmax     equ fdif+2     2
+
+eend     equ fmax+2
+
+* blok empty natychmiastowo zwieksza
+* wskaznik PC dlatego etykiety
+* znajdujace sie w tym bloku sa
+* zdefiniowane przed nim
+
+         blk empty eend-estr+1 main
+
+* aktualizacja adresow
+
+         blk update adress
+
+* aktualizacja symboli
+
+         blk update symbols
+
+* zdefiniowanie nowego symbolu
+
+         blk update new comp '@COMP'
+
+         end

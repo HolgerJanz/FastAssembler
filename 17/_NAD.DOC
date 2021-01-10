@@ -1,0 +1,124 @@
+* Przykladowy program dla FA.
+* w celu kompilacji wykonaj
+* FA _nad.doc nad.com
+
+* Program bedzie wywolywal inny
+* program z parametrem w FLAG,
+* a nastepnie wyswietlal status
+* wykonania pliku.
+* Po skonczonej robocie zwraca 1,
+* 0 gdy podano zle atrybuty i
+* numer bledu gdy wystapi blad.
+
+* W ten sposob system komunikuje
+* sie z COMMAND.COM, a takze
+* program ARC z swoimi podprogramami
+* (wykonaj DIR +h CAR:).
+
+* listowanie blednych wierszy
+
+         lst bad
+
+* definiowanie symboli SDX.
+
+getatr   smb 'u_getatr'
+getnum   smb 'u_getnum'
+load     smb 'u_load'
+flag     smb 'flag'
+status   smb 'status'
+printf   smb 'printf'
+sfail    smb 'u_sfail'
+xfail    smb 'u_xfail'
+
+* blok relokowalny
+
+         blk reloc main
+
+* pobranie parametrow
+* najpierw liczbowego przekazywanego
+* przez flag
+
+nad      jsr getnum
+         bne nad_num
+
+* Gdy go nie podano ustawiany jest
+* parametr domyslny
+
+         lda #0
+
+* kasowanie najstarszego bitu zapo-
+* biega wszytaniu bez uruchomienia
+
+nad_num  and #$7F
+
+* ustawienie parametru
+
+         sta FLAG
+
+* pobranie nazwy i atrybutow z
+* wiersza polecen
+
+         lda #$A0    Nazwy pliku
+         jsr getatr
+         bne nad_pok
+
+* gdy brak nazwy, koniec programu z
+* statusem 0
+
+         lda #0
+         jmp nad_sta
+
+* w innym przypadku wyswietlenie
+* parametru (flag)
+
+nad_pok  jsr printf
+         dta b($9b),c' NADAWCA: parametr: %2x',b($9b,0)
+         dta v(flag)
+
+* nalozenie pulapki na bledy
+
+         lda vtrap
+         ldx vtrap+1
+         jsr sfail
+
+* ladowanie programu i ustawienie
+* zwracanej wartosci (bo STATUS jest
+* wyzerowany przez U_LOAD) oraz
+* zdjecie pulapki
+
+         jsr load
+         pha
+         jsr xfail
+         pla
+
+trap     sta stat
+
+* wyswietlenie parametru zwroconego
+
+         jsr printf
+         dta b($9B),c' NADAWCA: status: %2x',b($9b,0)
+         dta v(stat)
+
+* zakonczenie programu z STATUSEM 1
+
+         lda #1
+nad_sta  sta status
+         rts
+
+vtrap    dta v(trap)
+stat     dta b(0)
+
+* aktualizacja adresow
+
+         blk update adress
+
+* aktualizacja symboli
+
+         blk update symbol
+
+* nowy symbol
+
+         blk update new nad '@NAD'
+
+* koniec
+         end
