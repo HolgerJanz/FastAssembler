@@ -1,4 +1,5 @@
 * example install TSR Hello
+* new command HELLO installed
 
 PRINTF  smb 'printf'
 INSTALL smb 'install'
@@ -9,7 +10,11 @@ INSTALL smb 'install'
 
         blk reloc main
 hello   jsr PRINTF
-        dta $9b,c'Hello World !',$9b,0
+        dta b($9b)
+        dta c'Hello World !'
+        dta b($9b,0)
         rts
 
+        blk update adress
+        blk update symbols
         blk update new hello '@hello'
