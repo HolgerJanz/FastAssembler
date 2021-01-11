@@ -38,12 +38,6 @@ FAUX4   equ $0785
 FAUX5   equ $0786
 SYSCALL equ $0787
 
-* old obsolate addresses for VAR1-VAR3
-* should be COMTAB+$FF/$103/$107
-VAR1_32 equ $B57
-VAR2_32 equ $B5B
-VAR3_32 equ $B5F
-
 * Program Variables Equates
 
 PASSNUM equ $80
@@ -121,6 +115,14 @@ B1L0092 dta b($00)
 B1L0093 dta b($00)
 failTrP dta v(failTr)
 B1L0096 dta b($00)
+
+prFAmsg jsr PRINTF
+        dta b($9b)
+        dta c'Fast Assembler 1.8 11-01-2021'
+        dta b($9b)
+        dta c'(c) MMMG Soft ''95, Public Domain 2021'
+        dta b($9b,$00)
+        rts
 
 prFail  jsr PRINTF
         dta b($9B)
@@ -230,7 +232,6 @@ chkCmdO lda cmdOptP
         ldx cmdOptP+1
         ldy #$04
         jsr U_SLASH
-        php
         ldy #$02
         ldx #$01
 B1L0282 lda cmdOptA,X
@@ -240,11 +241,6 @@ B1L0282 lda cmdOptA,X
         dey
         dex
         bpl B1L0282
-        plp
-* remove, undocumented feature
-* does not work 4.47-4.49d
-* 4.49e has fix
-        beq chkCmdO
         jsr U_GETPA
         beq B1L02B0
         inc cmdPCnt
@@ -494,26 +490,26 @@ B1L059E lda PASSNUM
 B1L05B2 ldx #$00
         ldy #$03
 B1L05B6 lda B1L0620,Y
-        sta VAR2_32,X
+        sta COMTAB+$103,X
         lda B1L0618,Y
-        sta VAR1_32,X
+        sta COMTAB+$FF,X
         inx
         dey
         bpl B1L05B6
         jsr MUL_32
         ldx #$00
         ldy #$03
-B1L05CD lda VAR3_32,X
-        sta VAR1_32,X
+B1L05CD lda COMTAB+$107,X
+        sta COMTAB+$FF,X
         lda B1L061C,Y
-        sta VAR2_32,X
+        sta COMTAB+$103,X
         inx
         dey
         bpl B1L05CD
         jsr DIV_32
         ldx #$00
         ldy #$03
-B1L05E4 lda VAR3_32,X
+B1L05E4 lda COMTAB+$107,X
         sta B1L0624,Y
         inx
         dey
@@ -1369,7 +1365,7 @@ B1L0D6F jsr B1L0D9E
         jsr MUL_32
 B1L0D75 ldx #$03
         ldy #$00
-B1L0D79 lda VAR3_32,X
+B1L0D79 lda COMTAB+$107,X
         sta B1L09AE,Y
         iny
         dex
@@ -1393,13 +1389,13 @@ B1L0D9E lda B1L09B1
         bpl B1L0DA9
         jsr B1L0C85
 B1L0DA9 lda B1L09B1
-        sta VAR1_32
+        sta COMTAB+$FF
         lda B1L09B0
-        sta VAR1_32+1
+        sta COMTAB+$FF+1
         lda B1L09AF
-        sta VAR1_32+2
+        sta COMTAB+$FF+2
         lda B1L09AE
-        sta VAR1_32+3
+        sta COMTAB+$FF+3
         lda B1L09AD
         ora bfL200C,Y
         sta B1L09AD
@@ -1420,7 +1416,7 @@ B1L0DA9 lda B1L09B1
 B1L0DEF ldx #$00
         ldy #$03
 B1L0DF3 lda B1L09AE,Y
-        sta VAR2_32,X
+        sta COMTAB+$103,X
         inx
         dey
         bpl B1L0DF3
@@ -1652,45 +1648,6 @@ B1L0FC8 asl @
         adc #$C0
 B1L0FD4 plp
         ror @
-        rts
-
-prFAmsg ldy #$49
-        lda faMsgTx,Y
-        eor faMsgTx
-        sta faMsgTx,Y
-        dey
-        bne *-10
-        lda #$9B
-        sta faMsgTx
-        ldy #$02
-        lda B1L0FF5,Y
-        sta prFAmsg,Y
-        dey
-        bpl *-7
-B1L0FF5 jmp B1L0FF8
-B1L0FF8 jsr PRINTF
-* Fast Assembler v.1.7 FULL
-* (c) MMMG Soft '95
-* For: Konrad M. Kokoszkiewicz
-faMsgTx dta b($96,$D0,$F7,$E5)
-        dta b($E2,$B6,$D7,$E5)
-        dta b($E5,$F3,$FB,$F4)
-        dta b($FA,$F3,$E4,$B6)
-        dta b($E0,$B8,$A7,$B8)
-        dta b($A1,$B6,$D0,$C3)
-        dta b($DA,$DA,$0D,$BE)
-        dta b($F5,$BF,$B6,$DB)
-        dta b($DB,$DB,$D1,$B6)
-        dta b($C5,$F9,$F0,$E2)
-        dta b($B6,$B1,$AF,$A3)
-        dta b($0D,$D0,$F9,$E4)
-        dta b($AC,$B6,$DD,$F9)
-        dta b($F8,$E4,$F7,$F2)
-        dta b($B6,$DB,$B8,$B6)
-        dta b($DD,$F9,$FD,$F9)
-        dta b($E5,$EC,$FD,$FF)
-        dta b($F3,$E1,$FF,$F5)
-        dta b($EC,$0D,$00)
         rts
 
 opCode1 dta c'CNBRSPBSPBTTCEBRTOTR'

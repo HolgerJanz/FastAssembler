@@ -1,5 +1,5 @@
-* example install TSR Hello
-* new command HELLO installed
+* example install TSR
+* installs new command HELLO
 
 PRINTF  smb 'printf'
 INSTALL smb 'install'

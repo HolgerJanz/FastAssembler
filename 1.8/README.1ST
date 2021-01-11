@@ -1,3 +1,15 @@
+Fast Assembler 1.8
+
+Assembler for SpartaDOS X
+
+CHANGES TO 1.8
+- fixed parameter parsing issue that
+  prevents FA working with SpartaDOS
+  4.47 to 4.48d
+- fixed issue with percentage display
+  for pass progress
+- update copyright message
+
 WARNING
 
 The original FA documentation was
