@@ -14,6 +14,6 @@ WARNING
 
 Fast Assembler uses undocumented features for parameter parsing. These features have been removed with SpartaDOS X 4.47 and reintroduced with 4.49e. For this it will only work with versions below 4.47 or above 4.49d.
 
-With version 1.8 of Fast Assembler the use of undocumented features have been removed an all releases of SpartaDOS X are supported.
+With version 1.8 of Fast Assembler the use of undocumented features have been removed and all releases of SpartaDOS X are supported.
 
 DLT
