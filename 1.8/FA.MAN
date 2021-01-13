@@ -24,8 +24,6 @@ The default extensions (ext) are .ASM and .OBJ.
 Remarks
 -------
 
-Pseudo instructions of FA:
-
 label - it's a label,
 
 text  - is a text expression given in quotation marks ('or ")
@@ -69,7 +67,7 @@ There are two more special characters: * and !. They indicate the current progra
   !-22
   $2300+!
 
-Pseudo instructions
+Pseudo Instructions
 -------------------
 
 I. Compatibility with QA:
