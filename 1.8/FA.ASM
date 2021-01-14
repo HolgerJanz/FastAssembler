@@ -58,7 +58,7 @@ start   cld
         jsr prFAmsg
         lda #$01
         sta STATUS
-        jsr B1L161B
+        jsr initDat
         jsr B1L0631
         lda $86
         sta $8A
@@ -92,7 +92,6 @@ B1L0052 lda B1L0090
         jsr prSum
 B1L0061 jsr U_XFAIL
         jmp FCLOSEA
-
 B1L0067 jsr prUnLab
         ldy B1L0090
         ldx B1L0091
@@ -118,7 +117,7 @@ B1L0096 dta b($00)
 
 prFAmsg jsr PRINTF
         dta b($9b)
-        dta c'Fast Assembler 1.8 11-01-2021'
+        dta c'Fast Assembler 1.8 14-01-2021'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2021'
         dta b($9b,$00)
@@ -357,9 +356,9 @@ B1L0469 jsr B1L0631
         ldx #$FF
         stx B1L1D65
         stx B1L1D6B
-B1L0474 inx
+        inx
         stx B1L15AD
-B1L0478 stx B1L18A0
+        stx B1L18A0
         stx B1L1D63
         stx B1L1D64
         stx $8C
@@ -370,8 +369,8 @@ B1L0478 stx B1L18A0
         stx B1L0463
         stx B1L0096
         stx B1L1AD2
-        stx B1L0618
-        stx B1L0619
+        stx lineNum
+        stx lineNum+1
         inx
         stx B1L150B
         ldx #$10
@@ -381,11 +380,11 @@ B1L0478 stx B1L18A0
         cmp #$FF
         bcc B1L04B1
         lda #$03
-B1L04AE jsr prErrMs
+        jsr prErrMs
 B1L04B1 jsr prPass
         jsr B1L1CD9
         jsr B1L07E3
-B1L04BA jsr B1L076D
+        jsr B1L076D
 B1L04BD lda B1L0463
         beq B1L04EA
         jsr B1L0585
@@ -393,10 +392,10 @@ B1L04BD lda B1L0463
         jsr B1L15AE
         jsr B1L0808
         jsr B1L07BB
-        lda B1L0618
-        sta B1L061C
-        lda B1L0619
-        sta B1L061D
+        lda lineNum
+        sta lineCnt
+        lda lineNum+1
+        sta lineCnt+1
         lda B1L1D63
         sta blkCnt
         lda B1L1D64
@@ -485,13 +484,13 @@ B1L059E lda PASSNUM
         dta b($9C)
         dta c' line %d'
         dta b($00)
-        dta v(B1L0618)
+        dta v(lineNum)
         rts
 B1L05B2 ldx #$00
         ldy #$03
-B1L05B6 lda B1L0620,Y
+B1L05B6 lda lineInc,Y
         sta COMTAB+$103,X
-        lda B1L0618,Y
+        lda lineNum,Y
         sta COMTAB+$FF,X
         inx
         dey
@@ -501,7 +500,7 @@ B1L05B6 lda B1L0620,Y
         ldy #$03
 B1L05CD lda COMTAB+$107,X
         sta COMTAB+$FF,X
-        lda B1L061C,Y
+        lda lineCnt,Y
         sta COMTAB+$103,X
         inx
         dey
@@ -510,49 +509,43 @@ B1L05CD lda COMTAB+$107,X
         ldx #$00
         ldy #$03
 B1L05E4 lda COMTAB+$107,X
-        sta B1L0624,Y
+        sta linePrc,Y
         inx
         dey
         bpl B1L05E4
         jsr PRINTF
         dta b($9C)
-        dta c' line %d, %d %c of file'
+        dta c' line %d, %d %% of file'
         dta b($00)
-        dta v(B1L0618)
-        dta v(B1L0624)
-        dta v(B1L0611)
+        dta v(lineNum)
+        dta v(linePrc)
         rts
-B1L0611 dta c'%end'
-        dta b($9b)
-B1L0616 dta v(B1L0611+1)
 
-B1L0618 dta b($00)
-B1L0619 dta b($00,$00,$00)
-B1L061C dta b($00)
-B1L061D dta b($00,$00,$00)
-B1L0620 dta b($64,$00,$00,$00)
-B1L0624 dta b($00,$00,$00,$00)
-B1L0628 dta b($00)
-B1L0629 dta b($00)
-B1L062A dta b($00)
-B1L062B dta b($00)
-B1L062C dta b($00)
-B1L062D dta b($04)
-B1L062E dta b($00)
-B1L062F dta b($00)
+endStrg dta c'end'
+        dta b($9b)
+endStrV dta v(endStrg)
+
+lineNum dta b($00,$00,$00,$00)
+lineCnt dta b($00,$00,$00,$00)
+lineInc dta b($64,$00,$00,$00)
+linePrc dta b($00,$00,$00,$00)
+bufRead dta a($0000)
+bufSeek dta a($0000)
+bufSize dta a($0400)
+B1L062E dta a($0000)
 B1L0630 dta b($00)
 
 B1L0631 clc
         lda MEMLO
-        sta B1L0628
-        adc B1L062C
-        sta B1L062A
+        sta bufRead
+        adc bufSize
+        sta bufSeek
         sta $90
         sta $86
         lda MEMLO+1
-        sta B1L0629
-        adc B1L062D
-        sta B1L062B
+        sta bufRead+1
+        adc bufSize+1
+        sta bufSeek+1
         sta $91
         sta $87
         rts
@@ -563,9 +556,9 @@ B1L0653 clc
         bcc B1L065F
         inc $91
 B1L065F lda $90
-        cmp B1L062A
+        cmp bufSeek
         lda $91
-        sbc B1L062B
+        sbc bufSeek+1
         bcs B1L068E
         ldy #$00
 B1L066D lda ($90),Y
@@ -576,22 +569,22 @@ B1L066D lda ($90),Y
 B1L0677 cmp #$9B
         bne B1L066D
 B1L067B sty B1L0630
-        inc B1L0618
+        inc lineNum
         bne B1L0686
-        inc B1L0619
+        inc lineNum+1
 B1L0686 lda #$00
         sta B1L08D3
         jmp B1L0566
 B1L068E jsr B1L0585
-        lda B1L0628
+        lda bufRead
         sta $90
         sta FAUX1
-        lda B1L0629
+        lda bufRead+1
         sta $91
         sta FAUX2
-        lda B1L062C
+        lda bufSize
         sta FAUX4
-B1L06A7 lda B1L062D
+        lda bufSize+1
         sta FAUX5
         lda #$00
         sta SYSCALL
@@ -600,24 +593,24 @@ B1L06A7 lda B1L062D
         lda FAUX4
         ora FAUX5
         bne B1L06D3
-        lda B1L0616
+        lda endStrV
         sta $90
-        sta B1L062A
-        lda B1L0616+1
+        sta bufSeek
+        lda endStrV+1
         sta $91
-        sta B1L062B
+        sta bufSeek+1
         ldy #$04
         bne B1L067B
 B1L06D3 clc
         lda $90
         adc FAUX4
-        sta B1L062A
+        sta bufSeek
         lda $91
         adc FAUX5
-        sta B1L062B
+        sta bufSeek+1
         ldy #$00
         sty B1L062E
-        sty B1L062F
+        sty B1L062E+1
 B1L06EC lda ($90),Y
         inc $90
         bne *+4
@@ -627,43 +620,43 @@ B1L06EC lda ($90),Y
         lda $90
         sta B1L062E
         lda $91
-        sta B1L062F
+        sta B1L062E+1
 B1L0702 lda $90
-        cmp B1L062A
+        cmp bufSeek
         lda $91
-        sbc B1L062B
+        sbc bufSeek+1
         bcc B1L06EC
         lda B1L062E
-        ora B1L062F
+        ora B1L062E+1
         bne B1L071B
         lda #$89
         jmp jmpFAIL
 B1L071B jsr B1L073C
         lda B1L062E
-        sta B1L062A
-        lda B1L062F
-        sta B1L062B
-        lda B1L0628
+        sta bufSeek
+        lda B1L062E+1
+        sta bufSeek+1
+        lda bufRead
         sta $90
-        lda B1L0629
+        lda bufRead+1
         sta $91
         lda #$00
         sta B1L0630
         jmp B1L0653
 B1L073C jsr FTELL
         sec
-        lda B1L062A
+        lda bufSeek
         sbc B1L062E
-        sta B1L062A
-        lda B1L062B
-        sbc B1L062F
-        sta B1L062B
+        sta bufSeek
+        lda bufSeek+1
+        sbc B1L062E+1
+        sta bufSeek+1
         sec
         lda FAUX1
-        sbc B1L062A
+        sbc bufSeek
         sta FAUX1
         lda FAUX2
-        sbc B1L062B
+        sbc bufSeek+1
         sta FAUX2
         bcs B1L076A
         dec FAUX3
@@ -676,7 +669,7 @@ B1L076D ldx B1L0096
         sta B1L062E
         lda $91
         adc #$00
-        sta B1L062F
+        sta B1L062E+1
         jsr B1L073C
         ldx B1L0096
         lda FHANDLE
@@ -2235,15 +2228,15 @@ B1L1617 sec
 B1L1619 clc
         rts
 
-B1L161B ldx #$07
-B1L161D lda #$00
+initDat ldx #$07
+        lda #$00
         sta bfL210C,X
         sta bfL211C,X
         lda #$A0
         sta bfL2114,X
         sta bfL2124,X
         dex
-        bne B1L161D
+        bne *-17
         rts
 
 B1L1631 lda B1L1D66

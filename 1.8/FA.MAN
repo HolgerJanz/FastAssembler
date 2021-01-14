@@ -126,7 +126,7 @@ declares a new program block. The total number of blocks is limited to 256. Kind
 
   BLK N[one] a - block without headers, program counter is set to a.
 
-  BLK D[os] a  - DOS block with the $FFFF header or without if the previous block  was of the same kind, program counter is set to a a.
+  BLK D[os] a  - DOS block with the $FFFF header or without if the previous block  was of the same kind, program counter is set to a.
 
   BLK S[parta] a - Sparta block with fix loading address with header $FFFA, program counter is set to a.
 
@@ -159,7 +159,7 @@ Use instead:
 
 Note: All symbol declarations should be defined before label declarations and the program blocks!
 
-Errors Messages
+Error Messages
 ---------------
 
 Undeclared label or symbol - Undefined label or symbol or recursive labels.
