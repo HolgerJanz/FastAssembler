@@ -8,6 +8,10 @@ CHANGES TO 1.8
 
 - fixed issue with percentage display for pass progress
 
+- add line number to source output
+
+- condense info output 
+
 - update copyright message
 
 WARNING
