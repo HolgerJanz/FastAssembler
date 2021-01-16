@@ -117,17 +117,13 @@ B1L0096 dta b($00)
 
 prFAmsg jsr PRINTF
         dta b($9b)
-        dta c'Fast Assembler 1.8 14-01-2021'
+        dta c'Fast Assembler 1.8 16-01-2021'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2021'
-        dta b($9b,$00)
+        dta b($9b,$9b,$00)
         rts
 
-prFail  jsr PRINTF
-        dta b($9B)
-        dta c'Assembly failure !'
-        dta b($9B,$00)
-        inc STATUS
+prFail  inc STATUS
         rts
 
 prSum   jsr PRINTF
@@ -135,8 +131,6 @@ prSum   jsr PRINTF
         dta c'Labels  : %5d   Symbols    : %5d'
         dta b($9B)
         dta c'Blocks  : %5b   SDX blocks : %5b'
-        dta b($9B,$9B)
-        dta c'Assembly complete !'
         dta b($9B,$00)
         dta v(labCnt)
         dta v(symbCnt)
@@ -145,7 +139,6 @@ prSum   jsr PRINTF
         rts
 
 prUnLab jsr PRINTF
-        dta b($9B)
         dta c' Undeclared labels : %d'
         dta b($9B,$00)
         dta v(B1L0090)
@@ -157,9 +150,8 @@ labCnt  dta a($0000)
 symbCnt dta a($0000)
 
 prPass  jsr PRINTF
-        dta b($9B)
         dta c'Pass %b:'
-        dta b($9B,$9B,$00)
+        dta b($9B,$00)
         dta v(PASSNUM)
         rts
 
@@ -172,7 +164,6 @@ failTr  sta STATUS
         jmp FCLOSEA
 
 prUsage jsr PRINTF
-        dta b($9B)
         dta c'Usage:'
         dta b($9B)
         dta c' FA sname [dname] [/AB]'
@@ -271,9 +262,7 @@ prErrMs eor B1L0464
         bne B1L02E4
         ldx cmdOptB
         beq B1L0301
-        pha
-        jsr B1L0570
-        pla
+        jsr prELine
 B1L02E4 cmp #$12
         bcs B1L0301
         asl @
@@ -283,7 +272,7 @@ B1L02E4 cmp #$12
         lda errMsTa+1,X
         sta B1L02FF+1
         jsr PRINTF
-        dta c'%s !'
+        dta c'ERROR: %s'
         dta b($9B,$00)
 B1L02FF dta a($0000)
 B1L0301 sec
@@ -454,18 +443,17 @@ B1L055A jsr prsSymb
 B1L0566 lda cmdOptA
         beq B1L056F
         lda PASSNUM
-        beq B1L0570
+        beq prELine
 B1L056F rts
 
-B1L0570 lda B1L0464
-        beq B1L0578
-        jsr putEOL
-B1L0578 jsr PRINTF
-        dta c'%*p'
+prELine jsr PRINTF
+        dta b($9c)
+        dta c'%d:%*p'
         dta b($9B,$00)
+        dta v(lineNum)
         dta v(B1L0630)
-        bcc B1L0584
-B1L0584 rts
+        dta a($90)
+        rts
 
 B1L0585 lda PASSNUM
         ora cmdOptA

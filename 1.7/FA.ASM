@@ -242,8 +242,8 @@ B1L0282 lda cmdOptA,X
         bpl B1L0282
         plp
 * remove, undocumented feature
-* does not work 4.47-4.49d
-* 4.49e has fix
+* U_SLASH does not work 4.47-4.49d
+* 4.49e has a fix
         beq chkCmdO
         jsr U_GETPA
         beq B1L02B0
@@ -469,8 +469,8 @@ B1L0578 jsr PRINTF
         dta c'%*p'
         dta b($9B,$00)
         dta v(B1L0630)
-        bcc B1L0584
-B1L0584 rts
+        dta a($90)
+        rts
 
 B1L0585 lda PASSNUM
         ora cmdOptA
@@ -524,11 +524,13 @@ B1L05E4 lda VAR3_32,X
         dta b($00)
         dta v(B1L0618)
         dta v(B1L0624)
-        dta v(B1L0611)
+        dta v(charPrc)
         rts
-B1L0611 dta c'%end'
+charPrc dta c'%'
+
+strgEnd dta c'end'
         dta b($9b)
-B1L0616 dta v(B1L0611+1)
+strEndV dta v(strgEnd)
 
 B1L0618 dta b($00)
 B1L0619 dta b($00,$00,$00)
@@ -604,10 +606,10 @@ B1L06A7 lda B1L062D
         lda FAUX4
         ora FAUX5
         bne B1L06D3
-        lda B1L0616
+        lda strEndV
         sta $90
         sta B1L062A
-        lda B1L0616+1
+        lda strEndV+1
         sta $91
         sta B1L062B
         ldy #$04
