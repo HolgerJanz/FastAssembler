@@ -59,7 +59,7 @@ start   cld
         lda #$01
         sta STATUS
         jsr initDat
-        jsr B1L0631
+        jsr initBuf
         lda $86
         sta $8A
         lda $87
@@ -79,16 +79,16 @@ start   cld
         stx B1L0093
         stx PASSNUM
         jsr prsCmdL
-B1L0044 jsr B1L0469
-        lda B1L0464
+nxtPass jsr srtPass
+        lda errFlag
         beq B1L0052
-B1L004C jsr prFail
+        jsr prFail
         jmp B1L0061
 B1L0052 lda B1L0090
         ora B1L0091
         bne B1L0067
         lda PASSNUM
-        beq B1L0044
+        beq nxtPass
         jsr prSum
 B1L0061 jsr U_XFAIL
         jmp FCLOSEA
@@ -101,12 +101,10 @@ B1L0067 jsr prUnLab
         lda B1L0091
         sbc B1L0093
         stx B1L0093
-        bcc B1L0044
+        bcc nxtPass
         lda #$FF
-        sta B1L0464
-        lda cmdOptB
-        bne B1L0044
-        beq B1L004C
+        sta errFlag
+        jmp nxtPass
 
 B1L0090 dta b($00)
 B1L0091 dta b($00)
@@ -117,20 +115,27 @@ B1L0096 dta b($00)
 
 prFAmsg jsr PRINTF
         dta b($9b)
-        dta c'Fast Assembler 1.8 16-01-2021'
+        dta c'Fast Assembler 1.8 18-01-2021'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2021'
-        dta b($9b,$9b,$00)
+        dta b($9b,$00)
         rts
 
 prFail  inc STATUS
+        jsr PRINTF
+        dta b($9B)
+        dta c'Failed'
+        dta b($9B,$00)
         rts
 
 prSum   jsr PRINTF
         dta b($9B)
-        dta c'Labels  : %5d   Symbols    : %5d'
+        dta c'Labels:%5d  SDX Symbols:%5d'
         dta b($9B)
-        dta c'Blocks  : %5b   SDX blocks : %5b'
+        dta c'Blocks:%5b  SDX blocks :%5b'
+        dta b($9B)
+        dta b($9B)
+        dta c'Completed'
         dta b($9B,$00)
         dta v(labCnt)
         dta v(symbCnt)
@@ -139,7 +144,7 @@ prSum   jsr PRINTF
         rts
 
 prUnLab jsr PRINTF
-        dta c' Undeclared labels : %d'
+        dta c'Undeclared labels : %d'
         dta b($9B,$00)
         dta v(B1L0090)
         rts
@@ -150,6 +155,7 @@ labCnt  dta a($0000)
 symbCnt dta a($0000)
 
 prPass  jsr PRINTF
+        dta b($9b)
         dta c'Pass %b:'
         dta b($9B,$00)
         dta v(PASSNUM)
@@ -213,6 +219,7 @@ cmdOpts dta b($00),c'A'
 cmdOptP dta v(cmdOpts)
 cmdPCnt dta b($00)
 
+* parse command line
 prsCmdL ldx #$FF
         stx cmdPCnt
         inx
@@ -253,31 +260,45 @@ B1L02B0 ldx cmdPCnt
         jsr B1L1AD3
 B1L02C7 rts
 
-prErrMs eor B1L0464
-        beq B1L0301
-        eor B1L0464
+* print error message
+prErrMs eor errFlag
+        beq noErrMs
+        eor errFlag
         ldx #$FF
-        stx B1L0464
-        ldx cmdOptA
-        bne B1L02E4
-        ldx cmdOptB
-        beq B1L0301
-        jsr prELine
-B1L02E4 cmp #$12
-        bcs B1L0301
+        stx errFlag
+
+        ldx PASSNUM
+        bne errOptA
+        cmp #$00
+        beq noErrMs
+
+errOptA ldx cmdOptA
+        beq errOptB
+        ldx PASSNUM
+        beq yeErrMs
+        bne yeErLMs
+
+errOptB ldx cmdOptB
+        beq yeErrMs
+
+yeErLMs jsr prELine
+yeErrMs cmp #$12
+        bcs noErrMs
         asl @
         tax
         lda errMsTa,X
-        sta B1L02FF
+        sta ptErrMs
         lda errMsTa+1,X
-        sta B1L02FF+1
+        sta ptErrMs+1
         jsr PRINTF
+        dta b($9c)
         dta c'ERROR: %s'
-        dta b($9B,$00)
-B1L02FF dta a($0000)
-B1L0301 sec
+        dta b($9b,$00)
+ptErrMs dta a($0000)
+noErrMs sec
         rts
 
+* error message pointer tab
 errMsTa dta v(errMs00)
         dta v(errMs01)
         dta v(errMs02)
@@ -297,6 +318,7 @@ errMsTa dta v(errMs00)
         dta v(errMs10)
         dta v(errMs11)
 
+* error messages
 errMs00 dta c'Undeclared label or symbol'
         dta b($9B)
 errMs01 dta c'Label declared twice'
@@ -313,7 +335,7 @@ errMs06 dta c'Illegal symbol'
         dta b($9B)
 errMs07 dta c'Branch to far'
         dta b($9B)
-errMs08 dta c'Importer type'
+errMs08 dta c'Improper type'
         dta b($9B)
 errMs09 dta c'Label missing'
         dta b($9B)
@@ -323,7 +345,7 @@ errMs0B dta c'Too many blocks'
         dta b($9B)
 errMs0C dta c'Undefined or long'
         dta b($9B)
-errMs0D dta c'Importer block type'
+errMs0D dta c'Improper block type'
         dta b($9B)
 errMs0E dta c'Long or symbol'
         dta b($9B)
@@ -335,13 +357,13 @@ errMs11 dta c'Unexpected symbol'
         dta b($9B)
 
 B1L0463 dta b($00)
-B1L0464 dta b($00)
+errFlag dta b($00)
 B1L0465 dta b($00)
 B1L0466 dta b($00)
 B1L0467 dta b($00)
 B1L0468 dta b($00)
 
-B1L0469 jsr B1L0631
+srtPass jsr initBuf
         ldx #$FF
         stx B1L1D65
         stx B1L1D6B
@@ -376,7 +398,7 @@ B1L04B1 jsr prPass
         jsr B1L076D
 B1L04BD lda B1L0463
         beq B1L04EA
-        jsr B1L0585
+        jsr prPrgs
         jsr putEOL
         jsr B1L15AE
         jsr B1L0808
@@ -455,22 +477,20 @@ prELine jsr PRINTF
         dta a($90)
         rts
 
-B1L0585 lda PASSNUM
+prPrgs  lda PASSNUM
         ora cmdOptA
         beq B1L0591
         lda PASSNUM
         bne B1L0591
 B1L0590 rts
-B1L0591 lda B1L0464
+B1L0591 lda errFlag
         eor cmdOptB
         bne B1L059E
-        lda B1L0464
-        bne B1L0590
 B1L059E lda PASSNUM
         bne B1L05B2
         jsr PRINTF
         dta b($9C)
-        dta c' line %d'
+        dta c'line %d'
         dta b($00)
         dta v(lineNum)
         rts
@@ -503,7 +523,7 @@ B1L05E4 lda COMTAB+$107,X
         bpl B1L05E4
         jsr PRINTF
         dta b($9C)
-        dta c' line %d, %d %% of file'
+        dta c'line %d, %d%% of file'
         dta b($00)
         dta v(lineNum)
         dta v(linePrc)
@@ -523,7 +543,7 @@ bufSize dta a($0400)
 B1L062E dta a($0000)
 B1L0630 dta b($00)
 
-B1L0631 clc
+initBuf clc
         lda MEMLO
         sta bufRead
         adc bufSize
@@ -537,6 +557,7 @@ B1L0631 clc
         sta $91
         sta $87
         rts
+
 B1L0653 clc
         lda $90
         adc B1L0630
@@ -563,7 +584,7 @@ B1L067B sty B1L0630
 B1L0686 lda #$00
         sta B1L08D3
         jmp B1L0566
-B1L068E jsr B1L0585
+B1L068E jsr prPrgs
         lda bufRead
         sta $90
         sta FAUX1
@@ -676,13 +697,15 @@ B1L07A8 lda #$04
         lda #$A0
         sta FATR1
         inc B1L0096
-        jsr B1L0631
+        jsr initBuf
         jmp FOPEN
+
 B1L07BB jsr FCLOSE
         dec B1L0096
         ldx B1L0096
         bne B1L07C7
         rts
+
 B1L07C7 lda bfL20CC,X
         sta FHANDLE
         lda bfL20DC,X
@@ -789,7 +812,7 @@ B1L0899 inc $8C
 B1L089F pha
         lda PASSNUM
         beq B1L08C0
-        lda B1L0464
+        lda errFlag
         bne B1L08C0
 B1L08A9 lda FHANDLE
         sta B1L081E

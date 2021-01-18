@@ -572,7 +572,7 @@ Uwaga :
    Skok wzgledny przekroczyl zakres
    +-128 bajtow.
 
- Importer type
+ Improper type
 
    Niedozwolony dla danego rozkazu
    typ adresowania.
@@ -605,7 +605,7 @@ Uwaga :
    przed ich uzyciem, a wyrazenie
    nie moga byc wieksze niz 2 bajty.
 
- Importer block type
+ Improper block type
 
    Zly typ bloku, blok np: UPDATE
    NEW nie moze wystapic po bloku

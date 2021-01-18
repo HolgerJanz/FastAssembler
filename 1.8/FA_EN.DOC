@@ -556,7 +556,7 @@ compilation:
    The relative jump is beyond the
    range of +127 and -128 bytes.
 
- Importer type
+ Improper type
    Addressing type not allowed for
    the given command.
 
@@ -584,7 +584,7 @@ compilation:
    address expression must not be
    larger than 2 bytes.
 
- Imporper block type
+ Improper block type
    Wrong type of block, e.g. UPDATE
    NEW block cannot follow DOS
    block.

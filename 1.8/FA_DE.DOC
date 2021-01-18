@@ -601,7 +601,7 @@ Assemblieren auftreten koennen:
    ausserhalb des Bereichs +/-128
    Bytes.
 
- Importer type
+ Improper type
    Adressierungstyp fuer den
    angegebenen Befehl nicht
    zulaessig.
@@ -631,7 +631,7 @@ Assemblieren auftreten koennen:
    die Adresse darf nicht groesser
    als 2 Byte sein.
 
- Importer block type
+ Improper block type
    Ungueltiger Blocktyp, Z.B. darf
    eine UPDATE NEW Block nicht
    einem DOS Block folgen.

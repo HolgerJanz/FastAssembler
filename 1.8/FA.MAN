@@ -178,7 +178,7 @@ Illegal symbol - Illegal character in line.
 
 Branch to far - The relative jump is beyond the range of +127 and -128 bytes.
 
-Importer type - Addressing type not allowed for the given command.
+Improper type - Addressing type not allowed for the given command.
 
 Label missing - Missing label, EQU and SMB pseudo commands must always be preceded by a label.
 
