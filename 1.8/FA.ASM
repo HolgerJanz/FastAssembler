@@ -132,7 +132,7 @@ prSum   jsr PRINTF
         dta b($9B)
         dta c'Labels:%5d  SDX Symbols:%5d'
         dta b($9B)
-        dta c'Blocks:%5b  SDX blocks :%5b'
+        dta c'Blocks:%5b  SDX Blocks :%5b'
         dta b($9B)
         dta b($9B)
         dta c'Completed'
@@ -170,22 +170,23 @@ failTr  sta STATUS
         jmp FCLOSEA
 
 prUsage jsr PRINTF
+        dta b($9B)
         dta c'Usage:'
         dta b($9B)
         dta c' FA sname [dname] [/AB]'
         dta b($9B,$9B)
-        dta c' sname : souruce filename,'
+        dta c' sname : source filename'
         dta b($9B)
-        dta c' dname : destination filename,'
+        dta c' dname : destination filename'
         dta b($9B,$00)
         jsr PRINTF
-        dta c' A     : list all program line,'
+        dta c' A     : list all program lines'
         dta b($9B)
-        dta c' B     : list only bad line.'
+        dta c' B     : list only bad lines'
         dta b($9B)
-        dta c'   Drive, path and extention are'
+        dta c' Drives, paths and extentions are'
         dta b($9B)
-        dta c'   optional.'
+        dta c' optional.'
         dta b($9B,$00)
         lda #$00
         sta STATUS
