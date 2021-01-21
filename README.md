@@ -20,7 +20,8 @@ Fast Assembler 1.7 uses undocumented features for parameter parsing. These featu
 
 - update copyright message
 
-Works with all versions of SpartaDOS X.
+The current version is 1.8 18-01-21 and it works with all versions of SpartaDOS X.
 
+## 
 
 holgerjanz@abbuc.social
