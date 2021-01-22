@@ -29,15 +29,18 @@ label - it's a label,
 text  - is a text expression given in quotation marks ('or ")
 
 Note: to get the character of the quotation marks inside a quotation you have to use it twice e.g.:
-
         'Windows ''95'
 
-expressions:
+Comments start with *.
 
-b - one byte,
-a - maximum of two bytes,
-e - maximum of three bytes,
-f - maximum of four bytes.
+If an opcode has besides other addressing modes the implied accumulator mode then the character @ must be used for implied accumulator addressing, e.g.:
+        ASL @ 
+
+expressions:
+b - one byte
+a - maximum of two bytes
+e - maximum of three bytes
+f - maximum of four bytes
 
 In expressions, numbers can be given in following number systems:
 - binary preceded by % e.g. %101
@@ -51,13 +54,13 @@ Character expressions always have a length of 1 byte and the value of the first 
 'A' and 'ABC' both results A.
 
 Additionally, you can use the following operators within expressions:
-  & - operator AND,
-  | - operator ORA,
-  ^ - operator EOR,
-  * - multiplication,
-  / - dividing,
-  + - addition,
-  - - subtraction.
+  & - operator AND
+  | - operator ORA
+  ^ - operator EOR
+  * - multiplication
+  / - dividing
+  + - addition
+  - - subtraction
 
 FA correctly recognizes the sequence of operations according to the above priorities (e.g. AND always first, minus last). The operations are performed on 4 byte numbers. The maximum number of operators is limited to 32 per expression. You can change the order by using square brackets, e.g .:
   [[4+5]*[256/21]]&$FF
@@ -84,7 +87,7 @@ assembly option, the individual bits have the following meaning:
      - others DOS header.
 
 ORG a
-sets new program address and generating the file header set by OPT [DOS by default].
+sets new program address and generating the file header set by OPT (DOS by default).
 
 ICL next_src[.ext]
 includes source file, drive, path by default set to where FA was called (NOT TO CURRENT SOURCE!).
@@ -97,29 +100,29 @@ assigns the value of the expression 'a' to label 'label', the label name can be 
 
 [label] DTA x
 generates data suitable for 'x' types:
-  b(b) - type byte,
-  a(a) - address type (2 bytes),
-  l(a) - low byte of 'a',
-  h(a) - high byte of 'a',
-  c'ATASCI' - ATASCII sequence,
-  d'INTERN' - sequence of display code.
+  b(b) - type byte
+  a(a) - address type (2 bytes)
+  l(a) - low byte of 'a'
+  h(a) - high byte of 'a'
+  c'ATASCI' - ATASCII sequence
+  d'INTERN' - sequence of display code
 
 II. Additional or New Features:
 
 [label] DTA x
 new types for 'x':
-  v(a) - 2 bytes (vector), for reloc blocks the address is updated, for other blocks it is like a(a),
-  e(e) - type 3 bytes,
-  f(f) - type 4 bytes,
-  g(f) - type 4 bytes in reverse order.
+  v(a) - 2 bytes (vector), for reloc blocks the address is updated, for other blocks it is like a(a)
+  e(e) - type 3 bytes
+  f(f) - type 4 bytes
+  g(f) - type 4 bytes in reverse order
 In addition, numerical data can be given as expressions separated by a comma, e.g.:
    dta e(0,15000,$FFAACC) etc.
 
 LST All|Bad|Not
 compile-time listing option:
-  N[ot] - no listing,
-  A[ll] - complete listing,
-  B[ad] - only errors.
+  N[ot] - no listing
+  A[ll] - complete listing
+  B[ad] - only errors
 
 BLK x
 declares a new program block. The total number of blocks is limited to 256. Kinds of blocks:
@@ -142,11 +145,10 @@ declares a new program block. The total number of blocks is limited to 256. Kind
 
 label SMB text
 declaration of a label as SDX symbol. Thus, after using BLK UPDATE SYMBOLS the assembler will generate the correct symbol update block. For example:
-
   pf  smb 'PRINTF'
       jsr pf
       ...
-  inserts SDX symbol address for pf.
+inserts SDX symbol address for pf.
 
 This declaration is not transitive, i.e. the following example will cause a compile time error:
   cm  smb 'COMTAB'
@@ -160,7 +162,7 @@ Use instead:
 Note: All symbol declarations should be defined before label declarations and the program blocks!
 
 Error Messages
----------------
+--------------
 
 Undeclared label or symbol - Undefined label or symbol or recursive labels.
 
