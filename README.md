@@ -10,7 +10,7 @@ Fast Assembler 1.7 uses undocumented features for parameter parsing. These featu
 
 ## Version 1.8
 
-- fixed parameter parsing issue that prevents FA working with SpartaDOS 4.47 to 4.49d
+- fixed parameter parsing issue that prevents Fast Assembler working with SpartaDOS 4.47 to 4.49d
 
 - fixed issue with percentage display for pass progress
 
