@@ -1,5 +1,9 @@
-* example call TSR Hello
-* needs EX1TSR called before
+* Example for FA
+* to assembly:
+* FA EX3CATSR.ASM EX3CATSR.COM
+
+* call TSR Hello
+* needs EX3TSR called before
 
 HELLO   smb '@hello'
 

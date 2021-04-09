@@ -1,6 +1,6 @@
-* Example program 2 for FA
+* Example for FA
 * to assembly:
-* FA EX2CALL.ASM EX2CALL.COM
+* FA EX4CALL.ASM EX4CALL.COM
 
 * This program will call another
 * program with a parameter in FLAG
@@ -14,8 +14,8 @@
 * program with its subroutines (do
 * DIR + h CAR :).
 
-* Use with example 1 EX1READ, e.g.:
-* EX2CALL 2 EX1READ.COM
+* Use with example 1 EX4READ, e.g.:
+* EX4CALL 2 EX4READ.COM
 
 
 * list only lines with errors
@@ -119,7 +119,7 @@ stat     dta b(0)
 
 * new symbol
 
-         blk update new nad '@ex2call'
+         blk update new nad '@ex4call'
 
 * the end
          end

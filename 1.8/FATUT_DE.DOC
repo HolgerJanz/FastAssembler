@@ -1,0 +1,299 @@
+Fast Assembler 1.8 - Tutorial
+=============================
+Holger Janz, 09-03-2021
+
+
+Einleitung
+----------
+
+Dieses Tutorial soll helfen, sich
+schnell in den Umgang mit Fast
+Assembler einzuarbeiten. Grundlagen
+in 6502 Assembler werden vorausgesetzt.
+Fuer technische Information zu Fast
+Assmebler (z.B. fuer alle Pseudo
+Operationen) kann die Dokumentation
+FA.DOC oder die Man Pages FA.MAN
+genutzt werden (beide im Archiv 
+enthalten).
+
+Fast Assembler ist ein Datei zu Datei
+Assembler fuer SpartaDOS X, d.h. der
+Assembler Quelltext muss in einer Datei
+im ATASCII Format vorliegen und der
+Assembler erzeugt eine Objektdatei.
+
+Ein grosser Vorteil von Fast Assembler
+ist, dass er sowohl SpartaDOS X als
+auch Atari DOS Objektdateien erzeugen
+kann.
+
+In diesem Tutorial werden kurz die
+Grundlagen des Aufbaus des Quelltexts
+erlaeutert. Im Anschluss wird mit Hilfe
+eines kleinen Demos, die Erzeugung von
+Atari DOS Programmen behandlet. Im
+letzten Abschnitt werden mehrer
+Beispiele fuer SpartaDOS X Programme
+gezeigt.
+
+Fuer das Tutorial werden folgende
+Assembler Dateien benoetigt (liegen
+dem Archiv bei):
+
+Atari DOS Beispiel
+- Farbdemonstration
+  EX1COLOR.ASM
+
+SpartaDOS X Beispiele
+- Hello Atari
+  EX2HELLO.ASM
+- Speicherresidentes Programm
+  EX3TSR.ASM
+  EX3CATSR.ASM
+- Kommunikation zwischen Programmen
+  EX4READ.ASM
+  EX4CALL.ASM
+- Program zum Vergleich von Dateien
+  EX5COMP.ASM
+
+Fuer das Tutorial wird ein Editor fuer
+ATASCII Dateien benoetigt. Ich kann
+dafuer XEDIT von FJC empfehlen. Dieser
+bietet die Moeglichkeit zwei Dateien
+gleichzeitig zu oeffnen, besitzt eine
+sehr gute Cut-and-Paste Funktionalitaet
+und kann Whitespaces sichtbar machen.
+
+Freundlicherweise hat JFC (Jonathan
+Halliday) seine Zustimmung gegeben,
+dass ich seinen Editor zusammen mit
+Fast Assembler weitergeben darf.
+Nochmal vielen Dank dafuer an FJC!
+
+
+Aufbau des FA Quelltexts
+------------------------
+
+Der Quelltext ist zeilenorientiert,
+d.h. jede Zeile kann einen Befehl
+enthalten. Es darf auch Leerzeilen
+geben, diese duerfen keine weiteren
+Whitespaces enthalten. Wenn z.B. die
+Zeile 42 ein Leerzeichen enthaelt,
+wird folgende Fehlermeldung erzeugt:
+42:
+ERROR: Unexpected eol
+
+In XEDIT kann man mit dem Kommando
+CONROL-H alle Whitespaces sichtbar
+machen. Die angegebene Zeile kann
+geloescht und durch ein Return ersetzen
+werden.
+
+Damit die Zeilennummer ausgegeben wird,
+muss entweder ein Option (A oder B)
+in der Kommandozeile oder das Pseudo
+Kommando LST (BAD oder ALL) im
+Quelltext benutzt werden.
+
+Beispiel im Quelltext fuer Ausgabe von
+Zeilen bei Fehler:
+        lst bad
+gleiches Beispiel fuer Kommandozeile:
+FA EXAMPLE /B
+
+Kommentarzeilen beginnen mit *. Alles
+nach * bis zum Zeilenende wird vom
+Assembler ignoriert.
+
+Beispeil:
+* This is a comment!
+
+Kommentar koennen auch nach einem
+Befehl folgen. Dort muessen sie nicht
+mit * eingeleitet werden. Der
+Assembler ignoriert alle Zeichen nach
+einem Befehl bis zum Zeilenende.
+
+Eine Befehlszeile ist wie folgt
+aufgebaut:
+
+[label] opcode [operand] [comment]
+
+Beispiel mit Label und Kommentar:
+start   ldx #$08 set X register
+
+Beispiel ohne Label und Kommentar
+ldy #$10
+
+Ein Besonderheit sind gegenueber
+anderen Assembler die Operationen,
+die sowohl mit dem Akkumulator als
+auch mit Adressierung benutzt
+werden koennen. Hier muss fuer den
+Akkumulator das Zeichen @ benutzt
+werden.
+
+Beispiel ASL auf Adresse $3000:
+        asl $3000
+
+Beispiel ASL auf Akkumulator:
+        asl @
+
+
+EX1COLOR.ASM - Farbdemonstartion
+--------------------------------
+
+Diese Beispiel zeigt, wie Atari DOS
+kompatible Programme erstellt werden
+koennen. Es ist ein kleines Demo mit
+klassischen Atari Farb-Scrolling.
+
+Assemblieren mit:
+FA EX1COLOR.ASM EX1COLOR.COM
+
+Ausfuehren mit:
+EX1COLOR
+
+Mit START wird das Programm beendet.
+
+Das Programm kann angezeigt und
+bearbeitet werden mit:
+XEDIT EX1COLOR.ASM 
+
+Dies Programm besteht aus zwei
+Bloecken. Ein Block enthaelt das
+eigentliche Programm und der zweite die
+Startadresse. Ein klassisches Atari
+DOS Programm. Bloecke werden mit dem
+Pseudobefehl BLK eingeleitet. Der
+zweite Parameter enthaelt den Typ. DOS
+steht fuer Atari DOS Block. Als
+dritter Parameter folgt die
+Anfangsadresse des Blocks. Die
+Anweisung BLK DOS entspricht der
+Anweisung ORG oder *= in anderen
+Assemblern.
+
+Um das Fehlerverhalten kennen zu
+lerner, sollte jetzt die Anweisung:
+      bne loop
+wie filgt geaendert werden:
+      bne loopX
+
+Beim Assemblieren mit:
+FA EX1COLOR.ASM EX1COLOR.COM
+
+erscheint folgende Fehlermeldung:
+ERROR: Undeclared label or symbol
+
+Die Ausgabe der Zeile und der
+Zeilennummer erfolgt mit Option /B:
+FA EX1COLOR.ASM EX1COLOR.COM /B
+
+Jetzt erscheint die Fehlermeldung:
+27:         bne loopX
+ERROR: Undeclared label or symbol
+
+Diese Option kann auch in der Source
+mit folgender Anweisung eingeschaltet
+werden:
+           lst bad
+
+Wenn man diese Anweisung am Anfang
+der Source nutzt, braucht man die
+Option /B nicht mehr in der
+Kommandozeile setzen.
+
+Wenn die Source wieder korrigiert ist,
+sollte in der leeren Zeile 4 ein SPACE
+eingefuegt werden. Mit Control-H kann
+man RETURN in XEDIT sichtbar machen.
+Nun kann man sehen, dass sich ein SPACE
+in der Zeile befindet.
+Folgende Fehlermeldung erscheint mit
+Option /B oder Anweisung lst bad:
+4:
+ERROR: Unexpected eol
+
+Nach der Korrektur sollte man noch ein
+wenig probieren und das Fehlverhalten
+studieren.
+
+
+EX2HELLO.ASM - Hello Atari
+-----------------------------
+
+Dies ist ein Beispiel fuer ein
+SpartaDOS X Programm. Es kann nicht
+unter Atari DOS ausgefuehrt werden.
+In diesem Beispiel wird Relocatable
+Code und Symbolic Links verwendet.
+
+Assemblieren mit:
+FA EX2HELLO.ASM EX2HELLO.COM
+
+Ausfuehren mit:
+EX2HELLO
+
+Nach der Eingabe eines Namens z.B.
+Holger, gruesst es:
+Hello Holger !
+
+Es werden die SpartaDOS Symbols PRINTF
+und GETS benutzt. Diese Symbole werden
+erst zur Laufzeit des Programs
+gebunden. Wenn man einen Fehler macht,
+kommt es zu einem Laufzeitfehler.
+Als Beispiel sollte die Zeile:
+PRINTF  smb 'printf'
+wie folgt geaendert werden:
+PRINTF  smb 'printfX'
+
+Das Programm laesst sich assemblieren.
+Beim Start wird dann folgende
+Fehlermeldung ausgegeben:
+Symbol PRINTFX
+154 Symbol not defined 
+
+Weitere Informationen ueber die Symbole
+koennen in der SpartaDOS X Programming
+Guide gefunden werden.
+
+Das Programm besteht aus zwei Bloecken.
+Einen Relocatable Code und einen
+Relocatable Allocate Block. Beiden ist
+gemein, dass die Ladeadresse zur
+Assemblierungszeit nicht bekannt ist.
+Solche Bloecke werden immer ab MEMLO
+geladen und MEMLO wird danach weiter
+gesetzt. Weiterhin werden dann die
+Adressen im Code angepasst. Fuer den
+Allocate Block wird nur MEMLO
+weitergesetzt, d.h. der Speicher wird
+nicht initialisiert. Wird das Programm
+beenden, so wird MEMLO wieder zurueck
+gesetzt.
+
+
+EX3TSR/EX3CATSR.ASM - Beispiel
+Speicherresidentes Programm
+------------------------------
+
+*** work in progress ***
+
+
+EX4READ/EX4CALL.ASM - Beispiel
+Kommunikation zwischen Programmen
+---------------------------------
+
+*** work in progress ***
+
+
+EX5COMP.ASM - Beispiel
+Program zum Vergleich von Dateien
+---------------------------------
+
+*** work in progress ****
+

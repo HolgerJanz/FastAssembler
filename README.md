@@ -2,6 +2,19 @@
 
 Assembler for the [SpartaDOS X Upgrade Project](http://sdx.atari8.info) on Atari 8bit. The current version of Fast Assembler is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
 
+The current version is 1.8 03-03-21 and it works with all versions of SpartaDOS X. All files in the repository are ASCII encoded. All files in archives are ATASCII encoded.
+
+The archive can be extracted using SpartaDOS X. Use the following command to extract (current path must contain FA_18.ARC):
+
+```
+ARC X FA_18 
+```
+After extracting the archive please read file README.1ST using command:
+
+```
+TYPE README.1ST
+```
+
 ## Version 1.7
 
 This is the original Fast Assembler package delivered with SpartaDOS X Toolkit Disk up to version 4.49.
@@ -20,8 +33,9 @@ Fast Assembler 1.7 uses undocumented features for parameter parsing. These featu
 
 - update copyright message
 
-The current version is 1.8 18-01-21 and it works with all versions of SpartaDOS X.
+- add XEDIT by FJC (thanx for the permission), now it is a complete development package
+
+- add tutorial with extended examples
 
 ## 
-
 holgerjanz@abbuc.social

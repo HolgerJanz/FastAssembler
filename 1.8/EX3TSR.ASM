@@ -1,4 +1,8 @@
-* example install TSR
+* Example for FA
+* to assembly:
+* FA EX3TSR.ASM EX3TSR.COM
+
+* install TSR
 * installs new command HELLO
 
 PRINTF  smb 'printf'

@@ -115,7 +115,7 @@ B1L0096 dta b($00)
 
 prFAmsg jsr PRINTF
         dta b($9b)
-        dta c'Fast Assembler 1.8 18-01-2021'
+        dta c'Fast Assembler 1.8 09-03-2021'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2021'
         dta b($9b,$00)
@@ -144,7 +144,7 @@ prSum   jsr PRINTF
         rts
 
 prUnLab jsr PRINTF
-        dta c'Undeclared labels : %d'
+        dta c'Symbols to resolve %d'
         dta b($9B,$00)
         dta v(B1L0090)
         rts
@@ -156,7 +156,7 @@ symbCnt dta a($0000)
 
 prPass  jsr PRINTF
         dta b($9b)
-        dta c'Pass %b:'
+        dta c'Pass %b'
         dta b($9B,$00)
         dta v(PASSNUM)
         rts
@@ -491,7 +491,7 @@ B1L059E lda PASSNUM
         bne B1L05B2
         jsr PRINTF
         dta b($9C)
-        dta c'line %d'
+        dta c'Lines processed %d'
         dta b($00)
         dta v(lineNum)
         rts
@@ -524,7 +524,7 @@ B1L05E4 lda COMTAB+$107,X
         bpl B1L05E4
         jsr PRINTF
         dta b($9C)
-        dta c'line %d, %d%% of file'
+        dta c'Lines processed %d, %d%% of file'
         dta b($00)
         dta v(lineNum)
         dta v(linePrc)

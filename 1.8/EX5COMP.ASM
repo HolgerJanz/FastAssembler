@@ -1,6 +1,7 @@
-*************************************
-* Example program 3 for FA
-*
+* Example for FA
+* To assembly:
+* FA EX5COMP.ASM EX5COMP.COM
+
 * This program compares the content
 * of 2 files. The state is returned
 * to the parent program (usually
@@ -23,13 +24,10 @@
 * returns error messages for bad
 * parameters.
 *
-* To compile use:
-* FA EX3COMP.ASM EX3COMP.COM
-*
 * To run program:
-* EX3COMP file1 file2 [diff_cnt]
+* EX5COMP file1 file2 [diff_cnt]
 * e.g.
-* EX3COMP TEST1.TXT TEST2.TXT 3
+* EX5COMP TEST1.TXT TEST2.TXT 3
 
 *************************************
 * And here is the program:
@@ -307,7 +305,7 @@ eend     equ fmax+2
 
 * define a new symbol
 
-         blk update new comp '@EX3COMP'
+         blk update new comp '@EX5COMP'
 
          end
 

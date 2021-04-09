@@ -1,13 +1,13 @@
-* Example program 1 for FA
+* Example for FA
 * To assembly:
-* FA EX1READ.ASM EX1READ.COM
+* FA EX4READ.ASM EX4READ.COM
 
 * Reads SDX variable FLAG,
 * multiplies it with 8 and returns
 * it as SDX execution STATUS
 
 * This example can be used with
-* EX2CALL
+* EX4CALL
 
          lst bad
 
@@ -61,7 +61,7 @@ odb_0    sta comtab+$ff,x  var1
 
          blk update adress
          blk update symbols
-         blk update new odb '@ex1read'
+         blk update new odb '@ex4read'
 
          end
 

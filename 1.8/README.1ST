@@ -2,6 +2,17 @@ Fast Assembler 1.8
 
 Assembler for SpartaDOS X
 
+List of Files:
+
+  FA.COM - the executable
+  FA.ASM - the source
+  FA.MAN - manual pages
+  FA_*.DOC - documentation
+  FATUT_*.DOC - tutorial
+  EX*.ASM - examples
+  README.1ST - this file
+  XEDIT.COM - editor by JFC
+
 CHANGES TO 1.8
 
 - fixed parameter parsing issue that prevents FA working with SpartaDOS 4.47 to 4.49d
