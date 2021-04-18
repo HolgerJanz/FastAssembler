@@ -11,7 +11,7 @@ schnell in den Umgang mit Fast
 Assembler einzuarbeiten. Grundlagen
 in 6502 Assembler werden vorausgesetzt.
 Fuer technische Information zu Fast
-Assmebler (z.B. fuer alle Pseudo
+Assembler (z.B. fuer alle Pseudo
 Operationen) kann die Dokumentation
 FA.DOC oder die Man Pages FA.MAN
 genutzt werden (beide im Archiv 
@@ -19,7 +19,7 @@ enthalten).
 
 Fast Assembler ist ein Datei zu Datei
 Assembler fuer SpartaDOS X, d.h. der
-Assembler Quelltext muss in einer Datei
+Assembler-Quelltext muss in einer Datei
 im ATASCII Format vorliegen und der
 Assembler erzeugt eine Objektdatei.
 
@@ -32,13 +32,13 @@ In diesem Tutorial werden kurz die
 Grundlagen des Aufbaus des Quelltexts
 erlaeutert. Im Anschluss wird mit Hilfe
 eines kleinen Demos, die Erzeugung von
-Atari DOS Programmen behandlet. Im
+Atari DOS Programmen behandelt. Im
 letzten Abschnitt werden mehrer
 Beispiele fuer SpartaDOS X Programme
 gezeigt.
 
 Fuer das Tutorial werden folgende
-Assembler Dateien benoetigt (liegen
+Assembler-Dateien benoetigt (liegen
 dem Archiv bei):
 
 Atari DOS Beispiel
@@ -63,7 +63,11 @@ dafuer XEDIT von FJC empfehlen. Dieser
 bietet die Moeglichkeit zwei Dateien
 gleichzeitig zu oeffnen, besitzt eine
 sehr gute Cut-and-Paste Funktionalitaet
-und kann Whitespaces sichtbar machen.
+und kann Leerzeichen sichtbar machen.
+Der Editor wird mit XEDIT [name.ext]
+aufgerufen, mit der <HELP>-Taste
+gelangt man in ein Hilfe-Menue.
+
 
 Freundlicherweise hat JFC (Jonathan
 Halliday) seine Zustimmung gegeben,
@@ -79,22 +83,24 @@ Der Quelltext ist zeilenorientiert,
 d.h. jede Zeile kann einen Befehl
 enthalten. Es darf auch Leerzeilen
 geben, diese duerfen keine weiteren
-Whitespaces enthalten. Wenn z.B. die
+Leerzeichen enthalten. Wenn z.B. die
 Zeile 42 ein Leerzeichen enthaelt,
 wird folgende Fehlermeldung erzeugt:
 42:
 ERROR: Unexpected eol
 
 In XEDIT kann man mit dem Kommando
-CONROL-H alle Whitespaces sichtbar
-machen. Die angegebene Zeile kann
-geloescht und durch ein Return ersetzen
-werden.
+<CONROL><H> Leerzeichen aufspueren.
+<CONTROL><H> macht das RETURN-Zeichen
+am Zeilenende sichtbar, wodurch
+Leerzeichen erkannt und geloescht
+werden koennen.
 
-Damit die Zeilennummer ausgegeben wird,
-muss entweder ein Option (A oder B)
+Damit beim Assemblieren die
+Zeilennummer ausgegeben wird,
+muss entweder ein Option (/A oder /B)
 in der Kommandozeile oder das Pseudo
-Kommando LST (BAD oder ALL) im
+Kommando LST BAD oder LST ALL im
 Quelltext benutzt werden.
 
 Beispiel im Quelltext fuer Ausgabe von
@@ -107,10 +113,10 @@ Kommentarzeilen beginnen mit *. Alles
 nach * bis zum Zeilenende wird vom
 Assembler ignoriert.
 
-Beispeil:
+Beispiel:
 * This is a comment!
 
-Kommentar koennen auch nach einem
+Kommentare koennen auch nach einem
 Befehl folgen. Dort muessen sie nicht
 mit * eingeleitet werden. Der
 Assembler ignoriert alle Zeichen nach
@@ -127,13 +133,13 @@ start   ldx #$08 set X register
 Beispiel ohne Label und Kommentar
 ldy #$10
 
-Ein Besonderheit sind gegenueber
-anderen Assembler die Operationen,
-die sowohl mit dem Akkumulator als
-auch mit Adressierung benutzt
-werden koennen. Hier muss fuer den
-Akkumulator das Zeichen @ benutzt
-werden.
+Ein Besonderheit gegenueber
+anderen Assembler sind die
+Operationen, die sowohl mit dem
+Akkumulator als auch mit Adressierung
+benutzt werden koennen. Hier muss
+fuer den Akkumulator das Zeichen @
+benutzt werden.
 
 Beispiel ASL auf Adresse $3000:
         asl $3000
@@ -145,7 +151,7 @@ Beispiel ASL auf Akkumulator:
 EX1COLOR.ASM - Farbdemonstartion
 --------------------------------
 
-Diese Beispiel zeigt, wie Atari DOS
+Dieses Beispiel zeigt, wie Atari-DOS-
 kompatible Programme erstellt werden
 koennen. Es ist ein kleines Demo mit
 klassischen Atari Farb-Scrolling.
@@ -162,9 +168,9 @@ Das Programm kann angezeigt und
 bearbeitet werden mit:
 XEDIT EX1COLOR.ASM 
 
-Dies Programm besteht aus zwei
+Das Programm besteht aus zwei
 Bloecken. Ein Block enthaelt das
-eigentliche Programm und der zweite die
+eigentliche Programm, der Zweite die
 Startadresse. Ein klassisches Atari
 DOS Programm. Bloecke werden mit dem
 Pseudobefehl BLK eingeleitet. Der
@@ -179,7 +185,7 @@ Assemblern.
 Um das Fehlerverhalten kennen zu
 lerner, sollte jetzt die Anweisung:
       bne loop
-wie filgt geaendert werden:
+wie folgt geaendert werden:
       bne loopX
 
 Beim Assemblieren mit:
@@ -196,22 +202,23 @@ Jetzt erscheint die Fehlermeldung:
 27:         bne loopX
 ERROR: Undeclared label or symbol
 
-Diese Option kann auch in der Source
+Diese Option kann auch im Quelltext
 mit folgender Anweisung eingeschaltet
 werden:
            lst bad
 
 Wenn man diese Anweisung am Anfang
-der Source nutzt, braucht man die
+im Quelltext nutzt, braucht man die
 Option /B nicht mehr in der
-Kommandozeile setzen.
+Kommandozeile angeben.
 
-Wenn die Source wieder korrigiert ist,
-sollte in der leeren Zeile 4 ein SPACE
-eingefuegt werden. Mit Control-H kann
-man RETURN in XEDIT sichtbar machen.
-Nun kann man sehen, dass sich ein SPACE
-in der Zeile befindet.
+Wenn der Quelltext wieder korrigiert
+ist, sollte in der leeren Zeile 4
+ein Leerzeichen eingefuegt werden.
+Mit <CONTROL><H> kann
+man RETURN-Zeichen in XEDIT sichtbar
+machen. Nun kann man sehen, dass sich
+ein Leerzeichen in der Zeile befindet.
 Folgende Fehlermeldung erscheint mit
 Option /B oder Anweisung lst bad:
 4:
@@ -244,8 +251,9 @@ Hello Holger !
 Es werden die SpartaDOS Symbols PRINTF
 und GETS benutzt. Diese Symbole werden
 erst zur Laufzeit des Programs
-gebunden. Wenn man einen Fehler macht,
-kommt es zu einem Laufzeitfehler.
+eingebunden. Wenn man einen Fehler
+macht, kommt es zu einem
+Laufzeitfehler.
 Als Beispiel sollte die Zeile:
 PRINTF  smb 'printf'
 wie folgt geaendert werden:
@@ -258,22 +266,24 @@ Symbol PRINTFX
 154 Symbol not defined 
 
 Weitere Informationen ueber die Symbole
-koennen in der SpartaDOS X Programming
+koennen im SpartaDOS X Programming
 Guide gefunden werden.
 
 Das Programm besteht aus zwei Bloecken.
-Einen Relocatable Code und einen
+Einem Relocatable Code Block und einem
 Relocatable Allocate Block. Beiden ist
 gemein, dass die Ladeadresse zur
 Assemblierungszeit nicht bekannt ist.
-Solche Bloecke werden immer ab MEMLO
+Solche Bloecke werden von SpartaDOS
+immer automatisch ab MEMLO
 geladen und MEMLO wird danach weiter
 gesetzt. Weiterhin werden dann die
-Adressen im Code angepasst. Fuer den
-Allocate Block wird nur MEMLO
-weitergesetzt, d.h. der Speicher wird
-nicht initialisiert. Wird das Programm
-beenden, so wird MEMLO wieder zurueck
+Adressen im Programm angepasst. Fuer
+den Allocate Block wird von SpartaDOS
+nur MEMLO weitergesetzt, d.h. der
+Speicher wird nicht initialisiert.
+Wird das Programm beenden, so wird
+MEMLO von SpartaDOS wieder zurueck
 gesetzt.
 
 
