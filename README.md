@@ -21,6 +21,9 @@ All files can be found unpacked on the ATR image FA_18.ATR.
 
 This is the original Fast Assembler package delivered with SpartaDOS X Toolkit Disk up to version 4.49.
 
+It was developed by Marek Goderski from MMMG Soft (Free MG). He was so kind to release Fast Assembler
+to Public Domain.
+
 Fast Assembler 1.7 uses undocumented features for parameter parsing. These features have been removed with SpartaDOS X 4.47 and reintroduced with 4.49e. For this Fast Assembler 1.7 will only work with SpartaDOS versions below 4.47 or above 4.49d.
 
 ## Version 1.8
