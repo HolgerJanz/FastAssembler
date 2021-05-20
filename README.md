@@ -1,8 +1,9 @@
 # Fast Assembler
+Assembler for the [SpartaDOS X Upgrade Project](http://sdx.atari8.info) on Atari 8bit.
 
-Assembler for the [SpartaDOS X Upgrade Project](http://sdx.atari8.info) on Atari 8bit. The current version of Fast Assembler is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
+The current version is 1.8 19-05-21 and it works with all versions of SpartaDOS X. All files in the repository are ASCII encoded. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
 
-The current version is 1.8 19-05-21 and it works with all versions of SpartaDOS X. All files in the repository are ASCII encoded. All files in ATR image are ATASCII encoded.
+All files in ATR image are ATASCII encoded.
 
 ## Version 1.8
 
