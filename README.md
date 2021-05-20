@@ -2,33 +2,13 @@
 
 Assembler for the [SpartaDOS X Upgrade Project](http://sdx.atari8.info) on Atari 8bit. The current version of Fast Assembler is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
 
-The current version is 1.8 09-03-21 and it works with all versions of SpartaDOS X. All files in the repository are ASCII encoded. All files in archives and ATR image are ATASCII encoded.
-
-The archive can be extracted using SpartaDOS X. Use the following command to extract (current path must contain FA_18.ARC):
-
-```
-ARC X FA_18 
-```
-After extracting the archive please read file README.1ST using command:
-
-```
-TYPE README.1ST
-```
-
-All files can be found unpacked on the ATR image FA_18.ATR.
-
-## Version 1.7
-
-This is the original Fast Assembler package delivered with SpartaDOS X Toolkit Disk up to version 4.49.
-
-It was developed by Marek Goderski from MMMG Soft (Free MG). He was so kind to release Fast Assembler
-to Public Domain.
-
-Fast Assembler 1.7 uses undocumented features for parameter parsing. These features have been removed with SpartaDOS X 4.47 and reintroduced with 4.49e. For this Fast Assembler 1.7 will only work with SpartaDOS versions below 4.47 or above 4.49d.
+The current version is 1.8 19-05-21 and it works with all versions of SpartaDOS X. All files in the repository are ASCII encoded. All files in ATR image are ATASCII encoded.
 
 ## Version 1.8
 
 - fixed parameter parsing issue that prevents Fast Assembler working with SpartaDOS 4.47 to 4.49d
+
+- fixed multiplication and division issue, because of wrong overflow handling these operations always throw error "Too big number"
 
 - fixed issue with percentage display for pass progress
 
@@ -41,6 +21,17 @@ Fast Assembler 1.7 uses undocumented features for parameter parsing. These featu
 - add XEDIT by FJC (thanx for the permission), now it is a complete development package
 
 - add tutorial with extended examples
+
+## Version 1.7 (last original release by MMMG Soft from 1995)
+
+This is the original Fast Assembler package delivered with SpartaDOS X Toolkit Disk up to version 4.49.
+
+It was developed by Marek Goderski from MMMG Soft (Free MG). He was so kind to release Fast Assembler
+to Public Domain.
+
+Fast Assembler 1.7 uses undocumented features for parameter parsing. These features have been removed with SpartaDOS X 4.47 and reintroduced with 4.49e. For this Fast Assembler 1.7 will only work with SpartaDOS versions below 4.47 or above 4.49d. Furthermore it has some issues (see fixes in version 1.8).
+
+This package is kept for archiving and historical reasons.
 
 ## 
 holgerjanz@abbuc.social

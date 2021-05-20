@@ -200,7 +200,7 @@ Unterstuetzte Symbole:
  Es wird immer mit 4 Bytes
  gerechnet. Maximal 32 Operatoren
  koennen pro Ausdruck verwendet
- werden. Dir Prioritaet kann
+ werden. Die Prioritaet kann
  innerhalb eines Ausdrucks mit den
  eckigen Klammern geaendert
  werden z.B.:
