@@ -8,7 +8,7 @@ All files in ATR image are ATASCII encoded.
 
 ## Version 1.8
 
-- fixed parameter parsing issue that prevents Fast Assembler working with SpartaDOS 4.47 to 4.49d
+- fixed parameter parsing issue that prevents Fast Assembler working with SpartaDOS X 4.47 to 4.49d
 
 - fixed multiplication and division issue, because of wrong overflow handling these operations always throw error "Too big number"
 
@@ -31,9 +31,11 @@ This is the original Fast Assembler package delivered with SpartaDOS X Toolkit D
 It was developed by Marek Goderski from MMMG Soft (Free MG). He was so kind to release Fast Assembler
 to Public Domain.
 
-Fast Assembler 1.7 uses undocumented features for parameter parsing. These features have been removed with SpartaDOS X 4.47 and reintroduced with 4.49e. For this Fast Assembler 1.7 will only work with SpartaDOS versions below 4.47 or above 4.49d. Furthermore it has some issues (see fixes in version 1.8).
+Fast Assembler 1.7 uses undocumented features for parameter parsing. These features have been removed with SpartaDOS X 4.47 and reintroduced with 4.49e. For this, Fast Assembler 1.7 will only work with SpartaDOS X versions below 4.47 or above 4.49d. Furthermore it has some issues (see fixes in version 1.8).
 
 This package is kept for archiving and historical reasons.
 
 ## 
+holgerjanz@msn.com
+
 holgerjanz@abbuc.social

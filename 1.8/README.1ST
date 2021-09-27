@@ -15,7 +15,7 @@ List of Files:
 
 CHANGES TO 1.8
 
-- fixed parameter parsing issue that prevents FA working with SpartaDOS 4.47 to 4.49d
+- fixed parameter parsing issue that prevents FA working with SpartaDOS X 4.47 to 4.49d
 
 - fixed multiplication and division issue, because of wrong overflow handling these operations always throw error "Too big number"
 

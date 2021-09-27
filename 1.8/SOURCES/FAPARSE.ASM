@@ -37,17 +37,17 @@ B1L09E1 jsr B1L0940
         bne B1L09D9
         ldy B1L093F
         bne B1L09D9
-        cmp #$40
+        cmp #'@'
         beq B1L0A12
-        cmp #$23
+        cmp #'#'
         beq B1L0A0F
-        cmp #$28
+        cmp #'('
         bne B1L09FF
         dec B1L09AC
         bne B1L0A15
-B1L09FF cmp #$3C
+B1L09FF cmp #'<'
         beq B1L0A0A
-        cmp #$3E
+        cmp #'>'
         bne B1L0A27
         inc B1L09AB
 B1L0A0A lda #$DF
@@ -64,9 +64,9 @@ B1L0A15 lda #$00
         jmp prErrMs
 B1L0A22 inc B1L09A7
         bne B1L09D9
-B1L0A27 cmp #$2C
+B1L0A27 cmp #','
         beq B1L0A6A
-        cmp #$29
+        cmp #')'
         bne B1L09D9
         stx B1L09A8
         inc B1L09AC
@@ -75,7 +75,7 @@ B1L0A27 cmp #$2C
         sta B1L09AA
         jsr B1L0AF7
         bcs B1L0A5F
-        cmp #$2C
+        cmp #','
         bne B1L0A65
         jsr B1L0AF7
         bcs B1L0A62
@@ -96,19 +96,19 @@ B1L0A6A stx B1L09A8
         jsr B1L0AF7
         bcs B1L0A62
         jsr TOUPPER
-        cmp #$59
+        cmp #'Y'
         bne B1L0A80
         jsr B1L0AF7
         bcc B1L0A65
         bcs B1L0A57
-B1L0A80 cmp #$58
+B1L0A80 cmp #'X'
         bne B1L0A65
         lda B1L09AA
         ora #$02
         sta B1L09AA
         jsr B1L0AF7
         bcs B1L0AA7
-        cmp #$29
+        cmp #')'
         bne B1L0A65
         inc B1L09AC
         lda B1L09AA
@@ -162,9 +162,8 @@ B1L0AFF dta b($00)
 B1L0B00 dta b($00)
 B1L0B01 dta b($00)
 B1L0B02 dta b($00)
-B1L0B03 dta b($2D,$2B,$2F,$2A)
-        dta b($5E,$7C,$26)
 
+char_op dta c'-+/*^|&'
 vec_op  dta v(op_add)
         dta v(op_add)
         dta v(op_div)
@@ -221,18 +220,18 @@ B1L0B77 lda bfL1EAC,Y
         bne B1L0BB5
         ldx B1L093F
         bne B1L0BB5
-        cmp #$5B
+        cmp #'['
         bne B1L0B91
         dec B1L0AFE
         jmp B1L0BB5
-B1L0B91 cmp #$5D
+B1L0B91 cmp #']'
         bne B1L0B9B
         inc B1L0AFE
         jmp B1L0BB5
 B1L0B9B ldx B1L0AFE
         bne B1L0BB5
         ldx #$06
-B1L0BA2 cmp B1L0B03,X
+B1L0BA2 cmp char_op,X
         bne B1L0BB2
         cpx B1L0AFF
         bcs B1L0BB5
@@ -260,11 +259,11 @@ B1L0BD0 lda B1L0AFE
         bne B1L0C1A
         dey
         lda bfL1EAC,Y
-        cmp #$5D
+        cmp #']'
         bne B1L0C0E
         ldy bfL1FAC,X
         lda bfL1EAC,Y
-        cmp #$5B
+        cmp #'['
         beq B1L0BF3
         lda #$06
         jmp prErrMs
@@ -507,21 +506,21 @@ B1L0E0D sta B1L09AD,X
         lda bfL1EAC,Y
         cmp #$27
         beq B1L0E1E
-        cmp #$22
+        cmp #'"'
         bne B1L0E21
 B1L0E1E jmp B1L0E7A
-B1L0E21 cmp #$21
+B1L0E21 cmp #'!'
         bne B1L0E28
         jmp B1L0EA2
-B1L0E28 cmp #$24
+B1L0E28 cmp #'$'
         bne B1L0E2F
         jmp B1L0EBA
-B1L0E2F cmp #$25
+B1L0E2F cmp #'%'
         bne B1L0E36
         jmp B1L0EF9
-B1L0E36 cmp #$30
+B1L0E36 cmp #'0'
         bcc B1L0E41
-        cmp #$3A
+        cmp #':'
         bcs B1L0E41
         jmp B1L0F69
 B1L0E41 ldx #$00
