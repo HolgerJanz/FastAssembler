@@ -112,7 +112,7 @@ B1L073C jsr FTELL
         bcs B1L076A
         dec FAUX3
 B1L076A jmp FSEEK
-B1L076D ldx B1L0096
+B1L076D ldx V1L0096
         beq B1L07A0
         clc
         lda $90
@@ -122,7 +122,7 @@ B1L076D ldx B1L0096
         adc #$00
         sta B1L062E+1
         jsr B1L073C
-        ldx B1L0096
+        ldx V1L0096
         lda FHANDLE
         sta bfL20CC,X
         lda FAUX1
@@ -138,13 +138,13 @@ B1L07A8 lda #$04
         sta FMODE
         lda #$A0
         sta FATR1
-        inc B1L0096
+        inc V1L0096
         jsr initBuf
         jmp FOPEN
 
 B1L07BB jsr FCLOSE
-        dec B1L0096
-        ldx B1L0096
+        dec V1L0096
+        ldx V1L0096
         bne B1L07C7
         rts
 

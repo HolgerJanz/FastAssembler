@@ -10,16 +10,16 @@ Assembler for SpartaDOS X
 Syntax
 ------
 
-FA src[.ext] obj[.ext] [/a] [/b]
+FA src[.ext] [obj[.ext]] [/l] [/s]
 
 src - ATASCII source file
 obj - target object file
 
 The default extensions (ext) are .ASM and .OBJ.
 
-/a - all source lines to be displayed at compile time
+/l - combined source displayed at compile time
 
-/b - only erroneous lines to be displayed.
+/s - print summary, e.g. block and label count
 
 Remarks
 -------
@@ -73,7 +73,7 @@ There are two more special characters: * and !. They indicate the current progra
 Pseudo Instructions
 -------------------
 
-I. Compatibility with QA:
+I. Compatibility with QA - QuickAssembler:
 
 OPT b
 assembly option, the individual bits have the following meaning:
@@ -122,7 +122,7 @@ LST All|Bad|Not
 compile-time listing option:
   N[ot] - no listing
   A[ll] - complete listing
-  B[ad] - only errors
+  B[ad] - only errors (always on version 1.8)
 
 BLK x
 declares a new program block. The total number of blocks is limited to 256. Kinds of blocks:
@@ -164,7 +164,7 @@ Note: All symbol declarations should be defined before label declarations and th
 Error Messages
 --------------
 
-Undeclared label or symbol - Undefined label or symbol or recursive labels.
+Undeclared label - Undefined label or symbol or recursive labels.
 
 Label declared twice - Label or symbol defined twice.
 

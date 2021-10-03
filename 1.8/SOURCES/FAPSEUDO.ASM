@@ -51,17 +51,15 @@ B1L14B6 ldx #$00
         lda bfCFNAM
         cmp #'N'
         bne B1L14C6
-        stx cmdOptA
-        stx cmdOptB
+        stx cmdOptL
         rts
 B1L14C6 dex
         cmp #'A'
         bne B1L14CF
-        stx cmdOptA
+        stx cmdOptL
         rts
 B1L14CF cmp #'B'
         bne B1L14D7
-        stx cmdOptB
         rts
 B1L14D7 lda #$06
         jmp prErrMs
@@ -80,7 +78,7 @@ B1L14F0 ldx #$00
         jsr B1L1AD3
 B1L14F5 jmp B1L076D
 
-endCode lda B1L0096
+endCode lda V1L0096
         cmp #$02
         bcs B1L1503
         dec B1L0463
@@ -103,14 +101,12 @@ optCode jsr B1L0B18
 B1L151D lda B1L09AE
         and #$03
         bne B1L152A
-        sta cmdOptA
-        sta cmdOptB
+        sta cmdOptL
 B1L152A ldx #$FF
         cmp #$01
         bne B1L1535
-        stx cmdOptB
         beq B1L1538
-B1L1535 stx cmdOptA
+B1L1535 stx cmdOptL
 B1L1538 ldx #$01
         lda B1L09AE
         and #$60
@@ -404,8 +400,8 @@ B1L17BD dta b($00)
 B1L17BE lda PASSNUM
         bne B1L17C3
 B1L17C2 rts
-B1L17C3 lda B1L0090
-        ora B1L0091
+B1L17C3 lda unResSy
+        ora unResSy+1
         bne B1L17C2
         lda B1L1D64
         sta B1L17BD
@@ -511,8 +507,8 @@ B1L18A0 dta b($00)
 B1L18A1 lda PASSNUM
         bne B1L18A6
 B1L18A5 rts
-B1L18A6 lda B1L0090
-        ora B1L0091
+B1L18A6 lda unResSy
+        ora unResSy+1
         bne B1L18A5
         lda #$FF
         sta B1L189C

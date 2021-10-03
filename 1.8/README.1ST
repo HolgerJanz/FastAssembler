@@ -23,7 +23,9 @@ CHANGES TO 1.8
 
 - add line number to source output
 
-- condense info output 
+- condense info output
+
+- delete option B (always on with 1.8), rename A to L, and introduce option S for summary (e.g. count of labels and blocks)
 
 - update copyright message
 

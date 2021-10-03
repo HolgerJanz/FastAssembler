@@ -286,11 +286,14 @@ B1L1BDD lda #$60
 B1L1BED lda B1L1BBE
         beq B1L1BF3
         rts
-B1L1BF3 inc B1L0090
+
+* unresolved symbol
+B1L1BF3 inc unResSy
         bne B1L1BFB
-        inc B1L0091
+        inc unResSy+1
 B1L1BFB lda #$00
         jmp prErrMs
+
 B1L1C00 jsr B1L1BAA
         lda B1L1BBF
         and #$40

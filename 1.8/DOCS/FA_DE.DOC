@@ -1,74 +1,6 @@
 
-Fast Asembler v.1.5 by MMMG Soft '95
-------------------------------------
-
-Hinweis:
-
- Dies ist eine DEMO-Version vom
- Shareware-Programm. Wenn Sie ein 
- Vollversionen erhalten moechten,
- senden sie bitte 7 zl(neu).
-
- Fuer die vollstaendige SDX-
- Dokumentation (130 Seiten)
- Diskette, senden sie zusaetzliche
- 3 zl(neu), oder 5 zl, wenn sie nur
- an der Dokumentation interessiert
- sind.
-
- Wenn sie die neue Version 2.0 von
- FA erhalten wollen, sobald sie
- verfuegbar ist, senden sie bitte
- zusaetzliche 5 zl (Version FA 2.0
- wird Makros unterstuetzen).
-
- Bitte senden sie das Geld und alle
- Anmerkungen an:
-
- Marek M.M. Goderski
- os. Armii Krajowej 51/7
- 61-377 Poznan.
-
- Hinweis: Nach dem Versenden des
- Geldes werden keine Beschwerden
- beruecksichtigt. Der Autor des
- Programms stellt sicher, dass die
- Vollversion von FA die vollstaendig
- Funktionalitaet zu Verfuegung
- stellt, ohne die Einschraenkungen
- der DEMO Version, wie die
- Begrenzung der Anzahl von Zeilen
- usw. Beschwerden werden jedoch aus
- anderen Gruenden akzeptiert, wie
- z.B.: durch den Postweg,
- Beschaedigung des Datentraegers
- usw.
-
- Hinweis: Bitte geben Sie Ihre
- persoenlichen Daten und Ihre
- ADRESSE klar und deutlich auf der
- Postanweisungen im
- Korrespondenzbereich an.
-
- Der Autor tauscht auch Public
- Domain Programme sowie kleine
- Hilfsprogramme fuer SDX und DEMOs
- usw. aus. Informationen erhalten
- sie mit dem Versenden der Diskette
- und/oder im Rueckumschlag.
-
- Demnaechst verfuegbar:
-
-        FD Fast Disassembler,
-        FE Fast Editor,
- SDX TOMS  neuer Treiber fuer TOMS,
- SDX CACHE ein SDX Disketten Cache,
-    IBMDOS ein Programm zum Lesen
-           von IBM Disketten
-           unter SDX,
-
- und alle MMMG Soft DEMOs auf einer
- Diskette.
+Fast Assembler v.1.8 PD 2021
+---------------------------
 
 Fast Assembler ist, wie der Name
 schon sagt, ein Assembler, wenn auch
@@ -90,7 +22,7 @@ Hinweis:
  [opt]   - optionale Angabe,
  op1|op2 - alternative Angaben.
 
-FA src[.ext] dst[.ext] [/a] [/b]
+FA src[.ext] dst[.ext] [/l] [/s]
 
  src - Quelltext in ATASCII,
  dst - Zieldatei.
@@ -101,12 +33,13 @@ FA src[.ext] dst[.ext] [/a] [/b]
  werden vom Ort des Aufruf des
  Assemblers uebernommen.
 
- /a     - es werden alle
+ /l     - es werden alle
           Programmzeilen bei der
           Assemblierung ausgegeben,
- /b     - es werden nur
-          Programmzeilen mit Fehlern
-          ausgegeben.
+ /s     - es wird eine
+          Zusammenfassung ausgegeben
+          z.B. Gesamtanzahl von
+          Labels und Blöcken.
 
 Ein paar Worte zur Assemblierung.
 

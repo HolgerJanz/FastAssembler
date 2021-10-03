@@ -1,68 +1,6 @@
 
-Fast Assembler v.1.5 by MMMG Soft '95
--------------------------------------
-
-Note:
-
- This is the DEMO version of the
- shareware program. If you want to
- receive the full version of the
- package, send 7 zl (new).
-
- For complete SDX documentation (130
- pages) on disk, send additional
- 3 zl (new), or 5 zl if you are
- interested only in the
- documentation.
-
- If you want to receive the new
- version 2.0 of FA, as soon as it is
- finished, send an additional 5 zl
- (FA 2.0 version will have built-in
- macro support).
-
- Please send all orders and
- money to:
-
- Marek M.M. Goderski
- os. Armii Krajowej 51/7
- 61-377 Poznan.
-
- Note: After the transfer of money,
- cancelation is not excepted, the
- author of the program assures that
- the full version of the FA fully
- adopts the features of the DEMO
- version and all limitations are
- removed such as the allowed number
- of lines of code, etc., However,
- complaints through no fault of
- one's own are excepted, such as:
- damage by Polish post, damage to
- the data carrier, etc.
-
- Note: Please write clearly your
- personal data, ADDRESS and order on
- the postage in the mailing area.
-
- The author also exchanges public
- domain programs such as small
- utility programs for SDX and
- DEMOs, etc. Information are send
- on the disk and/or return envelope.
-
- Soon available :
-
-        FD : fast disassembler,
-        FE : fast editor,
- SDX TOMS  : new TOMS driver,
- SDX CACHE : disk cache for SDX,
-    IBMDOS : a program that enables
-             direct reading of IBM
-             disks from SDX,
-
- and also MMMG Soft DEMO, full disc
- demo!
+Fast Assembler v.1.8 PD 2021
+----------------------------
 
 Fast Assembler, as the name
 suggests, is an assembler, though
@@ -85,7 +23,7 @@ Note:
  op1|op2 - one option must be
            selected.
 
-FA src[.ext] obj[.ext] [/a] [/b]
+FA src[.ext] obj[.ext] [/l] [/s]
 
  src - ATASCII source file,
  obj - target file.
@@ -95,10 +33,10 @@ FA src[.ext] obj[.ext] [/a] [/b]
   your own. Drive and path set to
   where FA was called.
 
- /a     - all source lines to be
+ /l     - all source lines to be
           displayed at compile time,
- /b     - only erroneous lines to be
-          displayed.
+ /s     - print summary, e.g. count
+          of labels and blocks.
 
 A few words about assembly.
 
@@ -299,7 +237,8 @@ II. Additional or New Features:
 
     N[ot]   - no listing,
     A[ll]   - complete listing,
-    B[ad]   - only errors.
+    B[ad]   - list error line
+              (always on with 1.8).
 
  BLK x
 
