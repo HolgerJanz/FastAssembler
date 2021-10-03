@@ -2,7 +2,7 @@
 
 Assembler for SpartaDOS X on Atari 8bit
 
-The current version is 1.8 19-05-21 and it works with all versions of SpartaDOS X. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
+The current version is 1.8 03-10-21 and it works with all versions of SpartaDOS X. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
 
 All files in ATR image are ATASCII encoded.
 
