@@ -18,6 +18,8 @@ All files in ATR image are ATASCII encoded.
 
 - condense info output 
 
+- remove option B, always print error line, rename option A to L, and introduce option S for summary, e.g. count of labels and blocks
+
 - update copyright message
 
 - add XEDIT by FJC (thanx for the permission), now it is a complete development package
