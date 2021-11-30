@@ -23,7 +23,7 @@ Note:
  op1|op2 - one option must be
            selected.
 
-FA src[.ext] obj[.ext] [/l] [/s]
+FA src[.ext] [obj[.ext]] [/lse]
 
  src - ATASCII source file,
  obj - target file.
@@ -36,7 +36,12 @@ FA src[.ext] obj[.ext] [/l] [/s]
  /l     - all source lines to be
           displayed at compile time,
  /s     - print summary, e.g. count
-          of labels and blocks.
+          of labels and blocks,
+ /e     - sets FA errors to system
+          errors starting from 224
+          ($E0) if compile failed,
+          can be used in batch with
+          IF ERROR.
 
 A few words about assembly.
 
@@ -463,59 +468,59 @@ II. Additional or New Features:
 Errors that may occur during
 compilation:
 
- Undeclared label or symbol
+ Undeclared label 224($E0)
    Undefined label or symbol or
    recursive labels.
 
- Label declared twice
+ Label declared twice 225($E1)
    Label or symbol defined twice.
 
- Unexpected eol
+ Unexpected eol 226($E2)
    Unexpected line break means there
    should be at least one character
    or parameter in the line.
 
- Too many passes
+ Too many passes 227($E3)
    Too many passes when the number
-   of passes exceeds 255.
+   of passes exceeds 8.
 
- Too big number
+ Too big number 228($E4)
    Number too large, the number
    exceeded the allowed 4 byte
    range.
 
- String error
+ String error 229($E5)
    Text expression error, no closing
    quotation mark or empty phrase.
 
- Illegal symbol
+ Illegal symbol 230($E6)
    Illegal character in line.
 
- Branch to far
+ Branch to far 231($E7
    The relative jump is beyond the
    range of +127 and -128 bytes.
 
- Improper type
+ Improper type 232($E8)
    Addressing type not allowed for
    the given command.
 
- Label missing
+ Label missing 233($E9)
    Missing label, EQU and SMB pseudo
    commands must always be preceded
    by a label.
 
- Expression expected
+ Expression expected 234($EA)
    Expected expression, after a
    numerical an expression must
    follow.
 
- Too many blocks
+ Too many blocks 235($EB)
    Too many blocks, the total number
    of blocks cannot exceed 256 and
    the number of RELOC and EMPTY
    blocks cannot exceed 7.
 
- Undefined or long
+ Undefined or too long 236($EC) 
    Undefined or too long label, when
    defining labels a label block
    must be defined before using
@@ -523,28 +528,33 @@ compilation:
    address expression must not be
    larger than 2 bytes.
 
- Improper block type
+ Improper block type 237($ED)
    Wrong type of block, e.g. UPDATE
    NEW block cannot follow DOS
    block.
 
- Long or symbol
+ Too long or invalid symbol 238($EE)
    The expression is too large or
    contains a symbol.
 
- Parenthesis not balanced
+ Parenthesis not balanced 239($EF)
    Missing parentheses.
 
- Too many operations
+ Too many operations 240($F0)
    Too many operations in
    expression, the number of
    operations is limited to 32.
 
- Unexpected symbol
+ Unexpected symbol 241($E1)
    Unexpected symbol, symbols cannot
    be used in blocks other than
    SPARTA or RELOC and in block
    definitions.
+
+ Internal error 242($E2)
+   Internal error, please drop me an
+   email with instruction to
+   reproduce (holgerjanz@msn.com)
 
 End of FA documentation.
 

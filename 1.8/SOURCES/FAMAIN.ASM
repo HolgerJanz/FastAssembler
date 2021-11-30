@@ -6,26 +6,35 @@ start   cld
         jsr U_SFAIL
         lda #$01
         sta STATUS
+
+        lda #$00
+        ldx #$07
+        sta B1L0463,X
+        dex
+        bpl *-4
+
         jsr initDat
         jsr initBuf
-        lda $86
+        lda MEMMIN
         sta $8A
-        lda $87
+        lda MEMMIN+1
         sta $8B
         sec
         lda MEMTOP
-        sta $88
+        sta MEMMAX
         lda MEMTOP+1
         sbc #$01
-        sta $89
+        sta MEMMAX+1
 * init variables
         ldx #$00
         stx V1L0096
         stx B1L1AD2
         stx B1L1A55
+        stx MEMHIGH
+        stx MEMHIGH+1
         dex
-        stx laUReSy
-        stx laUReSy+1
+        stx laUReLa
+        stx laUReLa+1
         stx PASSNUM
 * parse command line
         jsr prsCmdL
@@ -35,11 +44,19 @@ nxtPass jsr srtPass
 * check for error
         lda errFlag
         beq B1L0052
+failFa  lda cmdOptE
+        beq *+11
+* conv FA err to system err
+        clc
+        lda lastErr
+        adc #$e0
+        jmp jmpFAIL
+        jsr prFail
         inc STATUS
-        jmp B1L0061
-* check unresolved symbols
-B1L0052 lda unResSy
-        ora unResSy+1
+        jmp exitFA
+* check unresolved labels
+B1L0052 lda unResLa
+        ora unResLA+1
         bne B1L0067
 * finish line without pending
         jsr prPrgsF
@@ -47,53 +64,84 @@ B1L0052 lda unResSy
         jsr PUTC
         lda PASSNUM
         beq nxtPass
-        jsr prSum
-B1L0061 jsr U_XFAIL
+        jsr prCmpl
+exitFA  jsr U_XFAIL
         jmp FCLOSEA
 * check diff with last pass
 B1L0067 jsr prUnRSy
-        ldy unResSy
-        ldx unResSy+1
-        lda unResSy
-        cmp laUReSy
-        sty laUReSy
-        lda unResSy+1
-        sbc laUReSy+1
-        stx laUReSy+1
+* first check too many passes
+        lda PASSNUM
+        cmp #$08
+        bcc B1L04B1
+* ERROR: Too many passes
+        lda #$03
+        jsr prErrMs
+        jmp failFA
+B1L04B1 ldy unResLa
+        ldx unResLa+1
+        lda unResLa
+        cmp laUReLa
+        sty laUReLa
+        lda unResLa+1
+        sbc laUReLa+1
+        stx laUReLa+1
         bcc nxtPass
 * no symbols resolved in current pass
         lda #$FF
         sta maskURS
         jmp nxtPass
 
-* unresolved symbol count
-unResSy dta a($0000)
-* last unresolved symbol count
-laUReSy dta a($0000)
+* unresolved label count
+unResLa dta a($0000)
+* last unresolved label count
+laUReLa dta a($0000)
 failTrP dta v(failTr)
 V1L0096 dta b($00)
+startP  dta v(start)
+e_bgn_P dta v(e_begin)
+e_lst_P dta v(e_last)
 
 prSum   jsr PRINTF
-        dta c'Completed'
-        dta b($9B,$00)
-        lda cmdOptS
-        beq prSumE
-        jsr PRINTF
         dta c'Labels:%5d  SDX Symbols:%5d'
         dta b($9B)
         dta c'Blocks:%5b  SDX Blocks :%5b'
+        dta b($9B)
+        dta c'Memory: $%4x-$%4x-$%4x $%4x-$%4x'
         dta b($9B,$00)
         dta v(labCnt)
         dta v(symbCnt)
         dta v(blkCnt)
         dta v(SblkCnt)
-prSumE  rts
+        dta v(startP)
+        dta v(e_bgn_P)
+        dta v(e_lst_P)
+        dta v(MEMMIN)
+        dta a(MEMHIGH)
+        rts
+
+prCmpl  lda cmdOptS
+        beq *+5
+        jsr prSum
+        jsr PRINTF
+        dta c'Completed'
+        dta b($9B,$00)
+        rts
+
+prFail  lda #$9c
+        jsr PUTC
+        lda cmdOptS
+        beq *+5 
+        jsr prSum
+        jsr PRINTF
+        dta c'Failed'
+        dta b($9B,$00)
+        rts
 
 prUnRSy jsr prPrgsF
         jsr PRINTF
-        dta c' Pending Labels %d'
+        dta c' Pending %d'
         dta b($9B,$00)
-        dta v(unResSy)
+        dta v(unResLa)
         rts
 
 blkCnt  dta b($00)
@@ -101,21 +149,23 @@ SblkCnt dta b($00)
 labCnt  dta a($0000)
 symbCnt dta a($0000)
 
+* error handler
 failTr  sta STATUS
         cmp #$9C
-        beq prUsage
+        bne *+8
+        jsr prUsage
+        jmp FCLOSEA
+        jsr prFail
         jmp FCLOSEA
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 03-10-2021'
+        dta c'Fast Assembler 1.8 2021-12-01'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2021'
         dta b($9b,$00)
         jsr PRINTF
-        dta c'Usage:'
-        dta b($9B)
-        dta c' FA src [dst] [/LS]'
+        dta c'Parameters: src [dst] [/LSE]'
         dta b($9B)
         dta c' src: source filename'
         dta b($9B)
@@ -125,20 +175,22 @@ prUsage jsr PRINTF
         dta c' L  : list combined source'
         dta b($9B)
         dta c' S  : print summary'
+        dta b($9B)
+        dta c' E  : set error if compile failed'
         dta b($9B,$00)
-        lda #$00
-        sta STATUS
-        jmp FCLOSEA
+        rts
 
+* get CFNAME to buffer
 gtCFNAM ldy COMTAB+$1a
-        sty $82
+        sty BFCFNAL
         lda COMTAB+$21,Y
         sta bfCFNAM,Y
         dey
         bpl *-7
         rts
 
-stCFNAM ldy $82
+* store buffer to CFNAME
+stCFNAM ldy BFCFNAL
         sty COMTAB+$1a
         cpy #$64
         bcc B1L0253
@@ -153,19 +205,28 @@ B1L0256 sta COMTAB+$21,Y
 
 cmdOptL dta b($00)
 cmdOptS dta b($00)
+cmdOptE dta b($00)
 cmdOpt  dta b($00),c'L'
         dta b($00),c'S'
+        dta b($00),c'E'
 cmdOptP dta v(cmdOpt)
 cmdPCnt dta b($ff)
 
 * parse command line
 * check for options
-prsCmdL lda cmdOptP
+prsCmdL ldx #$00
+        stx cmdOptL
+        stx cmdOptS
+        stx cmdOptE
+        dex
+        stx cmdPCnt
+
+prsCmdN lda cmdOptP
         ldx cmdOptP+1
-        ldy #$04
+        ldy #$06
         jsr U_SLASH
-        ldy #$02
-        ldx #$01
+        ldy #$04
+        ldx #$02
 * set flags for options
 prsOptN lda cmdOptL,X
         ora cmdOpt,Y
@@ -181,19 +242,20 @@ prsOptN lda cmdOptL,X
         ldx cmdPCnt
         cpx #$02
         bcc prsFilN
+* ERROR: Bad parameter
 prsCErr lda #$9C
 jmpFAIL jmp U_FAIL
 * get file name
 prsFilN jsr gtCFNAM
         jsr B1L1AD3
-        jmp prsCmdL
+        jmp prsCmdN
 prsCEnd ldx cmdPCnt
         bmi prsCErr
         bne prsCRTS
         jsr B1L1B53
-        jsr B1L1A93
+        jsr findDot
         ldx #$01
-        jsr B1L1AB6
+        jsr setDEXT
         ldx #$01
         jsr B1L1AD3
 prsCRTS rts
@@ -203,21 +265,30 @@ prErrMs eor maskURS
         beq noErrMs
 * check mask for unresolved symbols
         eor maskURS
+* check highest valid
+        cmp #$12
+        bcc *+4
+        lda #$12
+* set only first last error
+        ldx errFlag
+        bne *+5
+        sta lastErr
+* set error flag
         ldx #$FF
         stx errFlag
-* check option A
+* check option L
         ldx cmdOptL
         beq yeErLMs
         ldx PASSNUM
         beq yeErrMs
         bne yeErLMs
 * print line and error msg
-yeErLMs jsr prtLine
+yeErLMs cmp #$03
+* no line at too many passes
+        beq yeErrMs
+        jsr prtLine
 * check max error number
-yeErrMs cmp #$12
-        bcc *+4
-        lda #$12
-        asl @
+yeErrMs asl @
         tax
         lda errMsTa,X
         sta ptErrMs
@@ -253,7 +324,7 @@ errMsTa dta v(errMs00)
         dta v(errMs12)
 
 * error messages
-* undeclared symbol must be first
+* undeclared label must be first
 errMs00 dta c'Undeclared label'
         dta b($9B)
 errMs01 dta c'Label declared twice'
@@ -278,11 +349,11 @@ errMs0A dta c'Expression expected'
         dta b($9B)
 errMs0B dta c'Too many blocks'
         dta b($9B)
-errMs0C dta c'Undefined or long'
+errMs0C dta c'Undefined or too long'
         dta b($9B)
 errMs0D dta c'Improper block type'
         dta b($9B)
-errMs0E dta c'Long or symbol'
+errMs0E dta c'Too long or invalid symbol'
         dta b($9B)
 errMs0F dta c'Parenthesis not balanced'
         dta b($9B)
@@ -290,7 +361,7 @@ errMs10 dta c'Too many operations'
         dta b($9B)
 errMs11 dta c'Unexpected symbol'
         dta b($9B)
-* internal error mast be last
+* internal error have to be last
 errMs12 dta c'Internal error'
         dta b($9B)
 
@@ -303,6 +374,7 @@ B1L0465 dta b($00)
 B1L0466 dta b($00)
 B1L0467 dta b($00)
 B1L0468 dta b($00)
+lastErr dta b($00)
 
 * start new pass
 srtPass jsr initBuf
@@ -314,11 +386,11 @@ srtPass jsr initBuf
         stx B1L18A0
         stx B1L1D63
         stx B1L1D64
-        stx $8C
-        stx $8D
-        stx $8E
-        stx unResSy
-        stx unResSy+1
+        stx PROGCNT
+        stx PROGCNT+1
+        stx BLKPCNT
+        stx unResLa
+        stx unResLa+1
         stx B1L0463
         stx V1L0096
         stx B1L1AD2
@@ -327,31 +399,22 @@ srtPass jsr initBuf
         inx
         stx B1L150B
         ldx #$10
-        stx $8F
+        stx BLKPCNT+1
         inc PASSNUM
-        lda PASSNUM
-        cmp #$FF
-        bcc B1L04B1
-        lda #$03
-        jsr prErrMs
-B1L04B1 jsr B1L1CD9
-        jsr B1L07E3
-        jsr B1L076D
+        jsr B1L1CD9
+        jsr openDST
+        jsr openSRC
 B1L04BD lda B1L0463
         beq B1L04EA
         jsr B1L15AE
-        jsr B1L0808
-        jsr B1L07BB
-        lda lineNum
-        sta lineCnt
-        lda lineNum+1
-        sta lineCnt+1
+        jsr closDST
+        jsr closSRC
         lda B1L1D63
         sta blkCnt
         lda B1L1D64
         sta SblkCnt
         rts
-B1L04EA jsr B1L0653
+B1L04EA jsr nxtLine
         jsr B1L08D8
         beq B1L04BD
         lda bfCFNAM
@@ -366,9 +429,9 @@ B1L04EA jsr B1L0653
         sta B1L0465
         lda $85
         sta B1L0466
-        lda $8C
+        lda PROGCNT
         sta B1L0467
-        lda $8D
+        lda PROGCNT+1
         sta B1L0468
         lda B1L1BBF
         and #$01
@@ -413,10 +476,11 @@ prtLine jsr PRINTF
         dta c'%d:%*p'
         dta b($9B,$00)
         dta v(lineNum)
-        dta v(B1L0630)
-        dta a($90)
+        dta v(curLiLn)
+        dta a(PCURLIN)
         rts
 
+* print pass progress
 prPrgs  lda PASSNUM
 * no progress in pass 0 if option L
         bne *+7
@@ -430,31 +494,32 @@ prPrgsF jsr PRINTF
         dta v(lineNum)
 prPrgsE rts
 
-
 endStrg dta c'end'
         dta b($9b)
 endStrV dta v(endStrg)
 
+* current line number
 lineNum dta b($00,$00,$00,$00)
-lineCnt dta b($00,$00,$00,$00)
-lineInc dta b($64,$00,$00,$00)
-bufRead dta a($0000)
-bufSeek dta a($0000)
-bufSize dta a($0400)
+* source buffer
+bufReaV dta v(bufRead)
+* used source buffer
+bufUsed dta a($0000)
+* ???
 B1L062E dta a($0000)
-B1L0630 dta b($00)
+* length of current line
+curLiLn dta b($00)
 
 initBuf clc
         lda MEMLO
-        sta bufRead
-        adc bufSize
-        sta bufSeek
-        sta $90
-        sta $86
+        sta MEMMIN
         lda MEMLO+1
-        sta bufRead+1
-        adc bufSize+1
-        sta bufSeek+1
-        sta $91
-        sta $87
+        sta MEMMIN+1
+        lda bufReaV
+        adc <bufReaS
+        sta bufUsed
+        sta PCURLIN
+        lda bufReaV+1
+        adc >bufReaS
+        sta bufUsed+1
+        sta PCURLIN+1
         rts

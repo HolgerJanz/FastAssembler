@@ -14,7 +14,7 @@ psCodeV dta v(optCode)
         dta v(errCode)
 
 * parse pseudo codes
-prsPseu lda $82
+prsPseu lda BFCFNAL
         cmp #$03
         beq B1L147B
 B1L1479 sec
@@ -76,14 +76,14 @@ iclCode inc B1L1AD2
         rts
 B1L14F0 ldx #$00
         jsr B1L1AD3
-B1L14F5 jmp B1L076D
+B1L14F5 jmp openSRC
 
 endCode lda V1L0096
         cmp #$02
         bcs B1L1503
         dec B1L0463
         rts
-B1L1503 jmp B1L07BB
+B1L1503 jmp closSRC
 
 errCode lda #$09
         jmp prErrMs
@@ -172,10 +172,10 @@ B1L15AE lda B1L1D63
         lda PASSNUM
         bne B1L15F5
         ldy #$07
-        lda $8C
+        lda PROGCNT
         sta ($84),Y
         iny
-        lda $8D
+        lda PROGCNT+1
         sta ($84),Y
         lda B1L1D65
         and #$70
@@ -184,15 +184,15 @@ B1L15AE lda B1L1D63
         cpx B1L15AD
         beq B1L15F5
         stx B1L15AD
-        lda $8E
+        lda BLKPCNT
         sta bfL210C,X
-        lda $8F
+        lda BLKPCNT+1
         sta bfL2114,X
-        lda $8C
-        sta $8E
+        lda PROGCNT
+        sta BLKPCNT
         sta bfL211C,X
-        lda $8D
-        sta $8F
+        lda PROGCNT+1
+        sta BLKPCNT+1
         sta bfL2124,X
 B1L15F5 rts
 
@@ -245,17 +245,17 @@ B1L164A sta B1L1D65
         lda #$0C
         jmp prErrMs
 B1L165E lda B1L09AE
-        sta $8C
+        sta PROGCNT
         sta B1L1D66
         lda B1L09AF
-        sta $8D
+        sta PROGCNT+1
         sta B1L1D67
         jmp B1L1D91
 B1L1671 jsr B1L1D6C
         lda B1L1D66
-        sta $8C
+        sta PROGCNT
         lda B1L1D67
-        sta $8D
+        sta PROGCNT+1
 B1L167E rts
 
 blkADOS beq B1L1648
@@ -295,19 +295,19 @@ B1L16BD jsr B1L1671
         jmp B1L1698
 
 blkRelo bne B1L1715
-        lda $8E
+        lda BLKPCNT
         sta B1L1D66
-        sta $8C
-        lda $8F
+        sta PROGCNT
+        lda BLKPCNT+1
         sta B1L1D67
-        sta $8D
+        sta PROGCNT+1
         ldx #$00
         stx B1L1D65
 B1L16E7 ldx #$00
         lda bfCFNAM
-        cmp #$4D
+        cmp #'M'
         beq B1L16F6
-        cmp #$45
+        cmp #'E'
         bne B1L170F
         inx
         inx
@@ -321,6 +321,7 @@ B1L16F6 txa
         lda #$0B
         jmp prErrMs
 B1L170C jmp B1L1D91
+* ERROR: Illegal symbol
 B1L170F lda #$06
         jmp prErrMs
 B1L1714 rts
@@ -359,14 +360,14 @@ blkEmpt bne B1L178D
         lda #$0C
         jmp prErrMs
 B1L1766 clc
-        lda $8E
+        lda BLKPCNT
         sta B1L1D66
         adc B1L09AE
-        sta $8C
-        lda $8F
+        sta PROGCNT
+        lda BLKPCNT+1
         sta B1L1D67
         adc B1L09AF
-        sta $8D
+        sta PROGCNT+1
         lda #$80
         sta B1L1D65
         jsr B1L08D8
@@ -400,8 +401,8 @@ B1L17BD dta b($00)
 B1L17BE lda PASSNUM
         bne B1L17C3
 B1L17C2 rts
-B1L17C3 lda unResSy
-        ora unResSy+1
+B1L17C3 lda unResLa
+        ora unResLa+1
         bne B1L17C2
         lda B1L1D64
         sta B1L17BD
@@ -507,14 +508,14 @@ B1L18A0 dta b($00)
 B1L18A1 lda PASSNUM
         bne B1L18A6
 B1L18A5 rts
-B1L18A6 lda unResSy
-        ora unResSy+1
+B1L18A6 lda unResLa
+        ora unResLa+1
         bne B1L18A5
         lda #$FF
         sta B1L189C
-        lda $86
+        lda MEMMIN
         sta B1L189E
-        lda $87
+        lda MEMMIN+1
         sta B1L189F
 B1L18BD lda B1L189E
         sta $84

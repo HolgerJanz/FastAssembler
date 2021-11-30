@@ -1,6 +1,6 @@
 
-Fast Assembler 1.8
-==================
+Fast Assembler 1.8 2021-12-01
+=============================
 
 Purpose
 -------
@@ -10,7 +10,7 @@ Assembler for SpartaDOS X
 Syntax
 ------
 
-FA src[.ext] [obj[.ext]] [/l] [/s]
+FA src[.ext] [obj[.ext]] [/lse]
 
 src - ATASCII source file
 obj - target object file
@@ -19,7 +19,9 @@ The default extensions (ext) are .ASM and .OBJ.
 
 /l - combined source displayed at compile time
 
-/s - print summary, e.g. block and label count
+/s - print summary, e.g. block and label count, memory $code-$stat_alloc-$last $dyn_alloc-$last
+
+/e - sets assembly errors to system errors starting from 224($E0) if compile failed
 
 Remarks
 -------
@@ -164,41 +166,43 @@ Note: All symbol declarations should be defined before label declarations and th
 Error Messages
 --------------
 
-Undeclared label - Undefined label or symbol or recursive labels.
+Undeclared label - 224($E0) - Undefined label or symbol or recursive labels.
 
-Label declared twice - Label or symbol defined twice.
+Label declared twice - 225($E1) - Label or symbol defined twice.
 
-Unexpected eol - Unexpected line break means there should be at least one character or parameter in the line.
+Unexpected eol - 226($E2) - Unexpected line break means there should be at least one character or parameter in the line.
 
-Too many passes - Too many passes when the number of passes exceeds 255.
+Too many passes - 227($E3) - Too many passes when the number of passes exceeds 8.
 
-Too big number - Number too large, the number exceeded the allowed 4 byte range.
+Too big number - 228($E4) - Number too large, the number exceeded the allowed 4 byte range.
 
-String error - Text expression error, no closing quotation mark or empty phrase.
+String error - 229($E5) - Text expression error, no closing quotation mark or empty phrase.
 
-Illegal symbol - Illegal character in line.
+Illegal symbol - 230($E6) - Illegal character in line.
 
-Branch to far - The relative jump is beyond the range of +127 and -128 bytes.
+Branch to far - 231($E7) - The relative jump is beyond the range of +127 and -128 bytes.
 
-Improper type - Addressing type not allowed for the given command.
+Improper type - 232($E8) - Addressing type not allowed for the given command.
 
-Label missing - Missing label, EQU and SMB pseudo commands must always be preceded by a label.
+Label missing - 233($E9) - Missing label, EQU and SMB pseudo commands must always be preceded by a label.
 
-Expression expected - Expected expression, after a numerical an expression must follow.
+Expression expected - 234($EA) - Expected expression, after a numerical an expression must follow.
 
-Too many blocks - Too many blocks, the total number of blocks cannot exceed 256 and the number of RELOC and EMPTY blocks cannot exceed 7.
+Too many blocks - 235($EB) - Too many blocks, the total number of blocks cannot exceed 256 and the number of RELOC and EMPTY blocks cannot exceed 7.
 
-Undefined or long - Undefined or too long label, when defining labels a label block must be defined before using them, and the result of the address expression must not be larger than 2 bytes.
+Undefined or long - 236($EC) - Undefined or too long label, when defining labels a label block must be defined before using them, and the result of the address expression must not be larger than 2 bytes.
 
-Improper block type - Wrong type of block, e.g. UPDATE NEW block cannot follow DOS block.
+Improper block type - 237($ED) - Wrong type of block, e.g. UPDATE NEW block cannot follow DOS block.
 
-Long or symbol - The expression is too large or contains a symbol.
+Too long or invalid symbol - 238($EE) - The expression is too large or contains an invalid symbol.
 
-Parenthesis not balanced - Missing parentheses.
+Parenthesis not balanced - 239($EF) - Missing parentheses.
 
-Too many operations - Too many operations in expression, the number of operations is limited to 32.
+Too many operations - 240($F0) - Too many operations in expression, the number of operations is limited to 32.
 
-Unexpected symbol - Unexpected symbol, symbols cannot be used in blocks other than SPARTA or RELOC and in block definitions.
+Unexpected symbol - 241($E1) - Unexpected symbol, symbols cannot be used in blocks other than SPARTA or RELOC and in block definitions.
+
+Internal error - 242($E2) - Internal error, please drop an email with instruction to reproduce (holgerjanz@msn.com)
 
 Note
 ----

@@ -1,0 +1,3 @@
+ ICL 'INC3TEST.ASM'
+ DTA B($02)
+

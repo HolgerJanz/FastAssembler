@@ -25,7 +25,13 @@ CHANGES TO 1.8
 
 - condense info output
 
-- delete option B (always on with 1.8), rename A to L, and introduce option S for summary (e.g. count of labels and blocks)
+- delete option B (always on with 1.8), rename A to L, and introduce option S for summary (e.g. count of labels and blocks, and memory usage)
+
+- introduce option E to set error to 255 if compile fails, for better use in batch
+
+- improve memory management
+
+- reduce max passes to 8 
 
 - update copyright message
 

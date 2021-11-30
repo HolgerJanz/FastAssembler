@@ -1,140 +1,150 @@
 * Part 2 Passes
 
-B1L0653 clc
-        lda $90
-        adc B1L0630
-        sta $90
+* next line
+nxtLine clc
+        lda PCURLIN
+        adc curLiLn
+        sta PCURLIN
         bcc B1L065F
-        inc $91
-B1L065F lda $90
-        cmp bufSeek
-        lda $91
-        sbc bufSeek+1
+        inc PCURLIN+1
+B1L065F lda PCURLIN
+        cmp bufUsed
+        lda PCURLIN+1
+        sbc bufUsed+1
         bcs B1L068E
         ldy #$00
-B1L066D lda ($90),Y
+B1L066D lda (PCURLIN),Y
         iny
         bne B1L0677
+* ERROR: Truncated record
         lda #$89
         jmp jmpFAIL
 B1L0677 cmp #$9B
         bne B1L066D
-B1L067B sty B1L0630
+B1L067B sty curLiLn
         inc lineNum
         bne B1L0686
         inc lineNum+1
 B1L0686 lda #$00
         sta B1L08D3
         jmp B1L0566
+* fill source buffer
 B1L068E jsr prPrgs
-        lda bufRead
-        sta $90
+* read source file
+        lda bufReaV
+        sta PCURLIN
         sta FAUX1
-        lda bufRead+1
-        sta $91
+        lda bufReaV+1
+        sta PCURLIN+1
         sta FAUX2
-        lda bufSize
+        lda <bufReaS
         sta FAUX4
-        lda bufSize+1
+        lda >bufReaS
         sta FAUX5
         lda #$00
         sta SYSCALL
         jsr FREAD
         bpl B1L06D3
+* reached EOF, process END
         lda FAUX4
         ora FAUX5
         bne B1L06D3
         lda endStrV
-        sta $90
-        sta bufSeek
+        sta PCURLIN
+        sta bufUsed
         lda endStrV+1
-        sta $91
-        sta bufSeek+1
+        sta PCURLIN+1
+        sta bufUsed+1
         ldy #$04
         bne B1L067B
+* buffer filled, set current line
 B1L06D3 clc
-        lda $90
+        lda PCURLIN
         adc FAUX4
-        sta bufSeek
-        lda $91
+        sta bufUsed
+        lda PCURLIN+1
         adc FAUX5
-        sta bufSeek+1
+        sta bufUsed+1
         ldy #$00
         sty B1L062E
         sty B1L062E+1
-B1L06EC lda ($90),Y
-        inc $90
+B1L06EC lda (PCURLIN),Y
+        inc PCURLIN
         bne *+4
-        inc $91
+        inc PCURLIN+1
         cmp #$9B
         bne B1L0702
-        lda $90
+        lda PCURLIN
         sta B1L062E
-        lda $91
+        lda PCURLIN+1
         sta B1L062E+1
-B1L0702 lda $90
-        cmp bufSeek
-        lda $91
-        sbc bufSeek+1
+B1L0702 lda PCURLIN
+        cmp bufUsed
+        lda PCURLIN+1
+        sbc bufUsed+1
         bcc B1L06EC
         lda B1L062E
         ora B1L062E+1
         bne B1L071B
+* ERROR: Truncated record
         lda #$89
         jmp jmpFAIL
 B1L071B jsr B1L073C
         lda B1L062E
-        sta bufSeek
+        sta bufUsed
         lda B1L062E+1
-        sta bufSeek+1
-        lda bufRead
-        sta $90
-        lda bufRead+1
-        sta $91
+        sta bufUsed+1
+        lda bufReaV
+        sta PCURLIN
+        lda bufReaV+1
+        sta PCURLIN+1
         lda #$00
-        sta B1L0630
-        jmp B1L0653
+        sta curLiLn
+        jmp nxtLine
+
 B1L073C jsr FTELL
         sec
-        lda bufSeek
+        lda bufUsed
         sbc B1L062E
-        sta bufSeek
-        lda bufSeek+1
+        sta bufUsed
+        lda bufUsed+1
         sbc B1L062E+1
-        sta bufSeek+1
+        sta bufUsed+1
         sec
         lda FAUX1
-        sbc bufSeek
+        sbc bufUsed
         sta FAUX1
         lda FAUX2
-        sbc bufSeek+1
+        sbc bufUsed+1
         sta FAUX2
         bcs B1L076A
         dec FAUX3
 B1L076A jmp FSEEK
-B1L076D ldx V1L0096
+
+* open source
+openSRC ldx V1L0096
         beq B1L07A0
         clc
-        lda $90
-        adc B1L0630
+        lda PCURLIN
+        adc curLiLn
         sta B1L062E
-        lda $91
+        lda PCURLIN+1
         adc #$00
         sta B1L062E+1
         jsr B1L073C
         ldx V1L0096
         lda FHANDLE
-        sta bfL20CC,X
+        sta arrFHDL,X
         lda FAUX1
-        sta bfL20DC,X
+        sta arrFAU1,X
         lda FAUX2
-        sta bfL20EC,X
+        sta arrFAU2,X
         lda FAUX3
-        sta bfL20FC,X
+        sta arrFAU3,X
 B1L07A0 ldx #$00
         jsr B1L1B53
         jsr stCFNAM
-B1L07A8 lda #$04
+        lda #$04
         sta FMODE
         lda #$A0
         sta FATR1
@@ -142,25 +152,27 @@ B1L07A8 lda #$04
         jsr initBuf
         jmp FOPEN
 
-B1L07BB jsr FCLOSE
+* close source
+closSRC jsr FCLOSE
         dec V1L0096
         ldx V1L0096
         bne B1L07C7
         rts
 
-B1L07C7 lda bfL20CC,X
+B1L07C7 lda arrFHDL,X
         sta FHANDLE
-        lda bfL20DC,X
+        lda arrFAU1,X
         sta FAUX1
-        lda bfL20EC,X
+        lda arrFAU2,X
         sta FAUX2
-        lda bfL20FC,X
+        lda arrFAU3,X
         sta FAUX3
         jmp FSEEK
 
-B1L07E2 dta b($00)
+fhdlDst dta b($00)
 
-B1L07E3 lda PASSNUM
+* open destination for write
+openDST lda PASSNUM
         beq B1L0807
         ldx #$01
         jsr B1L1B53
@@ -173,21 +185,22 @@ B1L07E3 lda PASSNUM
         sta FATR2
         jsr FOPEN
         lda FHANDLE
-        sta B1L07E2
+        sta fhdlDst
 B1L0807 rts
 
-B1L0808 lda PASSNUM
+* close destination
+closDst lda PASSNUM
         beq B1L081D
         lda FHANDLE
         pha
-        lda B1L07E2
+        lda fhdlDst
         sta FHANDLE
         jsr FCLOSE
         pla
         sta FHANDLE
 B1L081D rts
 
-B1L081E dta b($00)
+fhdlTMP dta b($00)
 
 B1L081F lda PASSNUM
         beq B1L0890
@@ -207,10 +220,10 @@ B1L081F lda PASSNUM
 B1L0840 txa
         iny
         sta ($92),Y
-        lda $8C
+        lda PROGCNT
         iny
         sta ($92),Y
-        lda $8D
+        lda PROGCNT+1
         iny
         sta ($92),Y
         lda B1L1D65
@@ -218,10 +231,10 @@ B1L0840 txa
         bne B1L0867
         ldy #$02
         sec
-        lda $8C
+        lda PROGCNT
         sbc B1L1D66
         sta ($92),Y
-        lda $8D
+        lda PROGCNT+1
         sbc B1L1D67
         iny
         sta ($92),Y
@@ -238,32 +251,36 @@ B1L0867 sec
 B1L087B ldy #$00
         lda #$FF
         sta ($92),Y
+* save and check high mem
         lda $92
-        cmp $88
+        sta MEMHIGH
+        cmp MEMMAX
         lda $93
-        sbc $89
+        sta MEMHIGH+1
+        sbc MEMMAX+1
         bcc B1L0890
+* ERROR: Out of memory
         lda #$9E
         jmp jmpFAIL
 B1L0890 lda B1L09AE
         jsr B1L0899
         lda B1L09AF
-B1L0899 inc $8C
+B1L0899 inc PROGCNT
         bne B1L089F
-        inc $8D
+        inc PROGCNT+1
 B1L089F pha
         lda PASSNUM
         beq B1L08C0
         lda errFlag
         bne B1L08C0
-B1L08A9 lda FHANDLE
-        sta B1L081E
-        lda B1L07E2
+        lda FHANDLE
+        sta fhdlTMP
+        lda fhdlDst
         sta FHANDLE
         pla
         jsr FPUTC
         pha
-        lda B1L081E
+        lda fhdlTMP
         sta FHANDLE
 B1L08C0 pla
         rts
@@ -288,19 +305,18 @@ B1L08D8 lda #$00
         sta B1L093E
         sta B1L093F
         ldy B1L08D3
-        cpy B1L0630
+        cpy curLiLn
         beq B1L08F6
-B1L08ED lda ($90),Y
+B1L08ED lda (PCURLIN),Y
         cmp #$20
         bne B1L08F7
         iny
         bne B1L08ED
 B1L08F6 rts
-
 B1L08F7 ldx #$00
-B1L08F9 lda ($90),Y
+B1L08F9 lda (PCURLIN),Y
         jsr B1L0940
-        sta bfL1EAC,X
+        sta bfCLINE,X
         jsr TOUPPER
         sta bfCFNAM,X
         inx
@@ -319,13 +335,13 @@ B1L0920 cmp #$20
         bne B1L08F9
         lda B1L08D4
         beq B1L092C
-        ldy B1L0630
+        ldy curLiLn
 B1L092C dex
-        stx $82
+        stx BFCFNAL
         stx $83
         lda #$9B
         sta bfCFNAM,X
-        sta bfL1EAC,X
+        sta bfCLINE,X
         sty B1L08D3
         dey
         rts
@@ -333,6 +349,7 @@ B1L092C dex
 B1L093E dta b($00)
 B1L093F dta b($00)
 
+* check ' and "
 B1L0940 cmp #$27
         beq B1L0959
         cmp #$22
@@ -354,11 +371,12 @@ B1L0968 rts
 
 B1L0969 dta b($00)
 
-B1L096A lda bfL1EAC,X
+B1L096A lda bfCLINE,X
         cmp #$27
         beq B1L097A
         cmp #$22
         beq B1L097A
+* ERROR: String error
 B1L0975 lda #$05
         jmp prErrMs
 B1L097A sta B1L0969
@@ -366,16 +384,16 @@ B1L097A sta B1L0969
 B1L097F inx
         cpx $83
         bcs B1L0975
-        lda bfL1EAC,X
+        lda bfCLINE,X
         cmp B1L0969
         bne B1L09A1
         inx
-        lda bfL1EAC,X
+        lda bfCLINE,X
         cmp B1L0969
         beq B1L09A1
         lda #$9B
         sta bfCFNAM,Y
-        sty $82
+        sty BFCFNAL
         tya
         beq B1L0975
         clc

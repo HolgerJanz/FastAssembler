@@ -1,6 +1,6 @@
 * Fast Assembler 1.8 PD 2021
 
-* SpartaDos Symbols
+* SDX Symbols
 COMTAB  smb 'COMTAB'
 U_FAIL  smb 'U_FAIL'
 U_SFAIL smb 'U_SFAIL'
@@ -21,9 +21,10 @@ MUL_32  smb 'MUL_32'
 TOUPPER smb 'TOUPPER'
 STATUS  smb 'STATUS'
 
-* System equates
+* OS equates
 MEMTOP  equ $02E5
 MEMLO   equ $02E7
+* SDX equates
 FHANDLE equ $0760
 FMODE   equ $0778
 FATR1   equ $0779
@@ -35,49 +36,68 @@ FAUX4   equ $0785
 FAUX5   equ $0786
 SYSCALL equ $0787
 
-* Assembler Variables
-PASSNUM equ $80
-
-* BIT Equates
+* Opcode Equates:
 BIT_abs equ $2c
 BIT_zp  equ $24
 
+* Assembler Variables:
+* $xx current pass number
+PASSNUM equ $80
+* $xx bfCFNAM length
+BFCFNAL equ $82
+* $xxxx min memory
+MEMMIN  equ $86
+* $xxxx max memory
+MEMMAX  equ $88
+* $xxx program counter
+PROGCNT equ $8C
+* $xxx Block program counter
+BLKPCNT equ $8E
+* $xxxx current line
+PCURLIN equ $90
+* $xxxx max used mem
+MEMHIGH equ $9A
+
+* Relocatable Program
         blk reloc main
-* Part 1 Main
         icl 'FAMAIN.ASM'
-* Part 2 Passes
         icl 'FAPASSES.ASM'
-* Part 3 Parse
         icl 'FAPARSE.ASM'
-* Part 4 Operations
         icl 'FAOPS.ASM'
-* Part 5 Pseudo Opcodes
         icl 'FAPSEUDO.ASM'
-* Part 6 Symbols
         icl 'FASYMBOL.ASM'
 
-        blk empty $381 main
-* Data Alloc Block
-bfCFNAM equ *-$0381
-bfL1EAC equ *-$0281
-bfL1EAD equ *-$0280
-bfL1FAC equ *-$0181
-bfL1FCC equ *-$0161
-bfL1FEC equ *-$0141
-bfL200C equ *-$0121
-bfL202C equ *-$0101
-bfL204C equ *-$00E1
-bfL206C equ *-$00C1
-bfL208C equ *-$00A1
-bfL20AC equ *-$0081
-bfL20CC equ *-$0061
-bfL20DC equ *-$0051
-bfL20EC equ *-$0041
-bfL20FC equ *-$0031
-bfL210C equ *-$0021
-bfL2114 equ *-$0019
-bfL211C equ *-$0011
-bfL2124 equ *-$0009
+* Relocatable Static Data
+* read buffer size
+bufReaS equ $0400
+* static data
+e_begin equ *
+bfCFNAM equ e_begin
+bfCLINE equ bfCFNAM+$100
+bfL1FAC equ bfCLINE+$100
+bfL1FCC equ bfL1FAC+$20
+bfL1FEC equ bfL1FCC+$20
+bfL200C equ bfL1FEC+$20
+bfL202C equ bfL200C+$20
+bfL204C equ bfL202C+$20
+bfL206C equ bfL204C+$20
+bfL208C equ bfL206C+$20
+bfL20AC equ bfL208C+$20
+arrFHDL equ bfL20AC+$20
+arrFAU1 equ arrFHDL+$10
+arrFAU2 equ arrFAU1+$10
+arrFAU3 equ arrFAU2+$10
+bfL210C equ arrFAU3+$10
+bfL2114 equ bfL210C+$08
+bfL211C equ bfL2114+$08
+bfL2124 equ bfL211C+$08
+bufRead equ bfL2124+$08
+* e_end is just 1 behind that block,
+* never used it in other blocks
+e_end   equ bufRead+bufReaS
+* last used byte in empty block
+e_last  equ e_end-1
+        blk empty e_end-e_begin main
 
 * Update Blocks
         blk update addresses

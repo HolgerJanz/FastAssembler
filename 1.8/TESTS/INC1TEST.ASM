@@ -1,0 +1,2 @@
+ ICL 'INC2TEST.ASM'
+ DTA B($01)

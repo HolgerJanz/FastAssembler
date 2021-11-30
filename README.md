@@ -2,7 +2,7 @@
 
 Assembler for SpartaDOS X on Atari 8bit
 
-The current version is 1.8 03-10-21 and it works with all versions of SpartaDOS X. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
+The current version is 1.8 2021-12-01 and it works with all versions of SpartaDOS X. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
 
 All files in ATR image are ATASCII encoded.
 
@@ -12,13 +12,17 @@ All files in ATR image are ATASCII encoded.
 
 - fixed multiplication and division issue, because of wrong overflow handling these operations always throw error "Too big number"
 
-- fixed issue with percentage display for pass progress
-
 - add line number to source output
 
 - condense info output 
 
-- remove option B, always print error line, rename option A to L, and introduce option S for summary, e.g. count of labels and blocks
+- remove option B, always print error line, rename option A to L, and introduce option S for summary, e.g. count of labels and blocks, and memory usage
+
+- introduce option E to set error to 255 if compile fails, for better use in batch
+
+- improve memory management
+
+- reduce number of max passes to 8
 
 - update copyright message
 
@@ -26,7 +30,8 @@ All files in ATR image are ATASCII encoded.
 
 - add tutorial with extended examples
 
-## Version 1.7 (last original release by MMMG Soft from 1995)
+## Version 1.7
+Last original release by MMMG Soft from 1995
 
 This is the original Fast Assembler package delivered with SpartaDOS X Toolkit Disk up to version 4.49.
 
@@ -40,4 +45,3 @@ This package is kept for archiving and historical reasons.
 ## 
 holgerjanz@msn.com
 
-holgerjanz@abbuc.social

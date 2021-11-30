@@ -1,6 +1,6 @@
 Fast Assembler 1.8 - Tutorial
 =============================
-Holger Janz, 09-03-2021
+Holger Janz, 11-11-2021
 
 
 Einleitung
@@ -14,8 +14,7 @@ Fuer technische Information zu Fast
 Assembler (z.B. fuer alle Pseudo
 Operationen) kann die Dokumentation
 FA.DOC oder die Man Pages FA.MAN
-genutzt werden (beide im Archiv 
-enthalten).
+genutzt werden.
 
 Fast Assembler ist ein Datei zu Datei
 Assembler fuer SpartaDOS X, d.h. der
@@ -38,24 +37,23 @@ Beispiele fuer SpartaDOS X Programme
 gezeigt.
 
 Fuer das Tutorial werden folgende
-Assembler-Dateien benoetigt (liegen
-dem Archiv bei):
+Assembler-Dateien benoetigt:
 
 Atari DOS Beispiel
 - Farbdemonstration
-  EX1COLOR.ASM
+  RAINBOW.ASM
 
 SpartaDOS X Beispiele
 - Hello Atari
-  EX2HELLO.ASM
+  HELLO.ASM
 - Speicherresidentes Programm
-  EX3TSR.ASM
-  EX3CATSR.ASM
+  TSR.ASM
+  TSR_CALL.ASM
 - Kommunikation zwischen Programmen
-  EX4READ.ASM
-  EX4CALL.ASM
+  CALLER.ASM
+  CALLEE.ASM
 - Program zum Vergleich von Dateien
-  EX5COMP.ASM
+  MY_COMP.ASM
 
 Fuer das Tutorial wird ein Editor fuer
 ATASCII Dateien benoetigt. Ich kann
@@ -67,14 +65,14 @@ und kann Leerzeichen sichtbar machen.
 Der Editor wird mit XEDIT [name.ext]
 aufgerufen, mit der <HELP>-Taste
 gelangt man in ein Hilfe-Menue.
-
+Der SpartaDOS X Editor ED is auch
+geeignet.
 
 Freundlicherweise hat JFC (Jonathan
 Halliday) seine Zustimmung gegeben,
 dass ich seinen Editor zusammen mit
 Fast Assembler weitergeben darf.
 Nochmal vielen Dank dafuer an FJC!
-
 
 Aufbau des FA Quelltexts
 ------------------------
@@ -95,19 +93,6 @@ In XEDIT kann man mit dem Kommando
 am Zeilenende sichtbar, wodurch
 Leerzeichen erkannt und geloescht
 werden koennen.
-
-Damit beim Assemblieren die
-Zeilennummer ausgegeben wird,
-muss entweder ein Option (/A oder /B)
-in der Kommandozeile oder das Pseudo
-Kommando LST BAD oder LST ALL im
-Quelltext benutzt werden.
-
-Beispiel im Quelltext fuer Ausgabe von
-Zeilen bei Fehler:
-        lst bad
-gleiches Beispiel fuer Kommandozeile:
-FA EXAMPLE /B
 
 Kommentarzeilen beginnen mit *. Alles
 nach * bis zum Zeilenende wird vom
@@ -130,7 +115,7 @@ aufgebaut:
 Beispiel mit Label und Kommentar:
 start   ldx #$08 set X register
 
-Beispiel ohne Label und Kommentar
+Beispiel ohne Label und Kommentar:
 ldy #$10
 
 Ein Besonderheit gegenueber
@@ -148,7 +133,7 @@ Beispiel ASL auf Akkumulator:
         asl @
 
 
-EX1COLOR.ASM - Farbdemonstartion
+RAINBOW.ASM - Farbdemonstartion
 --------------------------------
 
 Dieses Beispiel zeigt, wie Atari-DOS-
@@ -157,16 +142,18 @@ koennen. Es ist ein kleines Demo mit
 klassischen Atari Farb-Scrolling.
 
 Assemblieren mit:
-FA EX1COLOR.ASM EX1COLOR.COM
+FA RAINBOW.ASM RAINBOE.COM
 
 Ausfuehren mit:
-EX1COLOR
+RAINBOW
 
 Mit START wird das Programm beendet.
 
 Das Programm kann angezeigt und
 bearbeitet werden mit:
-XEDIT EX1COLOR.ASM 
+XEDIT RAINBOW.ASM
+oder:
+ED  RAINBOW.ASM
 
 Das Programm besteht aus zwei
 Bloecken. Ein Block enthaelt das
@@ -189,28 +176,10 @@ wie folgt geaendert werden:
       bne loopX
 
 Beim Assemblieren mit:
-FA EX1COLOR.ASM EX1COLOR.COM
+FA RAINBOW.ASM RAINBOW.COM
 
 erscheint folgende Fehlermeldung:
 ERROR: Undeclared label or symbol
-
-Die Ausgabe der Zeile und der
-Zeilennummer erfolgt mit Option /B:
-FA EX1COLOR.ASM EX1COLOR.COM /B
-
-Jetzt erscheint die Fehlermeldung:
-27:         bne loopX
-ERROR: Undeclared label or symbol
-
-Diese Option kann auch im Quelltext
-mit folgender Anweisung eingeschaltet
-werden:
-           lst bad
-
-Wenn man diese Anweisung am Anfang
-im Quelltext nutzt, braucht man die
-Option /B nicht mehr in der
-Kommandozeile angeben.
 
 Wenn der Quelltext wieder korrigiert
 ist, sollte in der leeren Zeile 4
@@ -219,9 +188,7 @@ Mit <CONTROL><H> kann
 man RETURN-Zeichen in XEDIT sichtbar
 machen. Nun kann man sehen, dass sich
 ein Leerzeichen in der Zeile befindet.
-Folgende Fehlermeldung erscheint mit
-Option /B oder Anweisung lst bad:
-4:
+Folgende Fehlermeldung erscheint:
 ERROR: Unexpected eol
 
 Nach der Korrektur sollte man noch ein
@@ -229,8 +196,8 @@ wenig probieren und das Fehlverhalten
 studieren.
 
 
-EX2HELLO.ASM - Hello Atari
------------------------------
+HELLO.ASM - Hello Atari
+-----------------------
 
 Dies ist ein Beispiel fuer ein
 SpartaDOS X Programm. Es kann nicht
@@ -239,10 +206,10 @@ In diesem Beispiel wird Relocatable
 Code und Symbolic Links verwendet.
 
 Assemblieren mit:
-FA EX2HELLO.ASM EX2HELLO.COM
+FA HELLO.ASM HELLO.COM
 
 Ausfuehren mit:
-EX2HELLO
+HELLO
 
 Nach der Eingabe eines Namens z.B.
 Holger, gruesst es:
@@ -251,16 +218,20 @@ Hello Holger !
 Es werden die SpartaDOS Symbols PRINTF
 und GETS benutzt. Diese Symbole werden
 erst zur Laufzeit des Programs
-eingebunden. Wenn man einen Fehler
+eingebunden. Sie werden mit JSR
+gerufen und erwarten ihre Parameter
+direkt im Anschluss.
+
+Wenn man einen Fehler
 macht, kommt es zu einem
 Laufzeitfehler.
 Als Beispiel sollte die Zeile:
-PRINTF  smb 'printf'
+PRINTF  smb 'PRINTF'
 wie folgt geaendert werden:
-PRINTF  smb 'printfX'
+PRINTF  smb 'PRINTFX'
 
 Das Programm laesst sich assemblieren.
-Beim Start wird dann folgende
+Beim Start wird dann aber folgende
 Fehlermeldung ausgegeben:
 Symbol PRINTFX
 154 Symbol not defined 
@@ -287,23 +258,121 @@ MEMLO von SpartaDOS wieder zurueck
 gesetzt.
 
 
-EX3TSR/EX3CATSR.ASM - Beispiel
+TSR/TSR_CALL.ASM - Beispiel
 Speicherresidentes Programm
-------------------------------
+---------------------------
 
-*** work in progress ***
+In SpartaDOS X kann man sehr einfach
+speicherresidente Programme schreiben.
+Dies sind Programme, die nicht aus
+dem Speicher entfernt werden, wenn
+sie beendet sind.
 
+Dies kann man mit dem Symbol INSTALL
+erreichen. Es ist bei Start eines
+Programmes mit 0 initialisiert. Wenn
+beim beenden des Programs INTALL den
+Wert $FF hat, wird es nicht aus dem
+Speicher entfernt, d.h. MEMLO wird
+nicht zurueckgesetzt. So kann man sehr
+einfach zusaetzliche Treiber schreiben.
 
-EX4READ/EX4CALL.ASM - Beispiel
+Man kann seinen Unterprogrammen auch
+einen Namen geben und so neue
+SpartaDOS X Symbole definieren. Dies
+geschieht mit folgendem Blockbefehl:
+blk update new <address> '<name>'
+
+Wenn der Name mit @ anfaengt, so wird
+es in COMMAND auch als Kommando
+erkannt.
+
+Diese Beispiel besteht aus zwei
+Programmen:
+1) TSR.ASM definiert ein
+neues Symbol @GREET, welches auch
+als Kommando bekannt gemacht wird
+(der Name beginnt mit @)
+2) TSR_CALL.ASM benutzt dieses Symbol.
+Aus diesem Grund funktioniert es nur,
+wenn TSR vorher gestartet wurde
+und damit auch das Symbol @GREET
+bekannt ist. Wenn nicht kommt es
+zu folgenden Fehler:
+Symbol @GREET
+154 Symbol not defined 
+
+Wenn TSR ausgefuehrt wurde, kann man
+GREET direkt aus SpartaDOS X aufrufen,
+oder man ruft das Programm TSR_CALL,
+welches das Symbol aufruft.
+
+CALLER/CALLEE.ASM - Beispiel
 Kommunikation zwischen Programmen
 ---------------------------------
 
-*** work in progress ***
+In SparatDOS X kan man aus einem
+Programm (CALLER) direkt ein anderes
+Programm (CALLEE). Dazu wird die
+Funktion U_LOAD. Mit dem Symbol
+FLAG kann man dem gerufenen Program
+einen Wert uebergeben. Es gibt noch
+weitere Moeglichkeiten, Daten an das
+gerufenen Programm zu uebergeben. Um
+das Beispiel einfach zu halten,
+werden diese hier nicht benutzt.
+Das gerufenen Program kann mit dem
+Symbol STATUS einen Rueckgabewert
+setzen. 
+
+Das Programm CALLER ruft ein anderes
+Program und setzt vorher FLAG. Der
+Wert fuer FLAG und der Programmname
+werde ueber die Kommandozeile
+uebergeben, z.B.:
+CALLER 2 CALLEE.COM
+
+Das Program CALLEE liest FLAG,
+multipliziert den Wert mit 8 und
+setzt mit dem Ergebnis STATUS.
+Hierzu wird die Funktion MUL_32
+benutzt. Diese Funktion erwartet
+die Parameter an bestimmten Adressen
+relativ zu COMTAB und schreibt so
+auch das Ergebnis.
+
+Beide Programme geben die Werte von
+FLAG und STATUS aus die sie gesetzt
+oder uebergeben bekommen haben.
 
 
 EX5COMP.ASM - Beispiel
 Program zum Vergleich von Dateien
 ---------------------------------
 
-*** work in progress ****
+In diesem Beispiel wird gezeigt, wie
+ein neuer externer Befehl fuer
+SpartaDOS X entwickelt werden kann.
+Er ist aehnlich dem Befehl COMP und
+vergleicht zwei Dateien. Ein
+Unterschied ist, dass das Ergebnis
+nicht nur mit PRINTF ausgegeben wird,
+sondern auch STATUS gesetzt wird.
+Wenn die Dateien nicht gleich sind,
+wird der STATUS auf $FF(255) gesetzt.
+Da dies ein Wert ueber $80(128) ist,
+wird er von SparataDOS X als Fehler
+interpretiert. Da die Fehlernummer
+$FF(255) keinen Fehlertext besitzt,
+erfolgt folgende Ausgaben:
+255 System ERROR
+
+Das Setzen einer Fehlernummer hat den
+Vorteil, dass man in einer Batch-Datei
+mit dem Befehl IF ERROR 255 darauf
+reagieren kann. Dies kann man z.B.
+fuer automatische Tests nutz, wenn eine
+zu testendes Programm eine Datei erzeugt
+und das erwartete Ergebnis in einer
+anderen Datei schon vorliegt.
 

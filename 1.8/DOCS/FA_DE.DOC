@@ -1,6 +1,6 @@
 
 Fast Assembler v.1.8 PD 2021
----------------------------
+----------------------------
 
 Fast Assembler ist, wie der Name
 schon sagt, ein Assembler, wenn auch
@@ -22,7 +22,7 @@ Hinweis:
  [opt]   - optionale Angabe,
  op1|op2 - alternative Angaben.
 
-FA src[.ext] dst[.ext] [/l] [/s]
+FA src[.ext] [dst[.ext]] [/lse]
 
  src - Quelltext in ATASCII,
  dst - Zieldatei.
@@ -39,7 +39,14 @@ FA src[.ext] dst[.ext] [/l] [/s]
  /s     - es wird eine
           Zusammenfassung ausgegeben
           z.B. Gesamtanzahl von
-          Labels und Blöcken.
+          Labels und Blöcken,
+ /e     - konverts FA errors zu SDX
+          Errors beginnend von 224
+          ($E0), wenn bei der
+          Assemblierung Fehler
+          auftreten, kann in
+          der Batch-Verarbeitung mit
+          IF ERROR genutzt werden.
 
 Ein paar Worte zur Assemblierung.
 
@@ -280,8 +287,8 @@ II. Zusaetzliche Symbole:
    - Verschiebbarer Block, um Bytes
      im Haupt- oder Ext-Speicher zu
      reservieren. Hinweis: Der
-     Programmzaehler wird sofort um
-     ein Byte erhoeht.
+     Programmzaehler wird sofort
+     erhoeht.
 
   BLK U[pdate] S[ymbols]
 
@@ -496,96 +503,102 @@ II. Zusaetzliche Symbole:
 Fehlermeldungen, die beim
 Assemblieren auftreten koennen:
 
- Undeclared label or symbol
+ Undeclared label 224($E0)
    Undefinierter Name oder Symbol
    oder rekursive Definition.
 
- Label declared twice
+ Label declared twice 225($E1)
    Name oder Symbol wurde zweimal
    definiert.
 
- Unexpected eol
+ Unexpected eol 226($E2)
    Unerwarteter Zeilenumbruch, die
    Zeile muss mindestens ein Zeichen
    oder einen Parameter enthalten.
 
- Too many passes
+ Too many passes 227($E3)
    Zu viele Durchlaeufe beim
-   Assemblieren, die Anzahl von 255
+   Assemblieren, die Anzahl von 8
    Durchlaeufen wurde
    ueberschritten. 
 
- Too big number
+ Too big number 228($E4)
    Zahl zu gross, die Zahl hat den
    zulaessigen 4-Byte-Bereich
    ueberschritten.
 
- String error
+ String error 229($E5)
    Fehler im Textausdruck, keine
    geschlossenen Anfuehrungszeichen
    oder leerer Ausdruck.
 
- Illegal symbol
+ Illegal symbol 230($E6)
    Unzulaessiges Zeichen in der
    Zeile.
 
- Branch to far
+ Branch to far 231($E7
    Der relative Sprung liegt
    ausserhalb des Bereichs +/-128
    Bytes.
 
- Improper type
+ Improper type 232($E8)
    Adressierungstyp fuer den
    angegebenen Befehl nicht
    zulaessig.
 
- Label missing
+ Label missing 233($E9)
    Fehlender Name, einer EQU oder
    SMB Definition muss immer ein
    Name vorangestellt werden.
 
- Expression expected
+ Expression expected 234($EA)
    Ausdruck erwartet, Operanden
    von mathematischen Operationen
    muessen numerische Ausruecke
    sein.
 
- Too many blocks
+ Too many blocks 235($EB)
    Zu viele Bloecke, die Gesamtzahl
    der Bloecke darf 256 nicht
    ueberschreiten, und die Anzahl
    der RELOC- und EMPTY-Bloecke darf
    7 nicht ueberschreiten.
 
- Undefined or long
+ Undefined or too long 236($EC) 
    Name undefiniert oder zu lang,
    bei der Definition von Bloecken
    muss ein Name vergeben werden und
    die Adresse darf nicht groesser
    als 2 Byte sein.
 
- Improper block type
+ Improper block type 237($ED)
    Ungueltiger Blocktyp, Z.B. darf
    eine UPDATE NEW Block nicht
    einem DOS Block folgen.
 
- Long or symbol
+ Too long or invalid symbol 238($EE)
    Der Ausdruck ist zu gross oder
    enthaelt ein ungueltiges Symbol.
 
- Parenthesis not balanced
+ Parenthesis not balanced 239($EF)
    Keine geschlossenen Klammern.
 
- Too many operations
+ Too many operations 240($F0)
    Zu viele Operationen im Ausdruck,
    die Anzahl der Operationen ist
    auf 32 begrenzt.
 
- Unexpected symbol
+ Unexpected symbol 241($E1)
    Unerwartetes Symbol, Symbole
    koennen nicht in anderen Bloecken
    als SPARTA oder RELOC und in
    Blockdefinitionen verwendet
    werden.
+
+ Internal error 242($E2)
+   Interner Fehler, bitte schick
+   mir eine Email, mit einer
+   Anleitung zum Reproduzieren
+   (holgerjanz@msn.com)
 
 Ende der FA Dokumentation.

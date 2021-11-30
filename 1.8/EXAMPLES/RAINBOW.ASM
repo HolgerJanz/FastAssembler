@@ -1,8 +1,5 @@
 * Example for FA
-* To assembly:
-* FA EX1COLOR.ASM EX1COLOR.COM
-
-* color scrolling demo
+* Demo Atari Rainbow Color
 * Atari DOS executable
 * press START to end
 
@@ -14,7 +11,7 @@ WSYNC   equ $d40a
 VCOUNT  equ $d40b
 
 * main program Atari DOS block
-        blk DOS $2500
+        blk DOS $3000
 * reset console keys
 start   lda #$08
         sta CONSOL

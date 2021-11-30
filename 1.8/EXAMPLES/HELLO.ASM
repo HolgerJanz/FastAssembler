@@ -1,23 +1,20 @@
 * Example for FA
-* To assembly:
-* FA EX2HELLO.ASM EX2HELLO.COM
-
 * Hello from Atari
 * SpartaDOS X executable with
 * relocatable code 
 
 * used SpartaDOS X symbols
-PRINTF  smb 'printf'
-GETS    smb 'gets'
+* see SDX programming guide
+PRINTF  smb 'PRINTF'
+GETS    smb 'GETS'
 
 * name buffer size
-nam_siz equ $10
+nam_siz equ $40
 
-* main relocatable code block
+* relocatable code block
         blk reloc main
 * print question
         jsr PRINTF
-        dta b($9b)
         dta c'What''s your name?'
         dta b($9B,$00)
 * get name, due to code
@@ -31,7 +28,6 @@ nam_siz equ $10
         jsr GETS
 * print greetings
         jsr PRINTF
-        dta b($9b)
         dta c'Hello %s !'
         dta b($9b,$00)
         dta v(name)
@@ -39,11 +35,15 @@ nam_siz equ $10
 * vector is needed for get name
 namev   dta v(name)
 
-* main relocatable data block
+* relocatable data block
+* program counter is incremented!
+* by BLK EMPTY, symbols must be
+* definded beforehand
+name    equ *
         blk empty nam_siz main
-* program counter already incremented!
-name    equ *-nam_siz
 
 * blocks for address and symbol update
-        blk update adress
+        blk update addresses
         blk update symbols
+        
+        end

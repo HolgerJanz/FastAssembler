@@ -74,7 +74,7 @@ prsVarr dta v(pv8AM)
 B1L11AB dta b($00)
 
 * parse look up operation
-prsOprt lda $82
+prsOprt lda BFCFNAL
         cmp #$03
         beq B1L11B4
 B1L11B2 sec
@@ -124,10 +124,10 @@ B1L120A jsr pvNoPa
         bne B1L1260
         clc
         lda B1L09AE
-        sbc $8C
+        sbc PROGCNT
         sta B1L09AE
         lda B1L09AF
-        sbc $8D
+        sbc PROGCNT+1
         sta B1L09AF
         lda B1L09B0
         sbc #$00
@@ -291,9 +291,10 @@ B1L138A jsr $FFFF
         bne B1L134F
 B1L1392 rts
 
-B1L1393 lda bfL1EAD
-        cmp #$28
+B1L1393 lda bfCLINE+1
+        cmp #'('
         beq B1L139F
+* ERROR: Illegal symbol
         lda #$06
         jmp prErrMs
 B1L139F lda #$FF
@@ -303,8 +304,8 @@ B1L13A6 lda B1L09AC
         beq B1L134F
         ldx $83
         dex
-        lda bfL1EAC,X
-        cmp #$29
+        lda bfCLINE,X
+        cmp #')'
         bne B1L13B9
         inc B1L09AC
         dta b(BIT_zp)
@@ -320,6 +321,7 @@ B1L13C3 jsr $FFFF
         beq B1L13A6
 B1L13CF lda B1L09AC
         beq B1L1392
+* ERROR: Parenthesis not balanced
         lda #$0F
         jmp prErrMs
 
@@ -383,6 +385,6 @@ B1L1437 lda bfCFNAM,X
         jsr B1L0FC8
 B1L1442 jsr B1L0899
         inx
-        cpx $82
+        cpx BFCFNAL
         bcc B1L1437
         rts

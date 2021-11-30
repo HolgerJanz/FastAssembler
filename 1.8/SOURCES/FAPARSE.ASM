@@ -153,7 +153,7 @@ B1L0AD3 ldy B1L09A7
         clc
 B1L0AF6 rts
 B1L0AF7 inx
-        lda bfL1EAC,X
+        lda bfCLINE,X
         cpx $83
         rts
 
@@ -174,6 +174,7 @@ vec_op  dta v(op_add)
 
 B1L0B18 jsr B1L08D8
         bne B1L0B22
+* ERROR: Unexpected eol
         lda #$02
         jmp prErrMs
 B1L0B22 ldy #$00
@@ -184,12 +185,13 @@ B1L0B29 ldx #$01
         stx B1L0B01
         ldx #$FF
         stx $81
-        ldx bfL1EAC,Y
-        cpx #$2A
+        ldx bfCLINE,Y
+        cpx #'*'
         bne B1L0B40
+* substitute ! with *
         pha
-        lda #$21
-        sta bfL1EAC,Y
+        lda #'!'
+        sta bfCLINE,Y
         pla
 B1L0B40 ldx #$01
 B1L0B42 stx B1L0B02
@@ -214,7 +216,7 @@ B1L0B65 sta bfL1FCC,X
         bcs B1L0B60
         lda B1L0B02
         sta bfL20AC,X
-B1L0B77 lda bfL1EAC,Y
+B1L0B77 lda bfCLINE,Y
         jsr B1L0940
         ldx B1L093E
         bne B1L0BB5
@@ -258,11 +260,11 @@ B1L0BD0 lda B1L0AFE
         cmp #$07
         bne B1L0C1A
         dey
-        lda bfL1EAC,Y
+        lda bfCLINE,Y
         cmp #']'
         bne B1L0C0E
         ldy bfL1FAC,X
-        lda bfL1EAC,Y
+        lda bfCLINE,Y
         cmp #'['
         beq B1L0BF3
         lda #$06
@@ -493,8 +495,8 @@ B1L0DF3 lda B1L09AE,Y
         bpl B1L0DF3
         rts
 
-B1L0DFE sta $82
-        cpy $82
+B1L0DFE sta BFCFNAL
+        cpy BFCFNAL
         bcc B1L0E09
         lda #$0A
         jmp prErrMs
@@ -503,7 +505,7 @@ B1L0E09 lda #$00
 B1L0E0D sta B1L09AD,X
         dex
         bpl B1L0E0D
-        lda bfL1EAC,Y
+        lda bfCLINE,Y
         cmp #$27
         beq B1L0E1E
         cmp #'"'
@@ -524,16 +526,16 @@ B1L0E36 cmp #'0'
         bcs B1L0E41
         jmp B1L0F69
 B1L0E41 ldx #$00
-B1L0E43 lda bfL1EAC,Y
+B1L0E43 lda bfCLINE,Y
         jsr TOUPPER
         sta bfCFNAM,X
         inx
         iny
-        cpy $82
+        cpy BFCFNAL
         bcc B1L0E43
         lda #$9B
         sta bfCFNAM,X
-        stx $82
+        stx BFCFNAL
         jsr B1L1BC5
         ldx #$02
 B1L0E5E lda B1L1BBF,X
@@ -550,7 +552,7 @@ B1L0E75 jsr B1L1C46
 B1L0E78 clc
         rts
 
-B1L0E7A lda $82
+B1L0E7A lda BFCFNAL
         sta B1L09AE
         tya
         tax
@@ -570,30 +572,30 @@ B1L0E9D sta B1L09AE
 B1L0EA1 rts
 
 B1L0EA2 iny
-        cpy $82
+        cpy BFCFNAL
         beq B1L0EAC
         lda #$06
         jmp prErrMs
-B1L0EAC lda $8C
+B1L0EAC lda PROGCNT
         sta B1L09AE
-        lda $8D
+        lda PROGCNT+1
         sta B1L09AF
         clc
         jmp end_op
 
 B1L0EBA iny
-        cpy $82
+        cpy BFCFNAL
         bcc B1L0EC4
         lda #$0A
         jsr prErrMs
 B1L0EC4 dey
 B1L0EC5 iny
-        cpy $82
+        cpy BFCFNAL
         bcs B1L0EED
         ldx #$03
         jsr B1L0F8B
         bne B1L0EF1
-        lda bfL1EAC,Y
+        lda bfCLINE,Y
         jsr TOUPPER
         sec
         sbc #$30
@@ -612,18 +614,18 @@ B1L0EF1 lda #$04
 B1L0EF4 lda #$06
         jmp prErrMs
 B1L0EF9 iny
-        cpy $82
+        cpy BFCFNAL
         bcc B1L0F03
         lda #$0A
         jsr prErrMs
 B1L0F03 dey
 B1L0F04 iny
-        cpy $82
+        cpy BFCFNAL
         bcs B1L0EED
         ldx #$00
         jsr B1L0F8B
         bne B1L0EF1
-        lda bfL1EAC,Y
+        lda bfCLINE,Y
         sec
         sbc #$30
         cmp #$02
@@ -632,7 +634,7 @@ B1L0F04 iny
         sta B1L09AE
         jmp B1L0F04
 B1L0F23 iny
-        cpy $82
+        cpy BFCFNAL
         bcs B1L0EED
         lda B1L09B1
         pha
@@ -663,7 +665,7 @@ B1L0F23 iny
         ldx #$00
         jsr B1L0F8B
         bne B1L0EF1
-        lda bfL1EAC,Y
+        lda bfCLINE,Y
 B1L0F69 sec
         sbc #$30
         cmp #$0A

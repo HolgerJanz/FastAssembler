@@ -5,7 +5,7 @@ syCode2 dta c'QM'
 syCode3 dta c'UB'
 syCodeV dta v(equCode),v(smbCode)
 
-prsSymb lda $82
+prsSymb lda BFCFNAL
         cmp #$03
         beq B1L19D8
 B1L19D6 sec
@@ -95,16 +95,17 @@ B1L1A88 lda B1L1BBF
 B1L1A91 clc
         rts
 
-B1L1A93 ldy #$00
+* find . in file name
+findDot ldy #$00
 B1L1A95 lda bfCFNAM,Y
-        cmp #$2E
+        cmp #'.'
         bne B1L1A9F
         clc
         bcc B1L1AA8
 B1L1A9F cmp #$9B
         beq B1L1AA8
         iny
-        cpy $82
+        cpy BFCFNAL
         bcc B1L1A95
 B1L1AA8 rts
 
@@ -114,7 +115,9 @@ dfltExt dta c'.ASM'
         dta b($9B)
 dfltIdx dta b($00,$05,$0A)
 
-B1L1AB6 inx
+* set default ext
+* src X=0, dst X=1
+setDEXT inx
         lda dfltIdx,X
         sta B1L1ACA+1
         dex
@@ -127,31 +130,31 @@ B1L1AC2 lda dfltExt,X
 B1L1ACA cpx #$00
         bcc B1L1AC2
         dey
-        sty $82
+        sty BFCFNAL
         rts
 
 B1L1AD2 dta b($00)
 
 B1L1AD3 txa
         pha
-        jsr B1L1A93
+        jsr findDot
         bcc B1L1ADD
-        jsr B1L1AB6
+* set missing ext
+        jsr setDEXT
 B1L1ADD pla
         jsr B1L1B0C
         iny
         lda B1L1AD2
         sta ($84),Y
-        jmp B1L1AEA
 B1L1AEA iny
-        lda $82
+        lda BFCFNAL
         sta ($84),Y
         ldx #$00
 B1L1AF1 iny
         lda bfCFNAM,X
         sta ($84),Y
         inx
-        cpx $82
+        cpx BFCFNAL
         bcc B1L1AF1
         iny
         tya
@@ -167,21 +170,24 @@ B1L1B0B rts
 B1L1B0C tax
         lda $8A
         sta $84
-        cmp $88
+        sta MEMHIGH
+        cmp MEMMAX 
         lda $8B
         sta $85
-        sbc $89
+        sta MEMHIGH+1
+        sbc MEMMAX+1
         bcc B1L1B20
-        lda #$9C
+* ERROR: Out of memory
+        lda #$9E
         jmp jmpFAIL
 B1L1B20 ldy #$01
         txa
         sta ($84),Y
         rts
 
-B1L1B26 ldy $86
+B1L1B26 ldy MEMMIN
         sty $84
-        ldy $87
+        ldy MEMMIN+1
         sty $85
 B1L1B2E sta B1L1B35+1
 B1L1B31 ldy #$01
@@ -217,13 +223,13 @@ B1L1B67 rts
 
 B1L1B68 iny
         lda ($84),Y
-        sta $82
+        sta BFCFNAL
         ldx #$00
 B1L1B6F iny
         lda ($84),Y
         sta bfCFNAM,X
         inx
-        cpx $82
+        cpx BFCFNAL
         bcc B1L1B6F
         lda #$9B
         sta bfCFNAM,X
@@ -288,10 +294,10 @@ B1L1BED lda B1L1BBE
         rts
 
 * unresolved symbol
-B1L1BF3 inc unResSy
-        bne B1L1BFB
-        inc unResSy+1
-B1L1BFB lda #$00
+B1L1BF3 inc unResLa
+        bne *+5
+        inc unResLa+1
+        lda #$00
         jmp prErrMs
 
 B1L1C00 jsr B1L1BAA
@@ -302,7 +308,7 @@ B1L1C00 jsr B1L1BAA
 B1L1C0D rts
 
 B1L1C0E iny
-        lda $82
+        lda BFCFNAL
         cmp ($84),Y
         bne B1L1C24
         ldx #$00
@@ -311,7 +317,7 @@ B1L1C17 iny
         cmp ($84),Y
         bne B1L1C24
         inx
-        cpx $82
+        cpx BFCFNAL
         bcc B1L1C17
 B1L1C24 rts
 
@@ -360,18 +366,18 @@ B1L1C69 lda #$05
         iny
         lda $85
         sta ($98),Y
-        lda $8C
+        lda PROGCNT
         sta B1L1C43
-        lda $8D
+        lda PROGCNT+1
         sta B1L1C44
         lda B1L1D65
         and #$70
         bne B1L1C9B
         sec
-        lda $8C
+        lda PROGCNT
         sbc B1L1D66
         sta B1L1C43
-        lda $8D
+        lda PROGCNT+1
         sbc B1L1D67
         sta B1L1C44
 B1L1C9B clc
@@ -412,9 +418,29 @@ B1L1CD9 ldy #$FF
         sta $92
         lda $8B
         sta $93
+* check max mem
+        lda $92
+        cmp MEMMAX
+        lda $93
+        sbc MEMMAX+1
+        bcc *+10
+* ERROR: Out of memory
+        jsr B1L1Cyy
+        lda #$9E
+        jmp jmpFAIL
         tya
         iny
         sta ($92),Y
+* check and save high mem
+        lda $92
+        cmp MEMHIGH
+        lda $93
+        sbc MEMHIGH+1
+        bcc *+10
+B1L1Cyy lda $92
+        sta MEMHIGH
+        lda $93
+        sta MEMHIGH+1
         rts
 
 B1L1CE8 sec
@@ -449,7 +475,7 @@ B1L1D05 inc symbCnt
 B1L1D21 ldx #$00
         jsr B1L096A
         bcs B1L1D42
-        ldx $82
+        ldx BFCFNAL
         cpx #$08
         bcs B1L1D38
         lda #$20
@@ -458,7 +484,7 @@ B1L1D30 sta bfCFNAM,X
         cpx #$08
         bcc B1L1D30
 B1L1D38 ldx #$08
-        stx $82
+        stx BFCFNAL
         lda #$9B
         sta bfCFNAM,X
         clc
