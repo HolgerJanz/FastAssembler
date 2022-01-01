@@ -60,20 +60,18 @@ _pm_mem_lp  sta pm_mem,X
 * setup player
             lda #$03
             sta GRACTL
+            sta SIZEP0
+            sta SIZEP1
             lda #$14
             sta HPOSP0
             lda #$D0
             sta HPOSP1
-            lda #$03
-            sta SIZEP0
-            sta SIZEP1
 * setup GITA mode GR.9, and prio
             lda #$43
             sta GPRIOR
 * setup DL
             lda #$00
             sta COLOR4
-            lda #$00
             sta RTCLOK+2
             lda <disp_lst
             sta SDLST
@@ -93,7 +91,7 @@ _pm_mem_lp  sta pm_mem,X
             lda #$2A
             sta SDMCTL
 * everything is done in vblki
-endless     jmp endless
+endless     bne endless
 
 * vertical blank interrupt
 vbi         lda #$00
@@ -193,12 +191,12 @@ dli         pha
             sta COLBK
 * invert hardware scrolling for part 5
             cpx #$05
-            bne *+10
+            bne _inc_cnt
             lda _hscrol
             eor #$02
             sta HSCROL
 * incerement dli count
-            inc dli_cnt
+_inc_cnt    inc dli_cnt
             pla
             tax
             pla
@@ -220,9 +218,7 @@ disp_lst    dta b($70,$70,$60)
 * use empty line for dli, looks nicer and gives time for dli
             dta b($80)
 * first part with horizontal scrolling
-dl_part1    dta b($5F)
-            dta a(scr_l1)
-            dta b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1)
+dl_part1    dta b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1)
             dta b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1)
             dta b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1)
             dta b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1)
