@@ -1,16 +1,10 @@
-**************************
-* Example Raster Graphic *
-**************************
+* ANTIC Raster Graphic
 * use dli screen address update for scrolling
 * complete scrolling in vblk
 * horizontal hardware scrolling
-* players to cover noise 
-* only memory $2000-$28BB used (2235bytes)
-* supports all DOSs with MEMLO<=$2000
+* players to cover noise
 
-******************
-* System Equates *
-******************
+* System Equates
 RTCLOK      equ $0012
 
 VDSLST      equ $0200
@@ -34,27 +28,30 @@ NMIEN       equ $D40E
 SETVBV      equ $E45C
 XITVBV      equ $E462
 
-****************
-* Code Segment *
-****************
+* Zero Page Variables
+* horizontal scroll count
+scl_cnt      equ $80
+* dli counter to identify dli line
+dli_cnt      equ $81
+* needed because HSCROL is write only
+_hscrol      equ $82
+
+* Code Block
 * pm starts at 1k page
 pm_mem      equ $2000
 * start of code
             blk dos pm_mem+$400
-* switch off dma for setup
-start       lda #$00
-            sta SDMCTL
-* hide noise at left and rigth
-* using player
-            lda >pm_mem
+* hide noise using player
+start       lda >pm_mem
             sta PMBASE
 * set screen memory for player
-            lda #$FF
-            tax
-_pm_mem_lp  sta pm_mem,X
-            sta pm_mem+$100,X
-            sta pm_mem+$200,X
-            sta pm_mem+$300,X
+* and background color
+            ldx #$00
+            stx COLOR4
+            dex
+            txa
+* we just need player 0 and 1
+_pm_mem_lp  sta pm_mem+$200,X
             dex
             bne _pm_mem_lp
 * setup player
@@ -69,41 +66,38 @@ _pm_mem_lp  sta pm_mem,X
 * setup GITA mode GR.9, and prio
             lda #$43
             sta GPRIOR
-* setup DL
-            lda #$00
-            sta COLOR4
-            sta RTCLOK+2
+* setup display list
             lda <disp_lst
             sta SDLST
             lda >disp_lst
             sta SDLST+1
+* setup display list interrupt
             lda <dli
             sta VDSLST
             lda >dli
             sta VDSLST+1
-            lda #$C0 
-            sta NMIEN
+* setup vertical blank interrupt
             ldy <vbi
             ldx >vbi
             lda #$07
             jsr SETVBV
-* switch on dma
+* enable interrupts
+            lda #$C0 
+            sta NMIEN
+* switch on DMA
             lda #$2A
             sta SDMCTL
-* everything is done in vblki
-endless     bne endless
+* everything is done in interrupts
+endless     jmp endless
 
 * vertical blank interrupt
 vbi         lda #$00
-* reset dli count
+* reset count
             sta dli_cnt
-* revert HSCROL for part 1, see dli
-            lda _hscrol
-            sta HSCROL
 * set color array every 256/60 seconds
             lda RTCLOK+2
             bne _no_set_col
-* last color X=6, always black for
+* last color 7 (X=6), always black for
 * boarder at top and bottom
             ldx #$05
 _next_color lda RANDOM
@@ -113,38 +107,37 @@ _next_color lda RANDOM
             bpl _next_color
 _no_set_col ldx _hscrol
 * do hardware scrolling
-            beq _mv_start
-* in GR.9 one pixel is two color clocks
-            dex
-            dex
+            beq _scl_start
+            ldx #$00
             stx _hscrol
 * HSCROL is a write only register!
             stx HSCROL
             beq _end_vbi
-_mv_start   inx
+* in GR.9 one pixel is two color clocks
+_scl_start  inx
             inx
             stx _hscrol
             stx HSCROL
-* modify dl addresses
+* modify addresses
 * calc low byte for part 1 and 6
-            inc mv_cnt
-            lda mv_cnt
+            inc scl_cnt
+            lda scl_cnt
             cmp #$10
-            bcc _mv_no_res
+            bcc _scl_no_res
             lda #$00
-            sta mv_cnt
-_mv_no_res  lsr @
-            bcc _mv_no_s2
-            ora #$80
-_mv_no_s2   rol @
+            sta scl_cnt
+_scl_no_res lsr @
+            bcc _scl_no_s2
+* will be $40 after rol, see screen memory
+            ora #$20
+_scl_no_s2  rol @
 * set low byte for part 1 and 6
             ldx #$00
 * part 1 and 6 uses inverted value
-* of each other
 _next_16    sta dl_part1+1,X
-            eor #$0f
+            eor #$07
             sta dl_part6+1,X
-            eor #$0f
+            eor #$07
             inx
             inx
             inx
@@ -189,31 +182,25 @@ dli         pha
             ldx dli_cnt
             lda color_array,X
             sta COLBK
-* invert hardware scrolling for part 5
+* invert hardware scrolling for part 6
             cpx #$05
             bne _inc_cnt
             lda _hscrol
             eor #$02
             sta HSCROL
-* incerement dli count
+* incerement count
 _inc_cnt    inc dli_cnt
             pla
             tax
             pla
             rti
 
-* Some Variables:
-* at every 16th byte fall back to 0
-mv_cnt      dta b($00)
-* needed because HSCROL is write only
-_hscrol     dta b($02)
 * color array for part 1-6 and
 * last color for top/bottom
 color_array dta b($10,$20,$30,$40,$50,$60,$00)
-* dli counter to identify dli line
-dli_cnt     dta b($00)
 
 * Display List
+* 6 parts with 32 lines each
 disp_lst    dta b($70,$70,$60)
 * use empty line for dli, looks nicer and gives time for dli
             dta b($80)
@@ -265,7 +252,7 @@ dl_part5    dta b($4F),a(scr_l1+$00),b($4F),a(scr_l2+$00),b($4F),a(scr_l1+$01),b
             dta b($4F),a(scr_l1+$0C),b($4F),a(scr_l2+$0C),b($4F),a(scr_l1+$0D),b($4F),a(scr_l2+$0D)
             dta b($4F),a(scr_l1+$0E),b($4F),a(scr_l2+$0E),b($4F),a(scr_l1+$0F),b($4F),a(scr_l2+$0F)
             dta b($80)
-* last part with horizontal scrolling
+* last part 6 with horizontal scrolling
 dl_part6    dta b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1)
             dta b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1)
             dta b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1)
@@ -279,27 +266,21 @@ dl_part6    dta b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_l1),b($5F),a(scr_
             dta b($80)
             dta b($41),a(disp_lst)
 
-**************************
-* Screen Memory Segments *
-**************************
-* screen memory 1, starts at new page
+* Screen Memory 1, starts at new page
 * see modify dl addresses
             blk dos *&$FF00+$100
 scr_l1      dta b($01,$23,$45,$67,$89,$AB,$CD,$EF,$FE,$DC,$BA,$98,$76,$54,$32,$10)
             dta b($01,$23,$45,$67,$89,$AB,$CD,$EF,$FE,$DC,$BA,$98,$76,$54,$32,$10)
             dta b($01,$23,$45,$67,$89,$AB,$CD,$EF,$FE,$DC,$BA,$98,$76,$54,$32,$10)
             dta b($01,$23,$45,$67,$89,$AB,$CD,$EF,$FE,$DC,$BA,$98)
-* screen memory 2, starts at screen memory 1 + $80
-            blk dos scr_l1+$80
+* Screen Memory 2, starts at screen memory 1 + $40
+            blk dos scr_l1+$40
 scr_l2      dta b($12,$34,$56,$78,$9A,$BC,$DE,$FF,$ED,$CB,$A9,$87,$65,$43,$21,$00)
             dta b($12,$34,$56,$78,$9A,$BC,$DE,$FF,$ED,$CB,$A9,$87,$65,$43,$21,$00)
             dta b($12,$34,$56,$78,$9A,$BC,$DE,$FF,$ED,$CB,$A9,$87,$65,$43,$21,$00)
             dta b($12,$34,$56,$78,$9A,$BC,$DE,$FF,$ED,$CB,$A9,$87)
 
-**************************
-* Start Address Segment *
-**************************
-* set start address for Atari DOS
+* Run Block for Atari DOS
             blk dos RUNAD
             dta a(start)
 

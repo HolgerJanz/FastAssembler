@@ -34,10 +34,9 @@ wait   cpy RTCLOK
 * only low part, wrap around
        inc taddr
        jmp loop
-* calc next page
-next_p equ */$100+1
+
 * new block at next page
-       blk dos next_p*$100
+       blk dos *&$FF00+$100
 * screen memory, must start at page
 * 299 bytes, 256 plus line length 40,
 * plus 4 for hardware scrolling
@@ -60,7 +59,7 @@ taddr  dta a(text)
 *          jump back
        dta b($41),a(dlist)
 
-* set start address
+* Run Block for Atari DOS
        blk dos RUNAD
        dta a(start)
 

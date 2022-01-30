@@ -45,5 +45,5 @@ name    equ *
 * blocks for address and symbol update
         blk update addresses
         blk update symbols
-        
+
         end
