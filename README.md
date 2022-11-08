@@ -1,10 +1,8 @@
 # Fast Assembler
 
-Assembler for SpartaDOS X on Atari 8bit
+Assembler for SpartaDOS X and BW-DOS 1.4 on Atari 8bit
 
-The current version is 1.8 2021-12-01 and it works with all versions of SpartaDOS X. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
-
-All files in ATR image are ATASCII encoded.
+The current version is 1.8 02-11-2022 and it works with all versions of SpartaDOS X and with BW-DOS at least version 1.4. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
 
 ## Version 1.8
 
@@ -43,7 +41,5 @@ Fast Assembler 1.7 uses undocumented features for parameter parsing. These featu
 This package is kept for archiving and historical reasons.
 
 ## 
-holgerjanz@msn.com
-
 holgerjanz@abbuc.social
 

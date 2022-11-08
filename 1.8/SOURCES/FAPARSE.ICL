@@ -436,7 +436,7 @@ op_mul  jsr B1L0D9E
 B1L0D75 php
         ldx #$03
         ldy #$00
-B1L0D79 lda COMTAB+$107,X
+B1L0D79 lda COMTAB+CT_VAR32_3,X
         sta B1L09AE,Y
         iny
         dex
@@ -459,13 +459,13 @@ B1L0D9E lda B1L09B1
         bpl B1L0DA9
         jsr B1L0C85
 B1L0DA9 lda B1L09B1
-        sta COMTAB+$FF
+        sta COMTAB+CT_VAR32_1
         lda B1L09B0
-        sta COMTAB+$FF+1
+        sta COMTAB+CT_VAR32_1+1
         lda B1L09AF
-        sta COMTAB+$FF+2
+        sta COMTAB+CT_VAR32_1+2
         lda B1L09AE
-        sta COMTAB+$FF+3
+        sta COMTAB+CT_VAR32_1+3
 
         lda B1L09AD
         ora bfL200C,Y
@@ -489,7 +489,7 @@ B1L0DA9 lda B1L09B1
 B1L0DEF ldx #$00
         ldy #$03
 B1L0DF3 lda B1L09AE,Y
-        sta COMTAB+$103,X
+        sta COMTAB+CT_VAR32_2,X
         inx
         dey
         bpl B1L0DF3

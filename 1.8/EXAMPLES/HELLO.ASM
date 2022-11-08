@@ -23,7 +23,7 @@ nam_siz equ $40
 * compile time we do not know where
 * the program will be located!
         lda namev
-        ldX namev+1
+        ldx namev+1
         ldy #nam_siz
         jsr GETS
 * print greetings

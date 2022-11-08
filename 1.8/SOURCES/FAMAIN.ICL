@@ -66,7 +66,7 @@ B1L0052 lda unResLa
         beq nxtPass
         jsr prCmpl
 exitFA  jsr U_XFAIL
-        jmp FCLOSEA
+        jmp FCLOSEAL
 * check diff with last pass
 B1L0067 jsr prUnRSy
 * first check too many passes
@@ -127,7 +127,7 @@ prCmpl  lda cmdOptS
         dta b($9B,$00)
         rts
 
-prFail  lda #$9c
+prFail  lda #$9b
         jsr PUTC
         lda cmdOptS
         beq *+5 
@@ -154,15 +154,15 @@ failTr  sta STATUS
         cmp #$9C
         bne *+8
         jsr prUsage
-        jmp FCLOSEA
+        jmp FCLOSEAL
         jsr prFail
-        jmp FCLOSEA
+        jmp FCLOSEAL
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 2021-12-01'
+        dta c'Fast Assembler 1.8 02-11-2022'
         dta b($9b)
-        dta c'(c) MMMG Soft ''95, Public Domain 2021'
+        dta c'(c) MMMG Soft ''95, Public Domain 2022'
         dta b($9b,$00)
         jsr PRINTF
         dta c'Parameters: src [dst] [/LSE]'
@@ -181,9 +181,9 @@ prUsage jsr PRINTF
         rts
 
 * get CFNAME to buffer
-gtCFNAM ldy COMTAB+$1a
+gtCFNAM ldy COMTAB+CT_TRAILS
         sty BFCFNAL
-        lda COMTAB+$21,Y
+        lda COMTAB+CT_COMFNAM,Y
         sta bfCFNAM,Y
         dey
         bpl *-7
@@ -191,14 +191,14 @@ gtCFNAM ldy COMTAB+$1a
 
 * store buffer to CFNAME
 stCFNAM ldy BFCFNAL
-        sty COMTAB+$1a
+        sty COMTAB+CT_TRAILS
         cpy #$64
         bcc B1L0253
         ldy #$63
         lda #$9B
         bne B1L0256
 B1L0253 lda bfCFNAM,Y
-B1L0256 sta COMTAB+$21,Y
+B1L0256 sta COMTAB+CT_COMFNAM,Y
         dey
         bpl B1L0253
         rts
@@ -236,7 +236,7 @@ prsOptN lda cmdOptL,X
         dex
         bpl prsOptN
 * check for text parameter
-        jsr U_GETPA
+        jsr U_GETPAR
         beq prsCEnd
         inc cmdPCnt
         ldx cmdPCnt

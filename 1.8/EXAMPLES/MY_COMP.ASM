@@ -24,7 +24,7 @@
 * definition of SDX symbols used
 * in the program
 PRINTF   smb 'PRINTF'
-U_GETATR smb 'U_GETATR'
+U_GETPAR smb 'U_GETPAR'
 U_GETNUM smb 'U_GETNUM'
 FOPEN    smb 'FOPEN'
 FGETC    smb 'FGETC'
@@ -139,7 +139,7 @@ comp_ex  lda fdif
          dta c'Files are different',b($9B,0)
          lda #$ff
          sta STATUS
-         jmp comp_ed
+         jmp U_FAIL
 * if not, display a message, too
 * set STATUS to 1 = OK
 comp_ok  jsr PRINTF
@@ -148,13 +148,12 @@ comp_ok  jsr PRINTF
          sta STATUS
 * remove trap, close all files and
 * exit the program
-comp_ed  jsr U_XFAIL
+         jsr U_XFAIL
          jmp FCLOSEAL
 
 * procedure takes attributes (default
 * attributes in A)
-finit    lda #$A0
-         jsr U_GETATR
+finit    jsr U_GETPAR
          bne finit_0
 * if the file name is missing
 * (Z = 1), give an error: bad
@@ -188,8 +187,7 @@ trap     cmp #$9C
 * if so, display message and
          jsr PRINTF
          dta c'Parameters:',b($9b)
-         dta c'[atr] file1 [atr] file2 [max]',b($9b)
-         dta c'atr  : file attributes,',b($9b)
+         dta c'file1 [atr] file2 [max]',b($9b)
          dta c'file : file name,',b($9b)
          dta c'max  : max number of diffs,'
          dta b($9b,0)

@@ -1,30 +1,38 @@
-* Fast Assembler 1.8 PD 2021
+* Fast Assembler for SDX 1.8 PD 2021
 
 * SDX Symbols
-COMTAB  smb 'COMTAB'
-U_FAIL  smb 'U_FAIL'
-U_SFAIL smb 'U_SFAIL'
-U_XFAIL smb 'U_XFAIL'
-FCLOSEA smb 'FCLOSEAL'
-PRINTF  smb 'PRINTF'
-FREAD   smb 'FREAD'
-FOPEN   smb 'FOPEN'
-FCLOSE  smb 'FCLOSE'
-PUTC    smb 'PUTC'
-FPUTC   smb 'FPUTC'
-FTELL   smb 'FTELL'
-FSEEK   smb 'FSEEK'
-U_GETPA smb 'U_GETPAR'
-U_SLASH smb 'U_SLASH'
-DIV_32  smb 'DIV_32'
-MUL_32  smb 'MUL_32'
-TOUPPER smb 'TOUPPER'
-STATUS  smb 'STATUS'
+COMTAB   smb 'COMTAB'
+U_FAIL   smb 'U_FAIL'
+U_SFAIL  smb 'U_SFAIL'
+U_XFAIL  smb 'U_XFAIL'
+FCLOSEAL smb 'FCLOSEAL'
+PRINTF   smb 'PRINTF'
+FREAD    smb 'FREAD'
+FOPEN    smb 'FOPEN'
+FCLOSE   smb 'FCLOSE'
+PUTC     smb 'PUTC'
+FPUTC    smb 'FPUTC'
+FTELL    smb 'FTELL'
+FSEEK    smb 'FSEEK'
+U_GETPAR smb 'U_GETPAR'
+U_SLASH  smb 'U_SLASH'
+DIV_32   smb 'DIV_32'
+MUL_32   smb 'MUL_32'
+TOUPPER  smb 'TOUPPER'
+STATUS   smb 'STATUS'
 
 * OS equates
 MEMTOP  equ $02E5
 MEMLO   equ $02E7
 * SDX equates
+* COMTAB offsets
+CT_TRAILS  equ $1A
+CT_COMFNAM equ $21
+CT_VAR32_1 equ $FF
+CT_VAR32_2 equ $103
+CT_VAR32_3 equ $107
+
+* variables
 FHANDLE equ $0760
 FMODE   equ $0778
 FATR1   equ $0779
@@ -60,12 +68,12 @@ MEMHIGH equ $9A
 
 * Relocatable Program
         blk reloc main
-        icl 'FAMAIN.ASM'
-        icl 'FAPASSES.ASM'
-        icl 'FAPARSE.ASM'
-        icl 'FAOPS.ASM'
-        icl 'FAPSEUDO.ASM'
-        icl 'FASYMBOL.ASM'
+        icl 'FAMAIN.ICL'
+        icl 'FAPASSES.ICL'
+        icl 'FAPARSE.ICL'
+        icl 'FAOPS.ICL'
+        icl 'FAPSEUDO.ICL'
+        icl 'FASYMBOL.ICL'
 
 * Relocatable Static Data
 * read buffer size

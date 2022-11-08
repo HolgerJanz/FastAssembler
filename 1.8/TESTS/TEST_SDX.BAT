@@ -1,17 +1,19 @@
-;Test Suite for FA
-;Use: -TEST path_to_fa>FA.COM
+;Test Suite for FA SpartaDOS X
+;Use: -TEST_SDX
+;Requires:
+;FA.COM in path,<TESTS,<EXAMPLES,<SOURCES
 ;Assembles ASM files,
 ;compares OBJ files with COM files,
 ;checks for expected errors
 
 ;init and show memory use
 ECHO =====================================
-ECHO ÉÎÉÔ ÆÁ Ôåóô Óõéôå
+ECHO INIT FA Test Suite
 SETERRNO 0
 ECHO Install @COMMAND
 LOAD COMMAND.COM
 ECHO Install @FA
-LOAD %1
+LOAD FA.COM
 ECHO Install @T_COMP
 LOAD TESTCOMP.COM
 ECHO Install @T_MCLR
@@ -22,10 +24,10 @@ FI
 MEM
 ECHO =====================================
 
-ECHO ÂÅÇÉÎ ÆÁ Ôåóô Óõéôå
+ECHO BEGIN FA Test Suite
 ECHO =====================================
 
-ECHO Ôåóôº ÆÁ ðáòáíåôåò åòòïòó
+ECHO TEST: Parameter Errors
 ECHO Test no parameter
 SETERRNO 0
 FA
@@ -37,30 +39,30 @@ FA /LS ERRORN2 /LS ERRORN2.XXX ZZZ
 GOSUB %CHKERNO
 ECHO =====================================
 
-ECHO ÔÅÓÔº ÆÁ ïðôéïîó
+ECHO TEST: Options
 ECHO Test list
 SETERRNO 0
 FA TESTSYMB.ASM /L
 GOSUB %CHKERR
-ECHO ÏË
+ECHO OK
 ECHO Test summary
 SETERRNO 0
 FA TESTSYMB.ASM /S
 GOSUB %CHKERR
-ECHO ÏË
+ECHO OK
 ECHO Test list and summary
 FA /S TESTSYMB.ASM /L
 GOSUB %CHKERR
-ECHO ÏË
+ECHO OK
 ECHO =====================================
 
-ECHO Ôåóôº áìì óôáôåíåîôó
+ECHO TEST: Statements
 FOR %FILE IN TEST*.ASM /N
  GOSUB %CHKFILE
 NEXT %FILE
 ECHO =====================================
 
-ECHO Ôåóôº áóóåíâìù åòòïòó
+ECHO TEST: Compile Errors
 ECHO Test undeclared label ERRORURS.ASM
 SETERRNO 0
 FA ERRORURS /E
@@ -113,7 +115,7 @@ SET %ERNO=238
 GOSUB %CHKERNO
 ECHO =====================================
 
-ECHO Ôåóôº åøáíðìåó
+ECHO TEST: Examples
 CD <EXAMPLES
 FOR %FILE IN *.ASM /N
  GOSUB %CHKFILE
@@ -121,14 +123,24 @@ NEXT %FILE
 CD <TESTS
 ECHO =====================================
 
-ECHO Ôåóôº ÆÁ ãïíðéìåó éôóåìæ
+ECHO TEST: SDX Lib
+CD <SDXLIB
+FOR %FILE IN TEST*.ASM /N
+ GOSUB %CHKFILE
+NEXT %FILE
+CD <TESTS
+ECHO =====================================
+
+ECHO TEST: FA Compiles Itself
 CD <SOURCES
-SET %FILE=FA
+SET %FILE=FA_SDX
+GOSUB %CHKFILE
+SET %FILE=FA_BWD
 GOSUB %CHKFILE
 CD <TESTS
 ECHO =====================================
 
-ECHO ÅÎÄ ÆÁ Ôåóô Óõéôå
+ECHO END FA Test Suite
 ECHO =====================================
 GOTO END
 
@@ -143,10 +155,10 @@ PROC %CHKFILE
  SETERRNO 0
  T_COMP $%FILE$.COM $%FILE$.OBJ
  IF ERROR
-  ECHO ÅÒÒÏÒ ÃÏÍÐÁÒÉÎÇº $%FILE$.OBJ
+  ECHO ERROR COMPARING: $%FILE$.OBJ
   GOTO END
  ELSE
-  ECHO ÏË
+  ECHO OK
  FI
  IF EXISTS $%FILE$.OBJ
   ERASE $%FILE$.OBJ
@@ -155,17 +167,17 @@ RETURN
 
 PROC %CHKERR
  IF ERROR
-  ECHO ÅÒÒÏÒ ÁÓÓÅÍÂÌÉÎÇº $%FILE$.ASM
+  ECHO ERROR ASSEMBLING: $%FILE$.ASM
   GOTO END
  FI
 RETURN
 
 PROC %CHKERNO
  IF NOT ERROR $%ERNO$
-  ECHO ÅÒÒÏÒ Åøðåãôåäº $%ERNO$
+  ECHO ERROR EXPECTED: $%ERNO$
   GOTO END
  ELSE
-  ECHO ÏË
+  ECHO OK
  FI 
 RETURN
 
