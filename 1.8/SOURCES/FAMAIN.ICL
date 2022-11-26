@@ -37,6 +37,8 @@ start   cld
         stx laUReLa+1
         stx PASSNUM
 * parse command line
+        lda #$9b
+        jsr PUTC
         jsr prsCmdL
 
 * Pass loop
@@ -160,7 +162,7 @@ failTr  sta STATUS
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 02-11-2022'
+        dta c'Fast Assembler 1.8 26-11-2022'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2022'
         dta b($9b,$00)
