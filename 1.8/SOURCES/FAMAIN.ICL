@@ -28,7 +28,7 @@ start   cld
 * init variables
         ldx #$00
         stx V1L0096
-        stx B1L1AD2
+        stx fileNum
         stx B1L1A55
         stx MEMHIGH
         stx MEMHIGH+1
@@ -119,11 +119,233 @@ prSum   jsr PRINTF
         dta v(e_lst_P)
         dta v(MEMMIN)
         dta a(MEMHIGH)
+        lda #$00
+        sta cmdOptS
+        rts
+
+* kind of symboles
+symKind dta c'SRC '
+        dta c'OBJ '
+        dta c'EQU '
+        dta c'BLK '
+        dta c'SMB '
+        dta c'SMR '
+
+* write two digit hex
+wrSymHH pha
+        lsr @
+        lsr @
+        lsr @
+        lsr @
+        sed
+        clc
+        adc #$90
+        adc #$40
+        cld
+        sta bufWrit,X
+        inx
+        pla
+        and #$0F
+        sed
+        clc
+        adc #$90
+        adc #$40
+        cld
+        sta bufWrit,X
+        inx
+        rts
+
+* write byte to buffer
+wrSymBy lda ($84),Y
+        jsr wrSymHH
+        iny
+        rts
+
+* write word to buffer
+wrSymWd iny
+        jsr wrSymBy
+        dey
+        dey
+        jsr wrsymBy
+        iny
+        rts
+
+* write text to buffer
+wrSymTx txa
+        clc
+        adc ($84),Y
+        sta wrSyTxL+1
+        iny
+wrSyLop lda ($84),Y
+        sta bufWrit,X
+        inx
+        iny
+wrSyTxL cpx #$00
+        beq *+6
+        cpx #$FE
+        bne wrSyLop
+        rts
+
+* write space to buffer
+wrSymSp lda #' '
+        sta bufWrit,X
+        inx
+        rts
+
+* write file symbole
+wrSymFi jsr wrSymBy
+        jsr wrSymSp
+        jsr wrSymTx
+        rts
+
+* write equate symbole
+wrSymEq jsr wrSymBy
+        jsr wrSymSp
+        jsr wrSymWd
+        jsr wrSymSp
+        jsr wrSymTx
+        rts
+
+* write block symbole
+wrSymBl jsr wrSymBy
+        jsr wrSymSp
+        jsr wrSymBy
+        jsr wrSymSp
+        jsr wrSymBy
+        jsr wrSymSp
+        jsr wrSymWd
+        jsr wrSymSp
+        jsr wrSymWd
+        rts
+
+* write SpartaDOS X symbole
+wrSymSb jsr wrSymWd
+        jsr wrSymSp
+        jsr wrSymTx
+        rts
+
+* write reference symbole
+wrSymRe lda $85
+        jsr wrSymHH
+        lda $84
+        jsr wrSymHH
+        jsr wrSymSp
+        jsr wrSymWd
+        jsr wrSymSp
+        jsr wrSymBy
+        jsr wrSymSp
+        jsr wrSymBy
+        jsr wrSymSp
+        jsr wrSymBy
+        jsr wrSymSp
+        jsr wrSymWd
+        rts
+
+* write symbole entry
+wrSymEn ldy #$01
+        lda ($84),Y
+        pha
+        asl @
+        asl @
+        tay
+kindLp  lda symKind,Y
+        sta bufWrit,X
+        iny
+        inx
+        cpx #$04
+        bne kindLp
+        ldy #$02
+        pla
+        cmp #$00
+        bne *+5
+        jmp wrSymFi
+        cmp #$01
+        bne *+5
+        jmp wrSymFi
+        cmp #$02
+        bne *+5
+        jmp wrSymEq
+        cmp #$03
+        bne *+5
+        jmp wrSymBl
+        cmp #$04
+        bne *+5
+        jmp wrSymSb
+        cmp #$05
+        bne *+5
+        jmp wrSymRe
+        jmp prsCErr
+
+* write symbole table
+wrSymb  jsr PRINTF
+        dta c'Write symbole table'
+        dta b($9B,$00)
+        lda #$00
+        sta cmdOptY
+* cloase all files to free file handle
+        jsr FCLOSEAL
+* get obj file and set extension
+        ldx #$00
+        stx fileNum
+        inx
+        jsr syGetFl
+        jsr findDot
+        ldx #$02
+        jsr setDEXT
+        jsr stCFNAM
+* open symbole file for write
+        lda #$08
+        sta FMODE
+        lda #$A0
+        sta FATR1
+        lda #$00
+        sta FATR2
+        jsr FOPEN
+* set write buffe
+        lda bufWriV
+        sta FAUX1
+        lda bufWriV+1
+        sta FAUX2
+        lda #$00
+        sta FAUX4
+        sta FAUX5
+        sta SYSCALL
+* loop at symbole table
+        ldy MEMMIN
+        sty $84
+        ldy MEMMIN+1
+        sty $85
+wrSymLp ldx #$00
+        jsr wrSymEn
+* write line
+        lda #$9b
+        sta bufWrit,X
+        inx
+        stx FAUX4
+        jsr FWRITE
+* next symbole entry
+        ldy #$00
+        clc
+        lda ($84),Y
+        adc $84
+        sta $84
+        bcc *+4
+        inc $85
+        lda $84
+        cmp $8A
+        lda $85
+        sbc $8B
+        bcc wrSymLp
+* close file
+        jsr FCLOSE
         rts
 
 prCmpl  lda cmdOptS
         beq *+5
         jsr prSum
+        lda cmdOptY
+        beq *+5 
+        jsr wrSymb
         jsr PRINTF
         dta c'Completed'
         dta b($9B,$00)
@@ -134,6 +356,9 @@ prFail  lda #$9b
         lda cmdOptS
         beq *+5 
         jsr prSum
+        lda cmdOptY
+        beq *+5 
+        jsr wrSymb
         jsr PRINTF
         dta c'Failed'
         dta b($9B,$00)
@@ -162,12 +387,12 @@ failTr  sta STATUS
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 26-11-2022'
+        dta c'Fast Assembler 1.8 17-03-2023'
         dta b($9b)
-        dta c'(c) MMMG Soft ''95, Public Domain 2022'
+        dta c'(c) MMMG Soft ''95, Public Domain 2023'
         dta b($9b,$00)
         jsr PRINTF
-        dta c'Parameters: src [dst] [/LSE]'
+        dta c'Usage: FA [/LSEY] src [dst]'
         dta b($9B)
         dta c' src: source filename'
         dta b($9B)
@@ -179,6 +404,8 @@ prUsage jsr PRINTF
         dta c' S  : print summary'
         dta b($9B)
         dta c' E  : set error if compile failed'
+        dta b($9B)
+        dta c' Y  : write symbole table'
         dta b($9B,$00)
         rts
 
@@ -208,9 +435,11 @@ B1L0256 sta COMTAB+CT_COMFNAM,Y
 cmdOptL dta b($00)
 cmdOptS dta b($00)
 cmdOptE dta b($00)
+cmdOptY dta b($00)
 cmdOpt  dta b($00),c'L'
         dta b($00),c'S'
         dta b($00),c'E'
+        dta b($00),c'Y'
 cmdOptP dta v(cmdOpt)
 cmdPCnt dta b($ff)
 
@@ -225,10 +454,10 @@ prsCmdL ldx #$00
 
 prsCmdN lda cmdOptP
         ldx cmdOptP+1
-        ldy #$06
+        ldy #$08
         jsr U_SLASH
-        ldy #$04
-        ldx #$02
+        ldy #$06
+        ldx #$03
 * set flags for options
 prsOptN lda cmdOptL,X
         ora cmdOpt,Y
@@ -249,17 +478,18 @@ prsCErr lda #$9C
 jmpFAIL jmp U_FAIL
 * get file name
 prsFilN jsr gtCFNAM
-        jsr B1L1AD3
+        jsr syAFile
         jmp prsCmdN
+
 prsCEnd ldx cmdPCnt
         bmi prsCErr
         bne prsCRTS
-        jsr B1L1B53
+        jsr syGetFl
         jsr findDot
         ldx #$01
         jsr setDEXT
         ldx #$01
-        jsr B1L1AD3
+        jsr syAFile
 prsCRTS rts
 
 * print error message
@@ -395,7 +625,7 @@ srtPass jsr initBuf
         stx unResLa+1
         stx B1L0463
         stx V1L0096
-        stx B1L1AD2
+        stx fileNum
         stx lineNum
         stx lineNum+1
         inx

@@ -1,13 +1,13 @@
 ;Test Suite for FA SpartaDOS X
 ;Use: -TEST_SDX
 ;Requires:
-;FA.COM in path,<TESTS,<EXAMPLES,<SOURCES
+;FA.COM in path,<TESTS,<EXAMPLES,<SOURCES,<SDXLIB
 ;Assembles ASM files,
 ;compares OBJ files with COM files,
 ;checks for expected errors
 
 ;init and show memory use
-ECHO =====================================
+ECHO =======================================
 ECHO INIT FA Test Suite
 SETERRNO 0
 ECHO Install @COMMAND
@@ -22,12 +22,11 @@ IF ERROR
  GOTO END
 FI
 MEM
-ECHO =====================================
-
+ECHO =======================================
 ECHO BEGIN FA Test Suite
-ECHO =====================================
-
+ECHO ---------------------------------------
 ECHO TEST: Parameter Errors
+ECHO ---------------------------------------
 ECHO Test no parameter
 SETERRNO 0
 FA
@@ -37,32 +36,32 @@ ECHO Test too many parameter
 SETERRNO 0
 FA /LS ERRORN2 /LS ERRORN2.XXX ZZZ 
 GOSUB %CHKERNO
-ECHO =====================================
-
 ECHO TEST: Options
+ECHO ---------------------------------------
 ECHO Test list
 SETERRNO 0
 FA TESTSYMB.ASM /L
 GOSUB %CHKERR
 ECHO OK
+ECHO ---------------------------------------
 ECHO Test summary
 SETERRNO 0
 FA TESTSYMB.ASM /S
 GOSUB %CHKERR
 ECHO OK
+ECHO ---------------------------------------
 ECHO Test list and summary
 FA /S TESTSYMB.ASM /L
 GOSUB %CHKERR
 ECHO OK
-ECHO =====================================
-
+ECHO ---------------------------------------
 ECHO TEST: Statements
+ECHO ---------------------------------------
 FOR %FILE IN TEST*.ASM /N
  GOSUB %CHKFILE
 NEXT %FILE
-ECHO =====================================
-
 ECHO TEST: Compile Errors
+ECHO ---------------------------------------
 ECHO Test undeclared label ERRORURS.ASM
 SETERRNO 0
 FA ERRORURS /E
@@ -113,38 +112,43 @@ SETERRNO 0
 FA error238 /E
 SET %ERNO=238
 GOSUB %CHKERNO
-ECHO =====================================
-
 ECHO TEST: Examples
+ECHO ---------------------------------------
 CD <EXAMPLES
 FOR %FILE IN *.ASM /N
  GOSUB %CHKFILE
 NEXT %FILE
+ECHO ---------------------------------------
+DEL *.OBJ
+DEL *.SYM
 CD <TESTS
-ECHO =====================================
-
 ECHO TEST: SDX Lib
+ECHO ---------------------------------------
 CD <SDXLIB
 FOR %FILE IN TEST*.ASM /N
  GOSUB %CHKFILE
 NEXT %FILE
 CD <TESTS
-ECHO =====================================
-
 ECHO TEST: FA Compiles Itself
+ECHO ---------------------------------------
 CD <SOURCES
 SET %FILE=FA_SDX
-GOSUB %CHKFILE
+SET %CMPFILE=<BIN>FA
+GOSUB %CHKFILE2
 SET %FILE=FA_BWD
-GOSUB %CHKFILE
+SET %CMPFILE=<DOS>FA
+GOSUB %CHKFILE2
 CD <TESTS
-ECHO =====================================
-
 ECHO END FA Test Suite
-ECHO =====================================
+ECHO =======================================
 GOTO END
 
 PROC %CHKFILE
+SET %CMPFILE=$%FILE
+GOSUB %CHKFILE2
+RETURN
+
+PROC %CHKFILE2
  ECHO Test $%FILE$.ASM
  IF EXISTS $%FILE$.OBJ
   ERASE $%FILE$.OBJ
@@ -153,16 +157,17 @@ PROC %CHKFILE
  FA $%FILE$ /E
  GOSUB %CHKERR
  SETERRNO 0
- T_COMP $%FILE$.COM $%FILE$.OBJ
+ T_COMP $%CMPFILE$.COM $%FILE$.OBJ
  IF ERROR
-  ECHO ERROR COMPARING: $%FILE$.OBJ
+  ECHO ERROR COMPARING: $%CMPFILE$.COM $%FILE$.OBJ
   GOTO END
  ELSE
-  ECHO OK
+  ECHO OK COMPARING: $%CMPFILE$.COM $%FILE$.OBJ
  FI
  IF EXISTS $%FILE$.OBJ
   ERASE $%FILE$.OBJ
  FI
+ ECHO ---------------------------------------
 RETURN
 
 PROC %CHKERR
@@ -179,6 +184,7 @@ PROC %CHKERNO
  ELSE
   ECHO OK
  FI 
+ ECHO ---------------------------------------
 RETURN
 
 :END

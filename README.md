@@ -2,7 +2,7 @@
 
 Assembler for SpartaDOS X and BW-DOS 1.4 on Atari 8bit
 
-The current version is 1.8 02-11-2022 and it works with all versions of SpartaDOS X and with BW-DOS at least version 1.4. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
+The current version is 1.8 17-03-2023 and it works with all versions of SpartaDOS X and with BW-DOS at least version 1.4. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
 
 ## Version 1.8
 
@@ -12,6 +12,8 @@ The current version is 1.8 02-11-2022 and it works with all versions of SpartaDO
 
 - add line number to source output
 
+- add option for dump of symbol table
+
 - condense info output 
 
 - remove option B, always print error line, rename option A to L, and introduce option S for summary, e.g. count of labels and blocks, and memory usage
@@ -19,6 +21,8 @@ The current version is 1.8 02-11-2022 and it works with all versions of SpartaDO
 - introduce option E to set error to 255 if compile fails, for better use in batch
 
 - improve memory management
+
+- improve performance of pass 1 and up
 
 - reduce number of max passes to 8
 

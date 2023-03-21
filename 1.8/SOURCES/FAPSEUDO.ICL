@@ -65,7 +65,7 @@ B1L14D7 lda #$06
         jmp prErrMs
 
 * parse ICL
-iclCode inc B1L1AD2
+iclCode inc fileNum
         lda PASSNUM
         bne B1L14F5
         jsr B1L08D8
@@ -75,7 +75,7 @@ iclCode inc B1L1AD2
         bcc B1L14F0
         rts
 B1L14F0 ldx #$00
-        jsr B1L1AD3
+        jsr syAFile
 B1L14F5 jmp openSRC
 
 endCode lda V1L0096

@@ -4,11 +4,11 @@
          blk dos $3000
          icl 'COMPMAIN.ICL'
 * SDX lib for BW-DOS
-         icl '../SDXLIB/SDXCOMTA.ICL'
-         icl '../SDXLIB/SDXPARAM.ICL'
-         icl '../SDXLIB/SDXSTD.ICL'
-         icl '../SDXLIB/SDXFILE.ICL'
-         icl '../SDXLIB/SDXFAIL.ICL'
+         icl '<SDXLIB>SDXCOMTA.ICL'
+         icl '<SDXLIB>SDXPARAM.ICL'
+         icl '<SDXLIB>SDXSTD.ICL'
+         icl '<SDXLIB>SDXFILE.ICL'
+         icl '<SDXLIB>SDXFAIL.ICL'
 
 fbuffsiz equ $100
 * use data area after code

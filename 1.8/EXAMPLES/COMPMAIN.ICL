@@ -24,6 +24,8 @@ comp     lda vtrap
          lda <fbuffsiz-1
          sta compidx
 * get parameter, open file, and print length
+         lda #$9b
+         jsr PUTC
          jsr finit
          inc fnum
          jsr finit
@@ -164,7 +166,7 @@ trap     cmp #$9C
          bne trap_0
 * info message about program
          jsr PRINTF
-         dta b($9B),c'File COMParator v.1.2',b($9B)
+         dta c'File COMParator v.1.2',b($9B)
          dta c'(c) MMMG Soft ''95, PD 2022'
          dta b($9B,0)
 * if so, display message and

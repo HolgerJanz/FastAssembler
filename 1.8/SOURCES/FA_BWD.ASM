@@ -1,4 +1,4 @@
-* Fast Assembler for BW-DOS 1.8 PD 2021
+* Fast Assembler for BW-DOS 1.8 PD 2023
 
 * OS equates
 MEMTOP  equ $02E5
@@ -36,12 +36,12 @@ MEMHIGH equ $9A
         icl 'FAPSEUDO.ICL'
         icl 'FASYMBOL.ICL'
 * SDX lib for BW-DOS
-        icl '../SDXLIB/SDXCOMTA.ICL'
-        icl '../SDXLIB/SDXPARAM.ICL'
-        icl '../SDXLIB/SDXSTD.ICL'
-        icl '../SDXLIB/SDXFILE.ICL'
-        icl '../SDXLIB/SDXFAIL.ICL'
-        icl '../SDXLIB/SDXARITH.ICL'
+        icl '<SDXLIB>SDXCOMTA.ICL'
+        icl '<SDXLIB>SDXPARAM.ICL'
+        icl '<SDXLIB>SDXSTD.ICL'
+        icl '<SDXLIB>SDXFILE.ICL'
+        icl '<SDXLIB>SDXFAIL.ICL'
+        icl '<SDXLIB>SDXARITH.ICL'
 
 * Relocatable Static Data
 * read buffer size
@@ -68,9 +68,10 @@ bfL2114 equ bfL210C+$08
 bfL211C equ bfL2114+$08
 bfL2124 equ bfL211C+$08
 bufRead equ bfL2124+$08
+bufWrit equ bufRead+bufReaS
 * e_end is just 1 behind that block,
 * never used it in other blocks
-e_end   equ bufRead+bufReaS
+e_end   equ bufWrit+$100
 * last used byte in empty block
 e_last  equ e_end-1
 

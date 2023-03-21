@@ -2,6 +2,7 @@
 
 * definition of SDX symbols used
 * in the program
+PUTC     smb 'PUTC'
 PRINTF   smb 'PRINTF'
 U_GETPAR smb 'U_GETPAR'
 U_GETNUM smb 'U_GETNUM'

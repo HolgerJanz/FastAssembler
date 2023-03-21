@@ -142,7 +142,7 @@ openSRC ldx V1L0096
         lda FAUX3
         sta arrFAU3,X
 B1L07A0 ldx #$00
-        jsr B1L1B53
+        jsr syGetFl
         jsr stCFNAM
         lda #$04
         sta FMODE
@@ -175,7 +175,7 @@ fhdlDst dta b($00)
 openDST lda PASSNUM
         beq B1L0807
         ldx #$01
-        jsr B1L1B53
+        jsr syGetFl
         jsr stCFNAM
         lda #$08
         sta FMODE
@@ -186,6 +186,8 @@ openDST lda PASSNUM
         jsr FOPEN
         lda FHANDLE
         sta fhdlDst
+        lda #$00
+        sta bufWrit+$FF
 B1L0807 rts
 
 * close destination
@@ -195,12 +197,30 @@ closDst lda PASSNUM
         pha
         lda fhdlDst
         sta FHANDLE
+        jsr wrtFlsh
         jsr FCLOSE
         pla
         sta FHANDLE
 B1L081D rts
 
 fhdlTMP dta b($00)
+
+bufWriV dta v(bufWrit)
+
+* flusch write buffer
+wrtFlsh lda bufWrit+$FF
+        beq wrtFlsE
+        sta FAUX4
+        lda #$00
+        sta FAUX5
+        sta SYSCALL
+        sta bufWrit+$FF
+        lda bufWriV
+        sta FAUX1
+        lda bufWriV+1
+        sta FAUX2
+        jsr FWRITE
+wrtFlsE rts
 
 B1L081F lda PASSNUM
         beq B1L0890
@@ -278,8 +298,20 @@ B1L089F pha
         lda fhdlDst
         sta FHANDLE
         pla
-        jsr FPUTC
         pha
+*        jsr FPUTC
+* use buffer for performance
+        stx wrtSavX+1
+        sty wrtSavy+1
+        ldx bufWrit+$FF
+        sta bufWrit,X
+        inx
+        stx bufWrit+$FF
+        cpx #$FF
+        bne *+5
+        jsr wrtFlsh
+wrtSavX ldx #$00
+wrtSavY ldy #$00
         lda fhdlTMP
         sta FHANDLE
 B1L08C0 pla

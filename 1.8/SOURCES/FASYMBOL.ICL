@@ -95,28 +95,34 @@ B1L1A88 lda B1L1BBF
 B1L1A91 clc
         rts
 
-* find . in file name
-findDot ldy #$00
-B1L1A95 lda bfCFNAM,Y
+* find . or $9b (>,:) in file name
+* -> offset in Y
+findDot ldy BFCFNAL
+nxtDot  dey
+        lda bfCFNAM,Y
         cmp #'.'
-        bne B1L1A9F
+        bne noDot
         clc
-        bcc B1L1AA8
-B1L1A9F cmp #$9B
-        beq B1L1AA8
-        iny
-        cpy BFCFNAL
-        bcc B1L1A95
-B1L1AA8 rts
+        bcc dotFnt
+noDot   cmp #'>'
+        beq dotNfnd
+        cmp #':'
+        beq dotNfnd
+        cpy #$00
+        bne nxtDot
+dotNfnd ldy BFCFNAL
+dotFnt  rts
 
 dfltExt dta c'.ASM'
         dta b($9B)
         dta c'.OBJ'
         dta b($9B)
-dfltIdx dta b($00,$05,$0A)
+        dta c'.SYM'
+        dta b($9B)
+dfltIdx dta b($00,$05,$0A,$0F)
 
 * set default ext
-* src X=0, dst X=1
+* src X=0, obj X=1
 setDEXT inx
         lda dfltIdx,X
         sta B1L1ACA+1
@@ -133,9 +139,11 @@ B1L1ACA cpx #$00
         sty BFCFNAL
         rts
 
-B1L1AD2 dta b($00)
+fileNum dta b($00)
 
-B1L1AD3 txa
+* add file name to symbol table
+* src X=0, obj X=1
+syAFile txa
         pha
         jsr findDot
         bcc B1L1ADD
@@ -144,7 +152,7 @@ B1L1AD3 txa
 B1L1ADD pla
         jsr B1L1B0C
         iny
-        lda B1L1AD2
+        lda fileNum
         sta ($84),Y
 B1L1AEA iny
         lda BFCFNAL
@@ -210,12 +218,13 @@ B1L1B46 lda $84
 B1L1B51 clc
         rts
 
-B1L1B53 txa
+* symbol table get file name
+syGetFl txa
         jsr B1L1B26
         bcs B1L1B67
 B1L1B59 ldy #$02
         lda ($84),Y
-        cmp B1L1AD2
+        cmp fileNum
         beq B1L1B68
         jsr B1L1B39
         bcc B1L1B59

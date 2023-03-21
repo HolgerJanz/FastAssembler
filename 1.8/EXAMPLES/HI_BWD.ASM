@@ -7,8 +7,8 @@ nam_siz equ $40
         jsr CHKBW14
         icl 'HI_MAIN.ICL'
 * SDX lib for BW-DOS
-        icl '../SDXLIB/SDXSTD.ICL'
-        icl '../SDXLIB/SDXFAIL.ICL'
+        icl '<SDXLIB>SDXSTD.ICL'
+        icl '<SDXLIB>SDXFAIL.ICL'
 
 name    equ *
 

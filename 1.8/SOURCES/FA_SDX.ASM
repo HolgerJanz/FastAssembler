@@ -1,4 +1,4 @@
-* Fast Assembler for SDX 1.8 PD 2021
+* Fast Assembler for SDX 1.8 PD 2023
 
 * SDX Symbols
 COMTAB   smb 'COMTAB'
@@ -12,6 +12,7 @@ FOPEN    smb 'FOPEN'
 FCLOSE   smb 'FCLOSE'
 PUTC     smb 'PUTC'
 FPUTC    smb 'FPUTC'
+FWRITE   smb 'FWRITE'
 FTELL    smb 'FTELL'
 FSEEK    smb 'FSEEK'
 U_GETPAR smb 'U_GETPAR'
@@ -100,9 +101,10 @@ bfL2114 equ bfL210C+$08
 bfL211C equ bfL2114+$08
 bfL2124 equ bfL211C+$08
 bufRead equ bfL2124+$08
+bufWrit equ bufRead+bufReaS
 * e_end is just 1 behind that block,
 * never used it in other blocks
-e_end   equ bufRead+bufReaS
+e_end   equ bufWrit+$100
 * last used byte in empty block
 e_last  equ e_end-1
         blk empty e_end-e_begin main
