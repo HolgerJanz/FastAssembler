@@ -23,6 +23,7 @@ TOUPPER  smb 'TOUPPER'
 STATUS   smb 'STATUS'
 
 * OS equates
+DOSVEC  equ $0A
 MEMTOP  equ $02E5
 MEMLO   equ $02E7
 * SDX equates

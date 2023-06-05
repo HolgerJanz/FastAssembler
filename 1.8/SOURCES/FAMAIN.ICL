@@ -8,8 +8,8 @@ start   cld
         sta STATUS
 
         lda #$00
-        ldx #$07
-        sta B1L0463,X
+        ldx #$08
+        sta flagEnd,X
         dex
         bpl *-4
 
@@ -27,7 +27,7 @@ start   cld
         sta MEMMAX+1
 * init variables
         ldx #$00
-        stx V1L0096
+        stx curFilX
         stx fileNum
         stx B1L1A55
         stx MEMHIGH
@@ -98,7 +98,7 @@ unResLa dta a($0000)
 * last unresolved label count
 laUReLa dta a($0000)
 failTrP dta v(failTr)
-V1L0096 dta b($00)
+curFilX dta b($00)
 startP  dta v(start)
 e_bgn_P dta v(e_begin)
 e_lst_P dta v(e_last)
@@ -387,7 +387,7 @@ failTr  sta STATUS
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 17-03-2023'
+        dta c'Fast Assembler 1.8 02-06-2023'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2023'
         dta b($9b,$00)
@@ -482,7 +482,7 @@ prsFilN jsr gtCFNAM
         jmp prsCmdN
 
 prsCEnd ldx cmdPCnt
-        bmi prsCErr
+        bmi hlpExit
         bne prsCRTS
         jsr syGetFl
         jsr findDot
@@ -491,6 +491,10 @@ prsCEnd ldx cmdPCnt
         ldx #$01
         jsr syAFile
 prsCRTS rts
+
+hlpExit jsr prUsage
+        jsr exitFA
+        jmp (DOSVEC)
 
 * print error message
 prErrMs eor maskURS
@@ -597,7 +601,9 @@ errMs11 dta c'Unexpected symbol'
 errMs12 dta c'Internal error'
         dta b($9B)
 
-B1L0463 dta b($00)
+* these 9 bytes are init togehter
+flagEnd dta b($00)
+flagCls dta b($00)
 * flag error occurs
 errFlag dta b($00)
 * mask unresolved symbols
@@ -607,6 +613,7 @@ B1L0466 dta b($00)
 B1L0467 dta b($00)
 B1L0468 dta b($00)
 lastErr dta b($00)
+* these 9 bytes are init togehter
 
 * start new pass
 srtPass jsr initBuf
@@ -623,8 +630,9 @@ srtPass jsr initBuf
         stx BLKPCNT
         stx unResLa
         stx unResLa+1
-        stx B1L0463
-        stx V1L0096
+        stx flagEnd
+        stx flagCls
+        stx curFilX
         stx fileNum
         stx lineNum
         stx lineNum+1
@@ -636,7 +644,7 @@ srtPass jsr initBuf
         jsr B1L1CD9
         jsr openDST
         jsr openSRC
-B1L04BD lda B1L0463
+B1L04BD lda flagEnd
         beq B1L04EA
         jsr B1L15AE
         jsr closDST
@@ -696,7 +704,7 @@ B1L055A jsr prsSymb
         lda #$08
         jsr prErrMs
         bcs B1L0557
-B1L0566 lda cmdOptL
+cPrLine lda cmdOptL
         beq B1L056F
         lda PASSNUM
         beq prtLine
@@ -731,7 +739,8 @@ endStrg dta c'end'
 endStrV dta v(endStrg)
 
 * current line number
-lineNum dta b($00,$00,$00,$00)
+lineNum dta a($0000)
+*        dta b($00,$00) ; unused
 * source buffer
 bufReaV dta v(bufRead)
 * used source buffer

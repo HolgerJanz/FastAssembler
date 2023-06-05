@@ -45,8 +45,21 @@ U_FAIL      sta STATUS
 _u_fail     jsr $FFFF
 _u_fail_end lda STATUS
             bpl _u_fail_no
-            jmp ($70F) ; jump to BW_FAIL
+            ldx _u_fail_fop
+            beq _u_fail_nop
+            ldx #$00
+            stx _u_fail_fop
+            pha
+            jsr PRINTF
+            dta b($9b),c'File %p',b($9b,$00)
+            dta a(FILE_P)
+            pla
+_u_fail_nop jmp ($70F) ; jump to BW_FAIL
 _u_fail_no  jmp $726   ; jump to BW_COMTAB
+
+_u_fail_fop dta b($00)
+
+
 
 ***************************************************
 * U_SFAIL set error handler

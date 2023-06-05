@@ -1,7 +1,9 @@
 * Part 2 Passes
 
 * next line
-nxtLine clc
+nxtLine lda flagCls ; check END in include
+        bne rdAftrE
+        clc
         lda PCURLIN
         adc curLiLn
         sta PCURLIN
@@ -27,8 +29,9 @@ B1L067B sty curLiLn
         inc lineNum+1
 B1L0686 lda #$00
         sta B1L08D3
-        jmp B1L0566
+        jmp cPrLine
 * fill source buffer
+rdAftrE inc flagCls
 B1L068E jsr prPrgs
 * read source file
         lda bufReaV
@@ -122,7 +125,7 @@ B1L073C jsr FTELL
 B1L076A jmp FSEEK
 
 * open source
-openSRC ldx V1L0096
+openSRC ldx curFilX
         beq B1L07A0
         clc
         lda PCURLIN
@@ -132,7 +135,7 @@ openSRC ldx V1L0096
         adc #$00
         sta B1L062E+1
         jsr B1L073C
-        ldx V1L0096
+        ldx curFilX
         lda FHANDLE
         sta arrFHDL,X
         lda FAUX1
@@ -148,14 +151,14 @@ B1L07A0 ldx #$00
         sta FMODE
         lda #$A0
         sta FATR1
-        inc V1L0096
+        inc curFilX
         jsr initBuf
         jmp FOPEN
 
 * close source
 closSRC jsr FCLOSE
-        dec V1L0096
-        ldx V1L0096
+        dec curFilX
+        ldx curFilX
         bne B1L07C7
         rts
 

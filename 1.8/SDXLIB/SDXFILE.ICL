@@ -37,7 +37,7 @@ _fop_nxt  ldx _fhandles,Y
           jmp _fop_nxt
 * too many files open
 _fop_tm   lda #$A1
-          jmp U_FAIL
+          jmp _fop_fail
 * open
 _fop_do   lda #$ff
           sta _fhandles+1,Y
@@ -76,7 +76,13 @@ _fop_sf   lda <_file_p
           sta $340+5,X
 * call CIO open
 _fop_ok   lda #$03
-          jmp _f_cio
+          sta $340+$02,X
+          jsr $E456
+          bpl _fop_e
+          tya
+_fop_fail sta _u_fail_fop
+          jmp U_FAIL
+_fop_e    rts
 
 ***************************************************
 * FCLOSE

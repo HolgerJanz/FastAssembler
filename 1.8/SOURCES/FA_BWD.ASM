@@ -1,6 +1,7 @@
 * Fast Assembler for BW-DOS 1.8 PD 2023
 
 * OS equates
+DOSVEC  equ $0A
 MEMTOP  equ $02E5
 * MEMLO is redefined to point to the end
 * MEMLO   equ $02E7

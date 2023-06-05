@@ -72,18 +72,20 @@ iclCode inc fileNum
         beq B1L14B1
         ldx #$00
         jsr B1L096A
-        bcc B1L14F0
+        bcc *+3
         rts
-B1L14F0 ldx #$00
+        ldx #$00
         jsr syAFile
 B1L14F5 jmp openSRC
 
-endCode lda V1L0096
+* parse END
+endCode lda curFilX
         cmp #$02
         bcs B1L1503
-        dec B1L0463
+        dec flagEnd
         rts
-B1L1503 jmp closSRC
+B1L1503 dec flagCls
+        jmp closSRC
 
 errCode lda #$09
         jmp prErrMs

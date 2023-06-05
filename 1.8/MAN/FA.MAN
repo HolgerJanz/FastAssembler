@@ -1,5 +1,5 @@
 
-Fast Assembler 1.8 10-03-2023
+Fast Assembler 1.8 02-06-2023
 =============================
 
 Purpose

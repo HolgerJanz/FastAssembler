@@ -236,6 +236,7 @@ test_trap   sta STATUS
             dta a(STATUS)
             rts
 
+            icl 'SDXCOMTA.ICL'
             icl 'SDXSTD.ICL'
             icl 'SDXFAIL.ICL'
 
