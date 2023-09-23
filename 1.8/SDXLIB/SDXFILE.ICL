@@ -103,7 +103,6 @@ _fcls_do  lda #$00
           sta _fhandles+1,X
           ldx FHANDLE
           lda #$0C
-          sta $340+$02,X
 
 _f_cio    sta $340+$02,X
           jsr $E456

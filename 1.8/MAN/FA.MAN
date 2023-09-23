@@ -1,5 +1,5 @@
 
-Fast Assembler 1.8 02-06-2023
+Fast Assembler 1.8 23-09-2023
 =============================
 
 Purpose
@@ -91,16 +91,19 @@ assembly option, the individual bits have the following meaning:
      - others DOS header.
 
 ORG a
-sets new program address and generating the file header set by OPT (DOS by default).
+sets new program address and generating the file header set by OPT (DOS by default)
 
 ICL next_src[.ext]
-includes source file, drive, path by default set to where FA was called (NOT TO CURRENT SOURCE!).
+includes source file, drive, path by default set to where FA was called (NOT TO CURRENT SOURCE!)
+
+INS next_src[.ext]
+includes binary file, drive, path by default set to where FA was called (NOT TO CURRENT SOURCE!)
 
 END
-end of source or include file.
+end of source or include file
 
 label EQU a
-assigns the value of the expression 'a' to label 'label', the label name can be up to 240 characters.
+assigns the value of the expression 'a' to label 'label', the label name can be up to 240 characters
 
 [label] DTA x
 generates data suitable for 'x' types:
@@ -131,21 +134,21 @@ compile-time listing option:
 BLK x
 declares a new program block. The total number of blocks is limited to 256. Kinds of blocks:
 
-  BLK N[one] a - block without headers, program counter is set to a.
+  BLK N[one] a - block without headers, program counter is set to a
 
-  BLK D[os] a  - DOS block with the $FFFF header or without if the previous block  was of the same kind, program counter is set to a.
+  BLK D[os] a  - DOS block with the $FFFF header or without if the previous block  was of the same kind, program counter is set to a
 
-  BLK S[parta] a - Sparta block with fix loading address with header $FFFA, program counter is set to a.
+  BLK S[parta] a - Sparta block with fix loading address with header $FFFA, program counter is set to a
 
-  BLK R[eloc] M[ain]|E[xtended] - relocatable block placed in main or extended memory.
+  BLK R[eloc] M[ain]|E[xtended] - relocatable block placed in main or extended memory
 
   BLK E[mpty] a M[ain]|E[xtended] - relocatable block to allocate bytes in main or extended memory. Note: the program counter is incremented immediately.
 
-  BLK U[pdate] S[ymbols] - block that updates SDX address of symbols in previous SPARTA or RELOC blocks.
+  BLK U[pdate] S[ymbols] - block that updates SDX address of symbols in previous SPARTA or RELOC blocks
 
-  BLK U[pdate] A[dress]  - block for updating addresses in RELOC blocks.
+  BLK U[pdate] A[dress]  - block for updating addresses in RELOC blocks
 
-  BLK U[pdate] N[ew] a text - block declaring a new text symbol in a RELOC block with the address a. When the symbol name starts with the @ character and the address is of type main memory, such a symbol can be called from command.com.
+  BLK U[pdate] N[ew] a text - block declaring a new text symbol in a RELOC block with the address a. When the symbol name starts with the @ character and the address is of type main memory, such a symbol can be called from command.com
 
 label SMB text
 declaration of a label as SDX symbol. Thus, after using BLK UPDATE SYMBOLS the assembler will generate the correct symbol update block. For example:

@@ -286,9 +286,9 @@ B1L087B ldy #$00
         lda #$9E
         jmp jmpFAIL
 B1L0890 lda B1L09AE
-        jsr B1L0899
+        jsr outByte
         lda B1L09AF
-B1L0899 inc PROGCNT
+outByte inc PROGCNT
         bne B1L089F
         inc PROGCNT+1
 B1L089F pha

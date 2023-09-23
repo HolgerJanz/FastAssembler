@@ -387,7 +387,7 @@ failTr  sta STATUS
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 02-06-2023'
+        dta c'Fast Assembler 1.8 23-09-2023'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2023'
         dta b($9b,$00)

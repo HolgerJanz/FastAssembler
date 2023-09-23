@@ -1,8 +1,8 @@
 * Part 5 Pseudo Opcodes
 
-psCode1 dta c'OOEIBLES'
-psCode2 dta c'PRNCLSQM'
-psCode3 dta c'TGDLKTUB'
+psCode1 dta c'OOEIBLESI'
+psCode2 dta c'PRNCLSQMN'
+psCode3 dta c'TGDLKTUBS'
 
 psCodeV dta v(optCode)
         dta v(orgCode)
@@ -12,6 +12,7 @@ psCodeV dta v(optCode)
         dta v(lstCode)
         dta v(errCode)
         dta v(errCode)
+        dta v(insCode)
 
 * parse pseudo codes
 prsPseu lda BFCFNAL
@@ -19,7 +20,7 @@ prsPseu lda BFCFNAL
         beq B1L147B
 B1L1479 sec
         rts
-B1L147B ldx #$08
+B1L147B ldx #$09
 B1L147D dex
         bmi B1L1479
         lda bfCFNAM
@@ -91,6 +92,51 @@ errCode lda #$09
         jmp prErrMs
 
 B1L150B dta b($00)
+
+* parse INS
+insCode jsr iclCode
+insLoop lda bufReaV
+        sta FAUX1
+        lda bufReaV+1
+        sta FAUX2
+        lda <bufReaS
+        sta FAUX4
+        lda >bufReaS
+        sta FAUX5
+        lda #$00
+        sta SYSCALL
+        jsr FREAD
+        php
+        jsr insCopy
+        plp
+        bpl insLoop
+        jmp endCode
+
+* copy read buffer to output
+insCopy lda bufReaV
+        sta ZTEMP1
+        lda bufReaV+1
+        sta ZTEMP1+1
+        lda FAUX4
+        sta ZTEMP2
+        lda FAUX5
+        sta ZTEMP2+1
+        ldy #$00
+insCpyL lda ZTEMP2
+        ora ZTEMP2+1
+        beq insCpyE
+        dec ZTEMP2
+        lda ZTEMP2
+        cmp #$FF
+        bne *+4
+        dec ZTEMP2+1
+        lda (ZTEMP1),Y
+        jsr outByte
+        iny
+        bne insCpyL
+        inc ZTEMP1+1
+        bne insCpyL
+insCpyE rts
 
 * parse OPT
 optCode jsr B1L0B18

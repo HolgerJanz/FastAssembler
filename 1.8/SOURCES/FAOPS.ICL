@@ -107,7 +107,7 @@ B1L11F2 rts
 
 * parse no parameter
 pvNoPa  lda B1L11AB
-        jmp B1L0899
+        jmp outByte
 
 * parse branches Bxx
 pvBxx   jsr B1L09B2
@@ -153,7 +153,7 @@ B1L124C lda B1L09B1
         bne B1L1205
         lda B1L09AE
         bmi B1L1205
-B1L1260 jmp B1L0899
+B1L1260 jmp outByte
 
 * parse JSR
 pvJSR   jsr B1L09B2
@@ -177,7 +177,7 @@ pvJMP   jsr B1L09B2
         sta B1L11AB
 B1L128A lda B1L11AB
         ora #$0C
-        jsr B1L0899
+        jsr outByte
         jmp B1L081F
 
 B1L1295 dta b($10,$00,$02,$06)
@@ -202,12 +202,12 @@ B1L12BD lda B1L11AB
         ora B1L129E,X
         cmp #$89
         beq B1L12B8
-        jsr B1L0899
+        jsr outByte
 B1L12CA cpx #$05
         bcc B1L12D1
         jmp B1L081F
 B1L12D1 lda B1L09AE
-        jmp B1L0899
+        jmp outByte
 B1L12D7 rts
 
 B1L12D8 dta b($08,$10,$00,$02)
@@ -236,7 +236,7 @@ B1L130D lda B1L12F0
         beq B1L1308
         lda B1L11AB
         ora B1L12E0,X
-        jsr B1L0899
+        jsr outByte
         cpx #$00
         beq B1L12D7
         bne B1L12CA
@@ -330,7 +330,7 @@ datByte and #$3C
         ldy #$00
 B1L13DF ldx #$00
 B1L13E1 lda B1L09AE,X
-        jsr B1L0899
+        jsr outByte
         inx
         dey
         bpl B1L13E1
@@ -358,16 +358,16 @@ datVect and #$1C
 datLowB and #$1C
         bne B1L1400
         lda B1L09AE
-        jmp B1L0899
+        jmp outByte
 
 datHigh and #$1C
         bne B1L1400
         lda B1L09AF
-        jmp B1L0899
+        jmp outByte
 
 datBy4R ldx #$03
 B1L1422 lda B1L09AE,X
-        jsr B1L0899
+        jsr outByte
         dex
         bpl B1L1422
         rts
@@ -383,7 +383,7 @@ B1L1437 lda bfCFNAM,X
         ldy B1L142C
         beq B1L1442
         jsr B1L0FC8
-B1L1442 jsr B1L0899
+B1L1442 jsr outByte
         inx
         cpx BFCFNAL
         bcc B1L1437

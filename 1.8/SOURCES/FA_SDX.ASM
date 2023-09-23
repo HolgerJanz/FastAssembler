@@ -67,6 +67,10 @@ BLKPCNT equ $8E
 PCURLIN equ $90
 * $xxxx max used mem
 MEMHIGH equ $9A
+* temp1 pointer $xxxx
+ZTEMP1  equ $9C
+* temp2 pointer $xxxx
+ZTEMP2  equ $9E
 
 * Relocatable Program
         blk reloc main

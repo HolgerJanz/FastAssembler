@@ -154,6 +154,15 @@ IF ERROR
  EXIT
 FI
 
+FA /E TESTINS.ASM
+IF ERROR
+ EXIT
+FI
+<BIN>TESTCOMP TESTINS.COM TESTINS.OBJ
+IF ERROR
+ EXIT
+FI
+
 ;===================================
 ; Test Compile Errors
 
