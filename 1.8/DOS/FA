@@ -1,7 +1,7 @@
 }
   FA [/LSEY] src[.ext] [obj[.ext]]
   
-Fast Assembler 1.8 23-09-2023.
+Fast Assembler 1.8 24-09-2023.
 Assembler for SpartaDOS X and BW-DOS.
  src - ATASCII source file
  obj - target binary object file
@@ -17,4 +17,5 @@ src name.
     errors starting from 224($E0)
  /Y Writes symbol table to file
     obj.SYM
+
 https://github.com/HolgerJanz/FastAssembler
