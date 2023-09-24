@@ -190,7 +190,7 @@ openDST lda PASSNUM
         lda FHANDLE
         sta fhdlDst
         lda #$00
-        sta bufWrit+$FF
+        sta bufWrtL
 B1L0807 rts
 
 * close destination
@@ -200,6 +200,8 @@ closDst lda PASSNUM
         pha
         lda fhdlDst
         sta FHANDLE
+        lda bufWrtL
+        beq *+5
         jsr wrtFlsh
         jsr FCLOSE
         pla
@@ -211,13 +213,15 @@ fhdlTMP dta b($00)
 bufWriV dta v(bufWrit)
 
 * flusch write buffer
-wrtFlsh lda bufWrit+$FF
-        beq wrtFlsE
+wrtFlsh ldx #$00
+        lda bufWrtL
+        bne *+3
+        inx
         sta FAUX4
+        stx FAUX5
         lda #$00
-        sta FAUX5
         sta SYSCALL
-        sta bufWrit+$FF
+        sta bufWrtL
         lda bufWriV
         sta FAUX1
         lda bufWriV+1
@@ -306,11 +310,10 @@ B1L089F pha
 * use buffer for performance
         stx wrtSavX+1
         sty wrtSavy+1
-        ldx bufWrit+$FF
+        ldx bufWrtL
         sta bufWrit,X
         inx
-        stx bufWrit+$FF
-        cpx #$FF
+        stx bufWrtL
         bne *+5
         jsr wrtFlsh
 wrtSavX ldx #$00

@@ -6,6 +6,7 @@ Purpose
 -------
 
 Assembler for SpartaDOS X and BW-DOS
+https://github.com/HolgerJanz/FastAssembler
 
 Syntax
 ------

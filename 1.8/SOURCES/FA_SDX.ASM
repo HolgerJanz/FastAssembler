@@ -107,9 +107,10 @@ bfL211C equ bfL2114+$08
 bfL2124 equ bfL211C+$08
 bufRead equ bfL2124+$08
 bufWrit equ bufRead+bufReaS
+bufWrtL equ bufWrit+$100
 * e_end is just 1 behind that block,
 * never used it in other blocks
-e_end   equ bufWrit+$100
+e_end   equ bufWrtL+$01
 * last used byte in empty block
 e_last  equ e_end-1
         blk empty e_end-e_begin main
