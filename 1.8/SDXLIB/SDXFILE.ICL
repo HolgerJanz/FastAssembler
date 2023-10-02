@@ -67,7 +67,7 @@ _fop_ca   lda $FFFF,Y
           cmp #$9b
           beq _fop_sf
           iny
-          cpy #$18
+          cpy #$20
           bne _fop_ca
 * set to file pointer buffer
 _fop_sf   lda <_file_p

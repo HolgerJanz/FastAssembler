@@ -24,10 +24,15 @@ B1L066D lda (PCURLIN),Y
 B1L0677 cmp #$9B
         bne B1L066D
 B1L067B sty curLiLn
+
         inc lineNum
-        bne B1L0686
+        bne *+5
         inc lineNum+1
-B1L0686 lda #$00
+        inc CURICLN
+        bne *+4
+        inc CURICLN+1
+
+        lda #$00
         sta B1L08D3
         jmp cPrLine
 * fill source buffer
@@ -292,6 +297,7 @@ B1L087B ldy #$00
 B1L0890 lda B1L09AE
         jsr outByte
         lda B1L09AF
+* write byte in A to output file
 outByte inc PROGCNT
         bne B1L089F
         inc PROGCNT+1
@@ -439,3 +445,5 @@ B1L097F inx
 B1L09A1 sta bfCFNAM,Y
         iny
         bne B1L097F
+
+        end

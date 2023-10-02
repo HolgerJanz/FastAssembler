@@ -388,3 +388,5 @@ B1L1442 jsr outByte
         cpx BFCFNAL
         bcc B1L1437
         rts
+
+        end

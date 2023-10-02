@@ -66,7 +66,27 @@ B1L14D7 lda #$06
         jmp prErrMs
 
 * parse ICL
-iclCode inc fileNum
+iclCode ldx CURICLX
+        lda CURICLN
+        sta arrICLL,X
+        lda CURICLN+1
+        sta arrICLH,X
+        lda filenum
+* if 1=obj then switch to 0=src
+        cmp #$01
+        bne *+4
+        lda #$00
+        sta arrFILN,X
+        inc CURICLX
+        jsr iclImpl
+* set new include
+        lda #$00
+        sta CURICLN
+        sta CURICLN+1
+        jsr stCRICL
+        rts
+
+iclImpl inc fileNum
         lda PASSNUM
         bne B1L14F5
         jsr B1L08D8
@@ -80,7 +100,22 @@ iclCode inc fileNum
 B1L14F5 jmp openSRC
 
 * parse END
-endCode lda curFilX
+endCode jsr endImpl
+        ldx CURICLX
+        beq *+3
+        dex
+        stx CURICLX
+        lda arrICLL,X
+        sta CURICLN
+        lda arrICLH,X
+        sta CURICLN+1
+        lda arrFILN,X
+        ldx #$00
+        jsr syGetFA
+        jsr stCRICL
+        rts
+
+endImpl lda curFilX
         cmp #$02
         bcs B1L1503
         dec flagEnd
@@ -95,6 +130,33 @@ B1L150B dta b($00)
 
 * parse INS
 insCode jsr iclCode
+        lda PASSNUM
+        bne insCpyF
+* pass 0 just get length and inc PC
+        jsr FILELENG
+        lda FAUX3
+        beq *+6
+        sec
+        php
+        bcs insChkC
+        clc
+        lda FAUX1
+        adc PROGCNT
+        sta PROGCNT
+        lda FAUX2
+        adc PROGCNT+1
+        sta PROGCNT+1
+        php
+insChkC jsr endCode
+        plp
+        bcc *+7
+        lda #$13
+        jsr prErrMs
+        rts
+insCpyF jsr insLoop
+        jsr endCode
+        rts
+
 insLoop lda bufReaV
         sta FAUX1
         lda bufReaV+1
@@ -110,7 +172,7 @@ insLoop lda bufReaV
         jsr insCopy
         plp
         bpl insLoop
-        jmp endCode
+        rts
 
 * copy read buffer to output
 insCopy lda bufReaV
@@ -675,3 +737,5 @@ B1L1993 jsr B1L08D8
         sbc #$10
         jsr B1L089F
         jmp B1L08C2
+
+        end

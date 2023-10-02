@@ -1,11 +1,11 @@
 
-Fast Assembler 1.8 24-09-2023
+Fast Assembler 1.8 30-09-2023
 =============================
 
 Purpose
 -------
 
-Assembler for SpartaDOS X and BW-DOS
+Assembler for SpartaDOS X and BW-DOS 1.4
 https://github.com/HolgerJanz/FastAssembler
 
 Syntax
@@ -176,7 +176,7 @@ Undeclared label - 224($E0) - Undefined label or symbol or recursive labels.
 
 Label declared twice - 225($E1) - Label or symbol defined twice.
 
-Unexpected eol - 226($E2) - Unexpected line break means there should be at least one character or parameter in the line.
+Unexpected end of line - 226($E2) - Unexpected line break means there should be at least one character or parameter in the line.
 
 Too many passes - 227($E3) - Too many passes when the number of passes exceeds 8.
 
@@ -196,11 +196,11 @@ Expression expected - 234($EA) - Expected expression, after a numerical an expre
 
 Too many blocks - 235($EB) - Too many blocks, the total number of blocks cannot exceed 256 and the number of RELOC and EMPTY blocks cannot exceed 7.
 
-Undefined or long - 236($EC) - Undefined or too long label, when defining labels a label block must be defined before using them, and the result of the address expression must not be larger than 2 bytes.
+Undefined or too long - 236($EC) - Undefined or too long label, when defining labels a label block must be defined before using them, and the result of the address expression must not be larger than 2 bytes.
 
 Improper block type - 237($ED) - Wrong type of block, e.g. UPDATE NEW block cannot follow DOS block.
 
-Too long or invalid symbol - 238($EE) - The expression is too large or contains an invalid symbol.
+Overflow or invalid symbol - 238($EE) - The expression is too large or contains an invalid symbol.
 
 Parenthesis not balanced - 239($EF) - Missing parentheses.
 
@@ -209,6 +209,10 @@ Too many operations - 240($F0) - Too many operations in expression, the number o
 Unexpected symbol - 241($F1) - Unexpected symbol, symbols cannot be used in blocks other than SPARTA or RELOC and in block definitions.
 
 Internal error - 242($F2) - Internal error, please drop an email with instruction to reproduce (holgerjanz@msn.com)
+
+Program counter overflow - 243($F3) - Overflow of the program counter during compiling of statement
+
+DOS error - 244($F4) - Error at DOS operation, see the following DOS error message
 
 Note
 ----

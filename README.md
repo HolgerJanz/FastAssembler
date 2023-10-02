@@ -8,21 +8,29 @@ The current version is 1.8 24-09-2023 and it works with all versions of SpartaDO
 
 - fixed parameter parsing issue that prevents Fast Assembler working with SpartaDOS X 4.47 to 4.49d
 
-- fixed multiplication and division issue, because of wrong overflow handling these operations always throw error "Too big number"
+- fixed multiplication and division issue, because of wrong overflow handling these 
+
+- operations always throw error "Too big number”
 
 - new pseudo command INS to insert binary files
 
 - fix END issue, processing of source was not aborted but the source in buffer was further processed
 
+- improved position information for error messages
+
 - add line number to source output
 
-- add option for dump of symbol table
+- add option /Y for dump of symbol table
 
-- condense info output 
+- add option /S for summary, e.g. count of labels and blocks, and memory usage
 
-- remove option B, always print error line, rename option A to L, and introduce option S for summary, e.g. count of labels and blocks, and memory usage
+- add option /E to convert error message to DOS error if compile fails, for better use in batch processing
 
-- introduce option E to set error to 255 if compile fails, for better use in batch
+- remove option /B
+
+- rename option /A to /L
+
+- condense info output
 
 - improve memory management
 
@@ -32,9 +40,9 @@ The current version is 1.8 24-09-2023 and it works with all versions of SpartaDO
 
 - update copyright message
 
-- add XEDIT by FJC (thanx for the permission), now it is a complete development package
-
 - add tutorial with extended examples
+
+- add XEDIT by FJC (thanx for the permission), now it is a complete development package
 
 ## Version 1.7
 Last original release by MMMG Soft from 1995

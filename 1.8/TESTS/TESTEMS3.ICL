@@ -1,0 +1,11 @@
+ RTS
+ RTS
+ CPX $40,Y
+ RTS
+ 
+ RTS
+ RTS
+ RTS
+ RTS
+
+ END

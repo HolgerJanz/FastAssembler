@@ -219,12 +219,16 @@ B1L1B51 clc
         rts
 
 * symbol table get file name
-syGetFl txa
+* src X=0, obj X=1
+syGetFl lda filenum
+* A=filenum
+syGetFA sta syGtCmp+1
+        txa
         jsr B1L1B26
         bcs B1L1B67
 B1L1B59 ldy #$02
         lda ($84),Y
-        cmp fileNum
+syGtCmp cmp #$00
         beq B1L1B68
         jsr B1L1B39
         bcc B1L1B59
@@ -559,3 +563,5 @@ B1L1D98 lda B1L1D61,Y
         bcc B1L1DAB
         inc $8B
 B1L1DAB rts
+
+        end

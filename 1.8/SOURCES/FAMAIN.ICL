@@ -53,7 +53,7 @@ failFa  lda cmdOptE
         lda lastErr
         adc #$e0
         jmp jmpFAIL
-        jsr prFail
+        jsr prFailN
         inc STATUS
         jmp exitFA
 * check unresolved labels
@@ -181,9 +181,9 @@ wrSyLop lda ($84),Y
         inx
         iny
 wrSyTxL cpx #$00
-        beq *+6
+        bcs *+6
         cpx #$FE
-        bne wrSyLop
+        bcc wrSyLop
         rts
 
 * write space to buffer
@@ -351,9 +351,9 @@ prCmpl  lda cmdOptS
         dta b($9B,$00)
         rts
 
-prFail  lda #$9b
+prFailN lda #$9b
         jsr PUTC
-        lda cmdOptS
+prFail  lda cmdOptS
         beq *+5 
         jsr prSum
         lda cmdOptY
@@ -379,15 +379,31 @@ symbCnt dta a($0000)
 * error handler
 failTr  sta STATUS
         cmp #$9C
-        bne *+8
+        bne failTr1
+* if parameter error then only write usage
         jsr prUsage
         jmp FCLOSEAL
+failTr1 lda cmdOptE
+        bne failTr2
+* if option E then no DOS error message
+        lda #$89
+        cmp STATUS
+        bne failTr3
+* if truncated record then add 1 to line number
+        inc CURICLN
+        bne *+4
+        inc CURICLN+1
+failTr3 lda #$14
+        jsr prErrMs
         jsr prFail
+        jmp FCLOSEAL
+* just failed and close
+failTr2 jsr prFailN
         jmp FCLOSEAL
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 24-09-2023'
+        dta c'Fast Assembler 1.8 30-09-2023'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2023'
         dta b($9b,$00)
@@ -421,9 +437,9 @@ gtCFNAM ldy COMTAB+CT_TRAILS
 * store buffer to CFNAME
 stCFNAM ldy BFCFNAL
         sty COMTAB+CT_TRAILS
-        cpy #$64
+        cpy #$20
         bcc B1L0253
-        ldy #$63
+        ldy #$1F
         lda #$9B
         bne B1L0256
 B1L0253 lda bfCFNAM,Y
@@ -431,6 +447,20 @@ B1L0256 sta COMTAB+CT_COMFNAM,Y
         dey
         bpl B1L0253
         rts
+
+* store buffer to current include name
+stCRICL ldy BFCFNAL
+        cpy #$20
+        bcc B2L0253
+        ldy #$1F
+        lda #$9B
+        bne B2L0256
+B2L0253 lda bfCFNAM,Y
+B2L0256 sta currICL,Y
+        dey
+        bpl B2L0253
+        rts
+
 
 cmdOptL dta b($00)
 cmdOptS dta b($00)
@@ -502,7 +532,7 @@ prErrMs eor maskURS
 * check mask for unresolved symbols
         eor maskURS
 * check highest valid
-        cmp #$12
+        cmp #$15
         bcc *+4
         lda #$12
 * set only first last error
@@ -512,19 +542,8 @@ prErrMs eor maskURS
 * set error flag
         ldx #$FF
         stx errFlag
-* check option L
-        ldx cmdOptL
-        beq yeErLMs
-        ldx PASSNUM
-        beq yeErrMs
-        bne yeErLMs
-* print line and error msg
-yeErLMs cmp #$03
-* no line at too many passes
-        beq yeErrMs
-        jsr prtLine
-* check max error number
-yeErrMs asl @
+* print error message
+        asl @
         tax
         lda errMsTa,X
         sta ptErrMs
@@ -532,32 +551,12 @@ yeErrMs asl @
         sta ptErrMs+1
         jsr PRINTF
         dta b($9c)
-        dta c'ERROR: %s'
-        dta b($9b,$00)
+        dta c'Error at %s line %d',b($9b),c'  %s',b($9b,$00)
+        dta v(currICL)
+        dta a(CURICLN)
 ptErrMs dta a($0000)
 noErrMs sec
         rts
-
-* error message pointer tab
-errMsTa dta v(errMs00)
-        dta v(errMs01)
-        dta v(errMs02)
-        dta v(errMs03)
-        dta v(errMs04)
-        dta v(errMs05)
-        dta v(errMs06)
-        dta v(errMs07)
-        dta v(errMs08)
-        dta v(errMs09)
-        dta v(errMs0A)
-        dta v(errMs0B)
-        dta v(errMs0C)
-        dta v(errMs0D)
-        dta v(errMs0E)
-        dta v(errMs0F)
-        dta v(errMs10)
-        dta v(errMs11)
-        dta v(errMs12)
 
 * error messages
 * undeclared label must be first
@@ -565,7 +564,7 @@ errMs00 dta c'Undeclared label'
         dta b($9B)
 errMs01 dta c'Label declared twice'
         dta b($9B)
-errMs02 dta c'Unexpected eol'
+errMs02 dta c'Unexpected end of line'
         dta b($9B)
 errMs03 dta c'Too many passes'
         dta b($9B)
@@ -589,7 +588,7 @@ errMs0C dta c'Undefined or too long'
         dta b($9B)
 errMs0D dta c'Improper block type'
         dta b($9B)
-errMs0E dta c'Too long or invalid symbol'
+errMs0E dta c'Overflow or invalid symbol'
         dta b($9B)
 errMs0F dta c'Parenthesis not balanced'
         dta b($9B)
@@ -597,9 +596,35 @@ errMs10 dta c'Too many operations'
         dta b($9B)
 errMs11 dta c'Unexpected symbol'
         dta b($9B)
-* internal error have to be last
 errMs12 dta c'Internal error'
         dta b($9B)
+errMs13 dta c'Program counter overflow'
+        dta b($9B)
+errMs14 dta c'DOS error'
+        dta b($9B)
+
+* error message pointer tab
+errMsTa dta v(errMs00)
+        dta v(errMs01)
+        dta v(errMs02)
+        dta v(errMs03)
+        dta v(errMs04)
+        dta v(errMs05)
+        dta v(errMs06)
+        dta v(errMs07)
+        dta v(errMs08)
+        dta v(errMs09)
+        dta v(errMs0A)
+        dta v(errMs0B)
+        dta v(errMs0C)
+        dta v(errMs0D)
+        dta v(errMs0E)
+        dta v(errMs0F)
+        dta v(errMs10)
+        dta v(errMs11)
+        dta v(errMs12)
+        dta v(errMs13)
+        dta v(errMs14)
 
 * these 9 bytes are init togehter
 flagEnd dta b($00)
@@ -636,12 +661,19 @@ srtPass jsr initBuf
         stx fileNum
         stx lineNum
         stx lineNum+1
-        inx
+* set current include and line number
+        stx CURICLX
+        stx CURICLN
+        stx CURICLN+1
+        jsr syGetFl
+        jsr stCRICL
+        ldx #$01
         stx B1L150B
         ldx #$10
         stx BLKPCNT+1
         inc PASSNUM
         jsr B1L1CD9
+* open source and object file
         jsr openDST
         jsr openSRC
 B1L04BD lda flagEnd
@@ -713,9 +745,10 @@ B1L056F rts
 * print source line
 prtLine jsr PRINTF
         dta b($9c)
-        dta c'%d:%*p'
+        dta c'%d:%4x:%*p'
         dta b($9B,$00)
         dta v(lineNum)
+        dta a(PROGCNT)
         dta v(curLiLn)
         dta a(PCURLIN)
         rts
@@ -764,3 +797,5 @@ initBuf clc
         sta bufUsed+1
         sta PCURLIN+1
         rts
+
+        end

@@ -31,9 +31,13 @@ MEMHIGH equ $9A
 ZTEMP1  equ $9C
 * temp2 pointer $xxxx
 ZTEMP2  equ $9E
+* current include line number
+CURICLN equ $A0
+* current icnlude index
+CURICLX equ $A2
 
 * Program
-        blk dos $3000
+        blk dos $2800
         icl 'FAMAIN.ICL'
         icl 'FAPASSES.ICL'
         icl 'FAPARSE.ICL'
@@ -64,11 +68,18 @@ bfL204C equ bfL202C+$20
 bfL206C equ bfL204C+$20
 bfL208C equ bfL206C+$20
 bfL20AC equ bfL208C+$20
+
+* include stack variables
 arrFHDL equ bfL20AC+$20
 arrFAU1 equ arrFHDL+$10
 arrFAU2 equ arrFAU1+$10
 arrFAU3 equ arrFAU2+$10
-bfL210C equ arrFAU3+$10
+arrICLL equ arrFAU3+$10
+arrICLH equ arrICLL+$10
+arrFILN equ arrICLH+$10
+currICL equ arrFILN+$10
+
+bfL210C equ currICL+$20
 bfL2114 equ bfL210C+$08
 bfL211C equ bfL2114+$08
 bfL2124 equ bfL211C+$08

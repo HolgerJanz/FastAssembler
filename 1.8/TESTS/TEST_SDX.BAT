@@ -195,6 +195,13 @@ FI
 SETERRNO 0
 
 ; Too many passes
+FA /E error228
+IF NOT ERROR 228
+ EXIT
+FI
+SETERRNO 0
+
+; Too many passes
 FA /E error227
 IF NOT ERROR 227
  EXIT
@@ -232,6 +239,13 @@ SETERRNO 0
 ; Too long or invalid symbol
 FA error238 /E
 IF NOT ERROR 238
+ EXIT
+FI
+SETERRNO 0
+
+; Program counter overflow
+FA error243 /E
+IF NOT ERROR 243
  EXIT
 FI
 SETERRNO 0
