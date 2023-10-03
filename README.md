@@ -4,6 +4,13 @@ Assembler for SpartaDOS X and BW-DOS 1.4 on Atari 8bit
 
 The current version is 1.8 24-09-2023 and it works with all versions of SpartaDOS X and with BW-DOS at least version 1.4. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
 
+# Projects Using Fast Assembler
+
+- [BW-DOS 1.4](https://github.com/HolgerJanz/BW-DOS) - SpartaDOS 3 compatible DOS
+- [FujiNet Tools for SpartaDOS](https://github.com/HolgerJanz/FujiNetToolsSpartaDOS) - FujiNet Command Line Tools for all SpartaDOS 3 compatible DOS versions
+- [Game VARIUS](https://github.com/HolgerJanz/VARIUS) - small game like 2048
+- [Demo Rainbow Family](https://github.com/HolgerJanz/RainbowFamily) - small Demo
+
 ## Version 1.8
 
 - fixed parameter parsing issue that prevents Fast Assembler working with SpartaDOS X 4.47 to 4.49d
