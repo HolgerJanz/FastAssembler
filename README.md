@@ -25,7 +25,7 @@ The current version is 1.8 30-09-2023 and it works with all versions of SpartaDO
 
 - improved position information for error messages
 
-- add line number to source output
+- add line number and program counter to source output
 
 - add option /Y for dump of symbol table
 
