@@ -250,7 +250,16 @@ IF NOT ERROR 243
 FI
 SETERRNO 0
 
+; Check messages and code position
+FA testemsg >>testemsg.trc
+<BIN>TESTCOMP TESTEMSX.TXT TESTEMSG.TRC
+IF ERROR
+ EXIT
+FI
+SETERRNO 0
+
 DEL *.OBJ
+DEL *.TRC
 
 ;===================================
 ; Test Examples

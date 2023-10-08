@@ -383,10 +383,15 @@ failTr  sta STATUS
 * if parameter error then only write usage
         jsr prUsage
         jmp FCLOSEAL
+* if option E and 
 failTr1 lda cmdOptE
-        bne failTr2
-* if option E then no DOS error message
-        lda #$89
+        bne failTr4
+*   it was a compile error >= $E0
+* then no DOS error message
+        lda STATUS
+        cmp #$E0
+        bcs failTr2
+failTr4 lda #$89
         cmp STATUS
         bne failTr3
 * if truncated record then add 1 to line number
@@ -403,7 +408,7 @@ failTr2 jsr prFailN
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 30-09-2023'
+        dta c'Fast Assembler 1.8 07-10-2023'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2023'
         dta b($9b,$00)
@@ -665,6 +670,7 @@ srtPass jsr initBuf
         stx CURICLX
         stx CURICLN
         stx CURICLN+1
+        stx CURICLF
         jsr syGetFl
         jsr stCRICL
         ldx #$01

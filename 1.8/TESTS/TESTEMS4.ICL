@@ -1,0 +1,5 @@
+     dta b($FFF1)
+     dta b($00)
+     dta b($00)
+     dta b($00)
+     dta b($00)

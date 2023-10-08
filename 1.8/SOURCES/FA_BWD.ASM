@@ -27,14 +27,16 @@ BLKPCNT equ $8E
 PCURLIN equ $90
 * $xxxx max used mem
 MEMHIGH equ $9A
-* temp1 pointer $xxxx
+* $xxxx temp1 pointer
 ZTEMP1  equ $9C
-* temp2 pointer $xxxx
+* $xxxx temp2 pointer
 ZTEMP2  equ $9E
-* current include line number
+* $xxxx current include line number
 CURICLN equ $A0
-* current icnlude index
+* $xx current include stack index
 CURICLX equ $A2
+* $xx current file number
+CURICLF equ $A3
 
 * Program
         blk dos $2800

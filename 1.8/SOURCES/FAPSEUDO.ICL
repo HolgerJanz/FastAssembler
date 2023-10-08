@@ -71,14 +71,12 @@ iclCode ldx CURICLX
         sta arrICLL,X
         lda CURICLN+1
         sta arrICLH,X
-        lda filenum
-* if 1=obj then switch to 0=src
-        cmp #$01
-        bne *+4
-        lda #$00
+        lda CURICLF
         sta arrFILN,X
         inc CURICLX
         jsr iclImpl
+        lda filenum
+        sta CURICLF
 * set new include
         lda #$00
         sta CURICLN
@@ -110,6 +108,7 @@ endCode jsr endImpl
         lda arrICLH,X
         sta CURICLN+1
         lda arrFILN,X
+        sta CURICLF
         ldx #$00
         jsr syGetFA
         jsr stCRICL
