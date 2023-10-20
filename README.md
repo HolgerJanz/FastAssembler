@@ -17,7 +17,7 @@ The current version is 1.8 30-09-2023 and it works with all versions of SpartaDO
 
 - fixed multiplication and division issue, because of wrong overflow handling these operations always throw error "Too big number”
 
-- new pseudo command INS to insert binary files
+- new pseudo command INS to insert binary data
 
 - fix END issue, processing of source was not aborted but the source in buffer was further processed
 
