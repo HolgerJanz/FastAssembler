@@ -8,6 +8,7 @@ The current version is 1.8 07-10-2023 and it works with all versions of SpartaDO
 
 - [BW-DOS 1.4](https://github.com/HolgerJanz/BW-DOS) - SpartaDOS 3 compatible DOS
 - [FujiNet Tools for SpartaDOS](https://github.com/HolgerJanz/FujiNetToolsSpartaDOS) - FujiNet Command Line Tools for all SpartaDOS 3 compatible DOS versions
+- [XL OS](https://github.com/HolgerJanz/FastAssemblerAtariXLOS) - Sources for XL operating system
 - [Game VARIUS](https://github.com/HolgerJanz/VARIUS) - small game like 2048
 - [Demo Rainbow Family](https://github.com/HolgerJanz/RainbowFamily) - small Demo
 
