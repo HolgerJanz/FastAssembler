@@ -15,17 +15,15 @@ The current version is 1.8 07-10-2023 and it works with all versions of SpartaDO
 
 - fixed parameter parsing issue that prevents Fast Assembler working with SpartaDOS X 4.47 to 4.49d
 
-- fixed multiplication and division issue, because of wrong overflow handling these 
+- fixed multiplication and division issue, because of wrong overflow handling these operations always throw error "Too big number”
 
-- operations always throw error "Too big number”
-
-- new pseudo command INS to insert binary files
+- new pseudo command INS to insert binary data
 
 - fix END issue, processing of source was not aborted but the source in buffer was further processed
 
 - improved position information for error messages
 
-- add line number to source output
+- add line number and program counter to source output
 
 - add option /Y for dump of symbol table
 
