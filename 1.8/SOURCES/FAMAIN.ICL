@@ -53,7 +53,7 @@ failFa  lda cmdOptE
         lda lastErr
         adc #$e0
         jmp jmpFAIL
-        jsr prFailN
+        jsr prFail
         inc STATUS
         jmp exitFA
 * check unresolved labels
@@ -108,7 +108,7 @@ prSum   jsr PRINTF
         dta b($9B)
         dta c'Blocks:%5b  SDX Blocks :%5b'
         dta b($9B)
-        dta c'Memory: $%4x-$%4x-$%4x $%4x-$%4x'
+        dta c'Memory: %4x-%4x-%4x %4x-%4x'
         dta b($9B,$00)
         dta v(labCnt)
         dta v(symbCnt)
@@ -408,7 +408,7 @@ failTr2 jsr prFailN
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 07-10-2023'
+        dta c'Fast Assembler 1.8 16-11-2023'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2023'
         dta b($9b,$00)
@@ -427,6 +427,8 @@ prUsage jsr PRINTF
         dta c' E  : set error if compile failed'
         dta b($9B)
         dta c' Y  : write symbole table'
+        dta b($9B)
+        dta c' Q  : quite, no line progress messages'
         dta b($9B,$00)
         rts
 
@@ -471,28 +473,31 @@ cmdOptL dta b($00)
 cmdOptS dta b($00)
 cmdOptE dta b($00)
 cmdOptY dta b($00)
+cmdOptQ dta b($00)
 cmdOpt  dta b($00),c'L'
         dta b($00),c'S'
         dta b($00),c'E'
         dta b($00),c'Y'
-cmdOptP dta v(cmdOpt)
+        dta b($00),c'Q'
+cmdOptv dta v(cmdOpt)
 cmdPCnt dta b($ff)
 
 * parse command line
-* check for options
-prsCmdL ldx #$00
-        stx cmdOptL
-        stx cmdOptS
-        stx cmdOptE
+prsCmdL lda #$00
+        ldx #$04
+* clear options
+        sta cmdOptL,X
         dex
+        bpl *-4
         stx cmdPCnt
 
-prsCmdN lda cmdOptP
-        ldx cmdOptP+1
-        ldy #$08
+* check for options
+prsCmdN lda cmdOptv
+        ldx cmdOptv+1
+        ldy #$0A
         jsr U_SLASH
-        ldy #$06
-        ldx #$03
+        ldy #$08
+        ldx #$04
 * set flags for options
 prsOptN lda cmdOptL,X
         ora cmdOpt,Y
@@ -554,11 +559,15 @@ prErrMs eor maskURS
         sta ptErrMs
         lda errMsTa+1,X
         sta ptErrMs+1
+        lda cmdOptQ
+        bne *+7
+        lda #$9C
+        jsr PUTC
         jsr PRINTF
-        dta b($9c)
-        dta c'Error at %s line %d',b($9b),c'  %s',b($9b,$00)
+        dta c'Error at %s:%d:%4x',b($9b),c'  %s',b($9b,$00)
         dta v(currICL)
         dta a(CURICLN)
+        dta a(PROGCNT)
 ptErrMs dta a($0000)
 noErrMs sec
         rts
@@ -765,8 +774,13 @@ prPrgs  lda PASSNUM
         bne *+7
         lda cmdOptL
         bne prPrgsE
-prPrgsF jsr PRINTF
-        dta b($9C)
+        lda cmdOptQ
+        bne prPrgsE
+prPrgsF lda cmdOptQ
+        bne *+7
+        lda #$9C
+        jsr PUTC
+        jsr PRINTF
         dta c'Pass %b Lines %d'
         dta b($00)
         dta v(PASSNUM)

@@ -251,7 +251,7 @@ FI
 SETERRNO 0
 
 ; Check messages and code position
-FA testemsg >>testemsg.trc
+FA testemsg /Q >>testemsg.trc
 <BIN>TESTCOMP TESTEMSX.TXT TESTEMSG.TRC
 IF ERROR
  EXIT
@@ -458,6 +458,8 @@ IF ERROR
  EXIT
 FI
 
+DEL *.OBJ
+
 ;===================================
 ; Test FastAssembler itself
 
@@ -480,6 +482,8 @@ FI
 IF ERROR
  EXIT
 FI
+
+DEL *.OBJ
 
 ;===================================
 ; END FA Test Suite

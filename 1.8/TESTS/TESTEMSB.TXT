@@ -1,149 +1,135 @@
 
-D1:FA TESTEMSG
+D1:FA TESTEMSG /Q
 
-œPass 0 Lines 0œError at D1:TESTEMSG.ASM line 1
+Error at D1:TESTEMSG.ASM:1:0000
   Unexpected end of line
-œError at D1:TESTEMSG.ASM line 4
+Error at D1:TESTEMSG.ASM:4:FFF9
   Unexpected end of line
-œError at D1:TESTEMSG.ASM line 6
+Error at D1:TESTEMSG.ASM:6:001E
   Program counter overflow
-œPass 0 Lines 6œError at D1:TESTEMSG.ASM line 10
+Error at D1:TESTEMSG.ASM:10:0021
   Unexpected end of line
-œPass 0 Lines 11œPass 0 Lines 19œError at TESTEMS3.ICL line 3
+Error at TESTEMS3.ICL:3:0029
   Improper type
-œError at TESTEMS3.ICL line 5
+Error at TESTEMS3.ICL:5:002A
   Unexpected end of line
-œPass 0 Lines 30œError at TESTEMS2.ICL line 13
+Error at TESTEMS2.ICL:13:002E
   Unexpected end of line
-œPass 0 Lines 36œError at D1:TESTEMSG.ASM line 14
+Error at D1:TESTEMSG.ASM:14:002E
   Too big number
-œPass 0 Lines 41œError at TESTEMS4.ICL line 1
+Error at TESTEMS4.ICL:1:002E
   Too big number
-œPass 0 Lines 46œPass 0 Lines 47œError at D1:TESTEMSG.ASM line 18
+Error at D1:TESTEMSG.ASM:18:0032
   Too big number
-œPass 0 Lines 51œError at TESTEMS5.ICL line 2
+Error at TESTEMS5.ICL:2:0033
   Too big number
-œPass 0 Lines 56œPass 0 Lines 57œError at D1:TESTEMSG.ASM line 22
+Error at D1:TESTEMSG.ASM:22:0036
   Too big number
-œPass 0 Lines 61œError at TESTEMS6.ICL line 3
+Error at TESTEMS6.ICL:3:0038
   Too big number
-œPass 0 Lines 66œPass 0 Lines 67œError at D1:TESTEMSG.ASM line 26
+Error at D1:TESTEMSG.ASM:26:003A
   Too big number
-
 Failed
 
-D1:FA ERRORLNG
+D1:FA ERRORLNG /Q
 
-œPass 0 Lines 0œPass 0 Lines 19œError at D1:ERRORLNG.ASM line 24
+Error at D1:ERRORLNG.ASM:24:0000
   Improper type
-œPass 0 Lines 41œError at D1:ERRORLNG.ASM line 49
+Error at D1:ERRORLNG.ASM:49:0000
   Improper type
-œPass 0 Lines 63œPass 0 Lines 82œPass 0 Lines 101œPass 0 Lines 120œPass 0 Lines 139œPass 0 Lines 158œPass 0 Lines 177œPass 0 Lines 196œPass 0 Lines 215œPass 0 Lines 234œPass 0 Lines 248
 Failed
 
-D1:FA ERRORURS
+D1:FA ERRORURS /Q
 
-œPass 0 Lines 0œPass 0 Lines 13 Pending 4
-œPass 1 Lines 0œPass 1 Lines 13 Pending 3
-œPass 2 Lines 0œPass 2 Lines 13 Pending 1
-œPass 3 Lines 0œPass 3 Lines 13 Pending 1
-œPass 4 Lines 0œError at D1:ERRORURS.ASM line 9
+Pass 0 Lines 13 Pending 4
+Pass 1 Lines 13 Pending 3
+Pass 2 Lines 13 Pending 1
+Pass 3 Lines 13 Pending 1
+Error at D1:ERRORURS.ASM:9:3002
   Undeclared label
-
 Failed
 
-D1:FA ERRORN2
+D1:FA ERRORN2  /Q
 
-œPass 0 Lines 0œError at D1:ERRORN2.ASM line 6
+Error at D1:ERRORN2.ASM:6:0000
   Improper type
-œError at D1:ERRORN2.ASM line 10
+Error at D1:ERRORN2.ASM:10:3005
   Improper type
-
 Failed
 
-D1:FA ERRORREC
+D1:FA ERRORREC /Q
 
-œPass 0 Lines 0œPass 0 Lines 2œPass 0 Lines 3 Pending 2
-œPass 1 Lines 0œPass 1 Lines 2œPass 1 Lines 3 Pending 2
-œPass 2 Lines 0œError at D1:ERRORREC.ASM line 1
+Pass 0 Lines 3 Pending 2
+Pass 1 Lines 3 Pending 2
+Error at D1:ERRORREC.ASM:1:0000
   Undeclared label
-œError at D1:ERRORREC.ASM line 2
+Error at D1:ERRORREC.ASM:2:0000
   Undeclared label
-œPass 2 Lines 2
 Failed
 
-D1:FA ERROR225
+D1:FA ERROR225 /Q
 
-œPass 0 Lines 0œError at D1:ERROR225.ASM line 2
+Error at D1:ERROR225.ASM:2:0000
   Label declared twice
-œPass 0 Lines 3
 Failed
 
-D1:FA ERROR226
+D1:FA ERROR226 /Q
 
-œPass 0 Lines 0œError at D1:ERROR226.ASM line 1
+Error at D1:ERROR226.ASM:1:0000
   Unexpected end of line
-œError at D1:ERROR226.ASM line 2
+Error at D1:ERROR226.ASM:2:0000
   Improper type
-œPass 0 Lines 2
 Failed
 
-D1:FA ERROR227
+D1:FA ERROR227 /Q
 
-œPass 0 Lines 0œPass 0 Lines 32œPass 0 Lines 33 Pending 31
-œPass 1 Lines 0œPass 1 Lines 32œPass 1 Lines 33 Pending 30
-œPass 2 Lines 0œPass 2 Lines 32œPass 2 Lines 33 Pending 29
-œPass 3 Lines 0œPass 3 Lines 32œPass 3 Lines 33 Pending 28
-œPass 4 Lines 0œPass 4 Lines 32œPass 4 Lines 33 Pending 27
-œPass 5 Lines 0œPass 5 Lines 32œPass 5 Lines 33 Pending 26
-œPass 6 Lines 0œPass 6 Lines 32œPass 6 Lines 33 Pending 25
-œPass 7 Lines 0œPass 7 Lines 32œPass 7 Lines 33 Pending 24
-œPass 8 Lines 0œPass 8 Lines 32œPass 8 Lines 33 Pending 23
-œError at D1:ERROR227.ASM line 24
+Pass 0 Lines 33 Pending 31
+Pass 1 Lines 33 Pending 30
+Pass 2 Lines 33 Pending 29
+Pass 3 Lines 33 Pending 28
+Pass 4 Lines 33 Pending 27
+Pass 5 Lines 33 Pending 26
+Pass 6 Lines 33 Pending 25
+Pass 7 Lines 33 Pending 24
+Pass 8 Lines 33 Pending 23
+Error at D1:ERROR227.ASM:24:0000
   Too many passes
-
 Failed
 
-D1:FA ERROR228
+D1:FA ERROR228 /Q
 
-œPass 0 Lines 0œError at D1:ERROR228.ASM line 2
+Error at D1:ERROR228.ASM:2:0003
   Too big number
-œPass 0 Lines 2
 Failed
 
-D1:FA ERROR229
+D1:FA ERROR229 /Q
 
-œPass 0 Lines 0œError at D1:ERROR229.ASM line 2
+Error at D1:ERROR229.ASM:2:2000
   String error
-œPass 0 Lines 3
 Failed
 
-D1:FA ERROR231
+D1:FA ERROR231 /Q
 
-œPass 0 Lines 0œError at D1:ERROR231.ASM line 11
+Error at D1:ERROR231.ASM:11:2080
   Branch to far
-œPass 0 Lines 12
 Failed
 
-D1:FA ERROR233
+D1:FA ERROR233 /Q
 
-œPass 0 Lines 0œError at D1:ERROR233.ASM line 1
+Error at D1:ERROR233.ASM:1:0000
   Label missing
-œPass 0 Lines 2
 Failed
 
-D1:FA ERROR238
+D1:FA ERROR238 /Q
 
-œPass 0 Lines 0œError at D1:ERROR238.ASM line 3
+Error at D1:ERROR238.ASM:3:0000
   Overflow or invalid symbol
-œPass 0 Lines 4
 Failed
 
-D1:FA ERROR243
+D1:FA ERROR243 /Q
 
-œPass 0 Lines 0œError at D1:ERROR243.ASM line 3
+Error at D1:ERROR243.ASM:3:0026
   Program counter overflow
-œPass 0 Lines 3
 Failed
 
 D1:PRINT

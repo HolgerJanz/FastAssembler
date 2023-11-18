@@ -1,5 +1,5 @@
 
-Fast Assembler 1.8 07-10-2023
+Fast Assembler 1.8 16-11-2023
 =============================
 
 Purpose
@@ -11,7 +11,7 @@ https://github.com/HolgerJanz/FastAssembler
 Syntax
 ------
 
-FA [/LSEY] src[.ext] [obj[.ext]]
+FA [/LSEYQ] src[.ext] [obj[.ext]]
 
 src - ATASCII source file
 obj - target object file
@@ -24,7 +24,9 @@ The default extensions (ext) are .ASM and .OBJ. The default obj is src.
 
 /E - sets assembly errors to system errors starting from 224($E0) if compile failed
 
-/Y - Writes symbol table to file obj.SYM
+/Y - writes symbol table to file obj.SYM
+
+/Q - quite, no progress output for line number processing
 
 Remarks
 -------

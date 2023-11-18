@@ -1,31 +1,30 @@
 
-œPass 0 Lines 0œError at TESTEMSG.ASM line 1
+Error at TESTEMSG.ASM:1:0000
   Unexpected end of line
-œError at TESTEMSG.ASM line 4
+Error at TESTEMSG.ASM:4:FFF9
   Unexpected end of line
-œError at TESTEMSG.ASM line 6
+Error at TESTEMSG.ASM:6:001E
   Program counter overflow
-œPass 0 Lines 6œError at TESTEMSG.ASM line 10
+Error at TESTEMSG.ASM:10:0021
   Unexpected end of line
-œPass 0 Lines 11œPass 0 Lines 19œError at TESTEMS3.ICL line 3
+Error at TESTEMS3.ICL:3:0029
   Improper type
-œError at TESTEMS3.ICL line 5
+Error at TESTEMS3.ICL:5:002A
   Unexpected end of line
-œPass 0 Lines 30œError at TESTEMS2.ICL line 13
+Error at TESTEMS2.ICL:13:002E
   Unexpected end of line
-œPass 0 Lines 36œError at TESTEMSG.ASM line 14
+Error at TESTEMSG.ASM:14:002E
   Too big number
-œPass 0 Lines 41œError at TESTEMS4.ICL line 1
+Error at TESTEMS4.ICL:1:002E
   Too big number
-œPass 0 Lines 46œPass 0 Lines 47œError at TESTEMSG.ASM line 18
+Error at TESTEMSG.ASM:18:0032
   Too big number
-œPass 0 Lines 51œError at TESTEMS5.ICL line 2
+Error at TESTEMS5.ICL:2:0033
   Too big number
-œPass 0 Lines 56œPass 0 Lines 57œError at TESTEMSG.ASM line 22
+Error at TESTEMSG.ASM:22:0036
   Too big number
-œPass 0 Lines 61œError at TESTEMS6.ICL line 3
+Error at TESTEMS6.ICL:3:0038
   Too big number
-œPass 0 Lines 66œPass 0 Lines 67œError at TESTEMSG.ASM line 26
+Error at TESTEMSG.ASM:26:003A
   Too big number
-
 Failed
