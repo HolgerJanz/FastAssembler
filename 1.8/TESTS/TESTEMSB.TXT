@@ -29,6 +29,7 @@ Error at TESTEMS6.ICL:3:0038
   Too big number
 Error at D1:TESTEMSG.ASM:26:003A
   Too big number
+Pass 0 Lines 71
 Failed
 
 D1:FA ERRORLNG /Q
@@ -37,6 +38,7 @@ Error at D1:ERRORLNG.ASM:24:0000
   Improper type
 Error at D1:ERRORLNG.ASM:49:0000
   Improper type
+Pass 0 Lines 249
 Failed
 
 D1:FA ERRORURS /Q
@@ -47,6 +49,7 @@ Pass 2 Lines 13 Pending 1
 Pass 3 Lines 13 Pending 1
 Error at D1:ERRORURS.ASM:9:3002
   Undeclared label
+Pass 4 Lines 13
 Failed
 
 D1:FA ERRORN2  /Q
@@ -55,6 +58,7 @@ Error at D1:ERRORN2.ASM:6:0000
   Improper type
 Error at D1:ERRORN2.ASM:10:3005
   Improper type
+Pass 0 Lines 13
 Failed
 
 D1:FA ERRORREC /Q
@@ -65,12 +69,14 @@ Error at D1:ERRORREC.ASM:1:0000
   Undeclared label
 Error at D1:ERRORREC.ASM:2:0000
   Undeclared label
+Pass 2 Lines 3
 Failed
 
 D1:FA ERROR225 /Q
 
 Error at D1:ERROR225.ASM:2:0000
   Label declared twice
+Pass 0 Lines 4
 Failed
 
 D1:FA ERROR226 /Q
@@ -79,6 +85,7 @@ Error at D1:ERROR226.ASM:1:0000
   Unexpected end of line
 Error at D1:ERROR226.ASM:2:0000
   Improper type
+Pass 0 Lines 3
 Failed
 
 D1:FA ERROR227 /Q
@@ -94,42 +101,49 @@ Pass 7 Lines 33 Pending 24
 Pass 8 Lines 33 Pending 23
 Error at D1:ERROR227.ASM:24:0000
   Too many passes
+Pass 8 Lines 33
 Failed
 
 D1:FA ERROR228 /Q
 
 Error at D1:ERROR228.ASM:2:0003
   Too big number
+Pass 0 Lines 3
 Failed
 
 D1:FA ERROR229 /Q
 
 Error at D1:ERROR229.ASM:2:2000
   String error
+Pass 0 Lines 4
 Failed
 
 D1:FA ERROR231 /Q
 
 Error at D1:ERROR231.ASM:11:2080
   Branch to far
+Pass 0 Lines 13
 Failed
 
 D1:FA ERROR233 /Q
 
 Error at D1:ERROR233.ASM:1:0000
   Label missing
+Pass 0 Lines 3
 Failed
 
 D1:FA ERROR238 /Q
 
 Error at D1:ERROR238.ASM:3:0000
   Overflow or invalid symbol
+Pass 0 Lines 5
 Failed
 
 D1:FA ERROR243 /Q
 
 Error at D1:ERROR243.ASM:3:0026
   Program counter overflow
+Pass 0 Lines 4
 Failed
 
 D1:PRINT

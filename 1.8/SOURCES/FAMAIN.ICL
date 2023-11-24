@@ -53,7 +53,9 @@ failFa  lda cmdOptE
         lda lastErr
         adc #$e0
         jmp jmpFAIL
-        jsr prFail
+* finish with error
+        jsr prPrgsF
+        jsr prFailN
         inc STATUS
         jmp exitFA
 * check unresolved labels
@@ -383,12 +385,9 @@ failTr  sta STATUS
 * if parameter error then only write usage
         jsr prUsage
         jmp FCLOSEAL
-* if option E and 
-failTr1 lda cmdOptE
-        bne failTr4
 *   it was a compile error >= $E0
 * then no DOS error message
-        lda STATUS
+failTr1 lda STATUS
         cmp #$E0
         bcs failTr2
 failTr4 lda #$89
@@ -403,12 +402,13 @@ failTr3 lda #$14
         jsr prFail
         jmp FCLOSEAL
 * just failed and close
-failTr2 jsr prFailN
+failTr2 jsr prPrgsF
+        jsr prFailN
         jmp FCLOSEAL
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 16-11-2023'
+        dta c'Fast Assembler 1.8 23-11-2023'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2023'
         dta b($9b,$00)

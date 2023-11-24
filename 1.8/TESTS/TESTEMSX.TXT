@@ -27,4 +27,5 @@ Error at TESTEMS6.ICL:3:0038
   Too big number
 Error at TESTEMSG.ASM:26:003A
   Too big number
+Pass 0 Lines 71
 Failed
