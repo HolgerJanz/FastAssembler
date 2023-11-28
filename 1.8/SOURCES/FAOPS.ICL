@@ -256,7 +256,7 @@ datKndV dta v(datByte)
 
 * parse DTA
 pvDTA   dec B1L1C45
-        jsr B1L08D5
+        jsr gettok2
         bne B1L134F
         lda #$02
         jmp prErrMs
@@ -287,7 +287,7 @@ B1L1361 txa
         lda #$05
         jmp prErrMs
 B1L138A jsr $FFFF
-        jsr B1L08D5
+        jsr gettok2
         bne B1L134F
 B1L1392 rts
 
@@ -315,7 +315,7 @@ B1L13B9 inx
         bcs B1L1392
         lda B1L09AD
 B1L13C3 jsr $FFFF
-        jsr B1L08D5
+        jsr gettok2
         beq B1L13CF
         ldy #$00
         beq B1L13A6

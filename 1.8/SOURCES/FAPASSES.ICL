@@ -10,33 +10,31 @@ nxtLine lda flagCls ; check END in include
         bcc B1L065F
         inc PCURLIN+1
 B1L065F lda PCURLIN
+* check for and of used buffer
         cmp bufUsed
         lda PCURLIN+1
         sbc bufUsed+1
         bcs B1L068E
+* read next line until EOL
         ldy #$00
 B1L066D lda (PCURLIN),Y
         iny
         bne B1L0677
 * ERROR: Truncated record
-        lda #$89
-        jmp jmpFAIL
+* line too long
+        jsr incLinC
+        lda #$15
+        jmp prErrEx
 B1L0677 cmp #$9B
         bne B1L066D
 B1L067B sty curLiLn
-
-        inc lineNum
-        bne *+5
-        inc lineNum+1
-        inc CURICLN
-        bne *+4
-        inc CURICLN+1
-
+        jsr incLinC
         lda #$00
         sta B1L08D3
         jmp cPrLine
 * fill source buffer
 rdAftrE inc flagCls
+* buffer used up, fill buffer
 B1L068E jsr prPrgs
 * read source file
         lda bufReaV
@@ -65,7 +63,7 @@ B1L068E jsr prPrgs
         sta bufUsed+1
         ldy #$04
         bne B1L067B
-* buffer filled, set current line
+* buffer filled, check for last EOL
 B1L06D3 clc
         lda PCURLIN
         adc FAUX4
@@ -74,8 +72,8 @@ B1L06D3 clc
         adc FAUX5
         sta bufUsed+1
         ldy #$00
-        sty B1L062E
-        sty B1L062E+1
+        sty bufLEOL
+        sty bufLEOL+1
 B1L06EC lda (PCURLIN),Y
         inc PCURLIN
         bne *+4
@@ -83,24 +81,27 @@ B1L06EC lda (PCURLIN),Y
         cmp #$9B
         bne B1L0702
         lda PCURLIN
-        sta B1L062E
+        sta bufLEOL
         lda PCURLIN+1
-        sta B1L062E+1
+        sta bufLEOL+1
 B1L0702 lda PCURLIN
         cmp bufUsed
         lda PCURLIN+1
         sbc bufUsed+1
         bcc B1L06EC
-        lda B1L062E
-        ora B1L062E+1
+        lda bufLEOL
+        ora bufLEOL+1
         bne B1L071B
 * ERROR: Truncated record
-        lda #$89
-        jmp jmpFAIL
-B1L071B jsr B1L073C
-        lda B1L062E
+* END without EOL
+        jsr incLinC
+        lda #$15
+        jmp prErrEx
+* adapt file position for last EOL
+B1L071B jsr updFPos
+        lda bufLEOL
         sta bufUsed
-        lda B1L062E+1
+        lda bufLEOL+1
         sta bufUsed+1
         lda bufReaV
         sta PCURLIN
@@ -110,13 +111,22 @@ B1L071B jsr B1L073C
         sta curLiLn
         jmp nxtLine
 
-B1L073C jsr FTELL
+incLinC inc lineNum
+        bne *+5
+        inc lineNum+1
+        inc CURICLN
+        bne *+4
+        inc CURICLN+1
+        rts
+
+* update file position to last EOL
+updFPos jsr FTELL
         sec
         lda bufUsed
-        sbc B1L062E
+        sbc bufLEOL
         sta bufUsed
         lda bufUsed+1
-        sbc B1L062E+1
+        sbc bufLEOL+1
         sta bufUsed+1
         sec
         lda FAUX1
@@ -135,11 +145,11 @@ openSRC ldx curFilX
         clc
         lda PCURLIN
         adc curLiLn
-        sta B1L062E
+        sta bufLEOL
         lda PCURLIN+1
         adc #$00
-        sta B1L062E+1
-        jsr B1L073C
+        sta bufLEOL+1
+        jsr updFPos
         ldx curFilX
         lda FHANDLE
         sta arrFHDL,X
@@ -341,9 +351,9 @@ B1L08C4 lda bfCFNAM,X
 B1L08D3 dta b($00)
 B1L08D4 dta b($00)
 
-B1L08D5 lda #$FF
+gettok2 lda #$FF
         dta b(BIT_abs)
-B1L08D8 lda #$00
+gettok1 lda #$00
         sta B1L08D4
         lda #$00
         sta B1L093E
@@ -352,14 +362,14 @@ B1L08D8 lda #$00
         cpy curLiLn
         beq B1L08F6
 B1L08ED lda (PCURLIN),Y
-        cmp #$20
+        cmp #' '
         bne B1L08F7
         iny
         bne B1L08ED
 B1L08F6 rts
 B1L08F7 ldx #$00
 B1L08F9 lda (PCURLIN),Y
-        jsr B1L0940
+        jsr chkquot
         sta bfCLINE,X
         jsr TOUPPER
         sta bfCFNAM,X
@@ -373,9 +383,9 @@ B1L08F9 lda (PCURLIN),Y
         bne B1L08F9
         bit B1L08D4
         beq B1L0920
-        cmp #$2C
+        cmp #','
         beq B1L092C
-B1L0920 cmp #$20
+B1L0920 cmp #' '
         bne B1L08F9
         lda B1L08D4
         beq B1L092C
@@ -393,17 +403,17 @@ B1L092C dex
 B1L093E dta b($00)
 B1L093F dta b($00)
 
-* check ' and "
-B1L0940 cmp #$27
+* check '($27) and "($22)
+chkquot cmp #$27
         beq B1L0959
-        cmp #$22
+        cmp #'"'
         bne B1L0968
         bit B1L093E
         bne B1L0968
         lda B1L093F
         eor #$FF
         sta B1L093F
-        lda #$22
+        lda #'"'
         bne B1L0968
 B1L0959 bit B1L093F
         bne B1L0968
@@ -418,7 +428,7 @@ B1L0969 dta b($00)
 B1L096A lda bfCLINE,X
         cmp #$27
         beq B1L097A
-        cmp #$22
+        cmp #'"'
         beq B1L097A
 * ERROR: String error
 B1L0975 lda #$05

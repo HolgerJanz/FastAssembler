@@ -70,7 +70,8 @@ B1L0052 lda unResLa
         beq nxtPass
         jsr prCmpl
 exitFA  jsr U_XFAIL
-        jmp FCLOSEAL
+        jsr FCLOSEAL
+        jmp (DOSVEC)
 * check diff with last pass
 B1L0067 jsr prUnRSy
 * first check too many passes
@@ -94,6 +95,9 @@ B1L04B1 ldy unResLa
         lda #$FF
         sta maskURS
         jmp nxtPass
+
+prErrEx jsr prErrMs
+        jmp failFa
 
 * unresolved label count
 unResLa dta a($0000)
@@ -390,17 +394,8 @@ failTr  sta STATUS
 failTr1 lda STATUS
         cmp #$E0
         bcs failTr2
-failTr4 lda #$89
-        cmp STATUS
-        bne failTr3
-* if truncated record then add 1 to line number
-        inc CURICLN
-        bne *+4
-        inc CURICLN+1
-failTr3 lda #$14
+        lda #$14
         jsr prErrMs
-        jsr prFail
-        jmp FCLOSEAL
 * just failed and close
 failTr2 jsr prPrgsF
         jsr prFailN
@@ -408,7 +403,7 @@ failTr2 jsr prPrgsF
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 23-11-2023'
+        dta c'Fast Assembler 1.8 28-11-2023'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2023'
         dta b($9b,$00)
@@ -533,8 +528,7 @@ prsCEnd ldx cmdPCnt
 prsCRTS rts
 
 hlpExit jsr prUsage
-        jsr exitFA
-        jmp (DOSVEC)
+        jmp exitFA
 
 * print error message
 prErrMs eor maskURS
@@ -542,7 +536,7 @@ prErrMs eor maskURS
 * check mask for unresolved symbols
         eor maskURS
 * check highest valid
-        cmp #$15
+        cmp #$16
         bcc *+4
         lda #$12
 * set only first last error
@@ -616,6 +610,8 @@ errMs13 dta c'Program counter overflow'
         dta b($9B)
 errMs14 dta c'DOS error'
         dta b($9B)
+errMs15 dta c'Truncated line'
+        dta b($9B)
 
 * error message pointer tab
 errMsTa dta v(errMs00)
@@ -639,6 +635,7 @@ errMsTa dta v(errMs00)
         dta v(errMs12)
         dta v(errMs13)
         dta v(errMs14)
+        dta v(errMs15)
 
 * these 9 bytes are init togehter
 flagEnd dta b($00)
@@ -701,11 +698,18 @@ B1L04BD lda flagEnd
         lda B1L1D64
         sta SblkCnt
         rts
+* parse source line
 B1L04EA jsr nxtLine
-        jsr B1L08D8
+        jsr gettok1
         beq B1L04BD
         lda bfCFNAM
-        cmp #$2A
+* check for comment line
+        cmp #'*'
+        beq B1L04BD
+        cmp #';'
+        beq B1L04BD
+* ignore lines only containing spaces
+        cmp #$9b
         beq B1L04BD
         jsr prsOprt
         bcc B1L04BD
@@ -725,7 +729,7 @@ B1L04EA jsr nxtLine
         beq B1L0525
         lda PASSNUM
         beq B1L052D
-B1L0525 jsr B1L08D8
+B1L0525 jsr gettok1
         bne B1L0534
         lda #$02
         dta b(BIT_abs)
@@ -798,8 +802,8 @@ lineNum dta a($0000)
 bufReaV dta v(bufRead)
 * used source buffer
 bufUsed dta a($0000)
-* ???
-B1L062E dta a($0000)
+* buffer last EOL
+bufLEOL dta a($0000)
 * length of current line
 curLiLn dta b($00)
 

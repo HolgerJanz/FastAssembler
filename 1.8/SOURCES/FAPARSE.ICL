@@ -14,7 +14,7 @@ B1L09AF dta b($00)
 B1L09B0 dta b($00)
 B1L09B1 dta b($00)
 
-B1L09B2 jsr B1L08D8
+B1L09B2 jsr gettok1
         bne B1L09BC
         lda #$02
         jmp prErrMs
@@ -32,7 +32,7 @@ B1L09BC ldx #$00
 B1L09D9 jsr B1L0AF7
         bcc B1L09E1
         jmp B1L0AA7
-B1L09E1 jsr B1L0940
+B1L09E1 jsr chkquot
         ldy B1L093E
         bne B1L09D9
         ldy B1L093F
@@ -172,7 +172,7 @@ vec_op  dta v(op_add)
         dta v(op_or)
         dta v(op_and)
 
-B1L0B18 jsr B1L08D8
+B1L0B18 jsr gettok1
         bne B1L0B22
 * ERROR: Unexpected eol
         lda #$02
@@ -217,7 +217,7 @@ B1L0B65 sta bfL1FCC,X
         lda B1L0B02
         sta bfL20AC,X
 B1L0B77 lda bfCLINE,Y
-        jsr B1L0940
+        jsr chkquot
         ldx B1L093E
         bne B1L0BB5
         ldx B1L093F

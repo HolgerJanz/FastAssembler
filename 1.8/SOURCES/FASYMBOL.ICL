@@ -29,7 +29,7 @@ B1L19DA dex
         sta B1L1A0E+1
         lda syCodeV+1,X
         sta B1L1A0E+2
-        jsr B1L08D8
+        jsr gettok1
         bne B1L1A0E
         lda #$02
         jmp prErrMs

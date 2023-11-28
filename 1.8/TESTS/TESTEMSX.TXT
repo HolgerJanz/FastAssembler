@@ -1,18 +1,8 @@
 
-Error at TESTEMSG.ASM:1:0000
-  Unexpected end of line
-Error at TESTEMSG.ASM:4:FFF9
-  Unexpected end of line
 Error at TESTEMSG.ASM:6:001E
   Program counter overflow
-Error at TESTEMSG.ASM:10:0021
-  Unexpected end of line
 Error at TESTEMS3.ICL:3:0029
   Improper type
-Error at TESTEMS3.ICL:5:002A
-  Unexpected end of line
-Error at TESTEMS2.ICL:13:002E
-  Unexpected end of line
 Error at TESTEMSG.ASM:14:002E
   Too big number
 Error at TESTEMS4.ICL:1:002E

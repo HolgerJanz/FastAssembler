@@ -1,5 +1,5 @@
 
-Fast Assembler 1.8 23-11-2023
+Fast Assembler 1.8 28-11-2023
 =============================
 
 Purpose
@@ -210,11 +210,13 @@ Too many operations - 240($F0) - Too many operations in expression, the number o
 
 Unexpected symbol - 241($F1) - Unexpected symbol, symbols cannot be used in blocks other than SPARTA or RELOC and in block definitions.
 
-Internal error - 242($F2) - Internal error, please drop an email with instruction to reproduce (holgerjanz@msn.com)
+Internal error - 242($F2) - Internal error, please drop an email with instruction to reproduce (holgerjanz@abbuc.social)
 
 Program counter overflow - 243($F3) - Overflow of the program counter during compiling of statement
 
 DOS error - 244($F4) - Error at DOS operation, see the following DOS error message
+
+DOS error - 245($F5) - Truncated line, line is longer than 255 or no end of line in last line of source
 
 Note
 ----

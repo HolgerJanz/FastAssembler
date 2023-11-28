@@ -2,7 +2,7 @@
 
 Assembler for SpartaDOS X and BW-DOS 1.4 on Atari 8bit
 
-The current version is 1.8 23-11-2023 and it works with all versions of SpartaDOS X and with BW-DOS at least version 1.4. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
+The current version is 1.8 28-11-2023 and it works with all versions of SpartaDOS X and with BW-DOS at least version 1.4. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
 
 ## Projects Using Fast Assembler
 
@@ -21,6 +21,10 @@ The current version is 1.8 23-11-2023 and it works with all versions of SpartaDO
 - new pseudo command INS to insert binary data
 
 - fix END issue, processing of source was not aborted but the source in buffer was further processed
+
+- also the ; character can be used to indicate a comment line (like with character *)
+
+- allow spaces in empty lines before the error "Unexpected end of line" was raised if an empty line contains spaces
 
 - improved position information for error messages
 

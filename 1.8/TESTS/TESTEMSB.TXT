@@ -1,20 +1,10 @@
 
 D1:FA TESTEMSG /Q
 
-Error at D1:TESTEMSG.ASM:1:0000
-  Unexpected end of line
-Error at D1:TESTEMSG.ASM:4:FFF9
-  Unexpected end of line
 Error at D1:TESTEMSG.ASM:6:001E
   Program counter overflow
-Error at D1:TESTEMSG.ASM:10:0021
-  Unexpected end of line
 Error at TESTEMS3.ICL:3:0029
   Improper type
-Error at TESTEMS3.ICL:5:002A
-  Unexpected end of line
-Error at TESTEMS2.ICL:13:002E
-  Unexpected end of line
 Error at D1:TESTEMSG.ASM:14:002E
   Too big number
 Error at TESTEMS4.ICL:1:002E
@@ -144,6 +134,20 @@ D1:FA ERROR243 /Q
 Error at D1:ERROR243.ASM:3:0026
   Program counter overflow
 Pass 0 Lines 4
+Failed
+
+D1:FA ERROR245 /Q
+
+Error at D1:ERROR245.ASM:5:3006
+  Truncated line
+Pass 0 Lines 5
+Failed
+
+D1:FA ERROR246 /Q
+
+Error at D1:ERROR246.ASM:7:3007
+  Truncated line
+Pass 0 Lines 7
 Failed
 
 D1:PRINT

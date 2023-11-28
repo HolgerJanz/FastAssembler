@@ -1,11 +1,12 @@
-*  Test all 6502 operations
+;  Test all 6502 operations
+* with * and ; comments
 
 BLK DOS $3000
 label  RTS
 
-* ADC (ADd with Carry)
+; ADC (ADd with Carry)
 
-*     SYNTAX     HEX LEN   MODE        
+;     SYNTAX     HEX LEN   MODE        
  ADC #$44       :$69  2  Immediate    
  ADC $44        :$65  2  Zero Page    
  ADC $44,X      :$75  2  Zero Page,X  
@@ -15,9 +16,9 @@ label  RTS
  ADC ($44,X)    :$61  2  Indirect,X   
  ADC ($44),Y    :$71  2  Indirect,Y   
 
-* AND (bitwise AND with accumulator) 
+; AND (bitwise AND with accumulator) 
 
-*   SYNTAX       HEX LEN  MODE
+;   SYNTAX       HEX LEN  MODE
  AND #$44       :$29  2  Immediate
  AND $44        :$25  2  Zero Page
  AND $44,X      :$35  2  Zero Page,X
@@ -27,18 +28,18 @@ label  RTS
  AND ($44,X)    :$21  2  Indirect,X
  AND ($44),Y    :$31  2  Indirect,Y
 
-* ASL (Arithmetic Shift Left) 
+; ASL (Arithmetic Shift Left) 
 
-*   SYNTAX       HEX LEN  MODE        
+;   SYNTAX       HEX LEN  MODE        
  ASL @          :$0A  1  Accumulator (Implied)
  ASL $44        :$06  2  Zero Page    
  ASL $44,X      :$16  2  Zero Page,X  
  ASL $4400      :$0E  3  Absolute     
  ASL $4400,X    :$1E  3  Absolute,X   
 
-* BIT (test BITs) 
+; BIT (test BITs) 
 
-*    SYNTAX      HEX LEN  MODE        
+;    SYNTAX      HEX LEN  MODE        
  BIT $44        :$24  2  Zero Page    
  BIT $4400      :$2C  3  Absolute     
 
@@ -54,13 +55,13 @@ label  RTS
  BNE label  :$D0 (Branch on Not Equal)     
  BEQ label  :$F0 (Branch on EQual)         
 
-* BRK (BReaK) 
-*   SYNTAX       HEX LEN  MODE         
+; BRK (BReaK) 
+;   SYNTAX       HEX LEN  MODE         
  BRK            :$00  1  Implied      
 
-* CMP (CoMPare accumulator) 
+; CMP (CoMPare accumulator) 
 
-*   SYNTAX       HEX LEN MODE         
+;   SYNTAX       HEX LEN MODE         
  CMP #$44      :$C9  2   Immediate    
  CMP $44       :$C5  2   Zero Page    
  CMP $44,X     :$D5  2   Zero Page,X  
@@ -70,31 +71,31 @@ label  RTS
  CMP ($44,X)   :$C1  2   Indirect,X   
  CMP ($44),Y   :$D1  2   Indirect,Y   
 
-* CPX (ComPare X register) 
+; CPX (ComPare X register) 
 
-*   SYNTAX      HEX LEN MODE         
+;   SYNTAX      HEX LEN MODE         
  CPX #$44      :$E0  2  Immediate    
  CPX $44       :$E4  2  Zero Page    
  CPX $4400     :$EC  3  Absolute     
 
-* CPY (ComPare Y register) 
+; CPY (ComPare Y register) 
 
-*   SYNTAX      HEX LEN MODE         
+;   SYNTAX      HEX LEN MODE         
  CPY #$44      :$C0  2  Immediate    
  CPY $44       :$C4  2  Zero Page    
  CPY $4400     :$CC  3  Absolute     
 
-* DEC (DECrement memory) 
+; DEC (DECrement memory) 
 
-*   SYNTAX      HEX LEN MODE         
+;   SYNTAX      HEX LEN MODE         
  DEC $44       :$C6  2  Zero Page    
  DEC $44,X     :$D6  2  Zero Page,X  
  DEC $4400     :$CE  3  Absolute     
  DEC $4400,X   :$DE  3  Absolute,X   
 
-* EOR (bitwise Exclusive OR) 
+; EOR (bitwise Exclusive OR) 
 
-*   SYNTAX      HEX LEN MODE         
+;   SYNTAX      HEX LEN MODE         
  EOR #$44      :$49  2  Immediate    
  EOR $44       :$45  2  Zero Page    
  EOR $44,X     :$55  2  Zero Page,X  
@@ -104,9 +105,9 @@ label  RTS
  EOR ($44,X)   :$41  2  Indirect,X   
  EOR ($44),Y   :$51  2  Indirect,Y   
 
-* Flag (Processor Status) Instructions
+; Flag (Processor Status) Instructions
 
-*  MNEMONIC             HEX
+;  MNEMONIC             HEX
  CLC :(CLear Carry)     $18
  SEC :(SEt Carry)       $38
  CLI :(CLear Interrupt) $58

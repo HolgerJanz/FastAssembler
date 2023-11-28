@@ -1,7 +1,7 @@
 }
   FA [/LSEYQ] src[.ext] [obj[.ext]]
   
-Fast Assembler 1.8 23-11-2023.
+Fast Assembler 1.8 28-11-2023.
 Assembler for SpartaDOS X and BW-DOS.
  src - ATASCII source file
  obj - target binary object file

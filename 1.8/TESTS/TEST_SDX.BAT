@@ -250,6 +250,20 @@ IF NOT ERROR 243
 FI
 SETERRNO 0
 
+; Truncated line
+FA error245 /E
+IF NOT ERROR 245
+ EXIT
+FI
+SETERRNO 0
+
+; Truncated line
+FA error246 /E
+IF NOT ERROR 245
+ EXIT
+FI
+SETERRNO 0
+
 ; Check messages and code position
 FA testemsg /Q >>testemsg.trc
 <BIN>TESTCOMP TESTEMSX.TXT TESTEMSG.TRC

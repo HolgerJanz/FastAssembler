@@ -44,7 +44,7 @@ B1L14A7 jsr $FFFF
         rts
 
 * opcode LST
-lstCode jsr B1L08D8
+lstCode jsr gettok1
         bne B1L14B6
 B1L14B1 lda #$02
         jmp prErrMs
@@ -87,7 +87,7 @@ iclCode ldx CURICLX
 iclImpl inc fileNum
         lda PASSNUM
         bne B1L14F5
-        jsr B1L08D8
+        jsr gettok1
         beq B1L14B1
         ldx #$00
         jsr B1L096A
@@ -239,7 +239,7 @@ blkKndV dta v(blkNone)
         dta v(blkUpdt)
 
 * parse BLK
-blkCode jsr B1L08D8
+blkCode jsr gettok1
         bne B1L156D
         lda #$02
         jmp prErrMs
@@ -264,7 +264,7 @@ B1L158F txa
         sta B1L15AA+1
         lda blkKndV+1,X
         sta B1L15AA+2
-        jsr B1L08D8
+        jsr gettok1
         bne B1L15A8
         lda #$02
         jmp prErrMs
@@ -479,7 +479,7 @@ B1L1766 clc
         sta PROGCNT+1
         lda #$80
         sta B1L1D65
-        jsr B1L08D8
+        jsr gettok1
         beq B1L1788
         jmp B1L16E7
 B1L1788 lda #$02
@@ -715,7 +715,8 @@ B1L198A lda #$0d
 B1L198D lda #$02
         jmp prErrMs
 B1L1992 rts
-B1L1993 jsr B1L08D8
+
+B1L1993 jsr gettok1
         beq B1L198D
         jsr B1L1D21
         bcs B1L1992
