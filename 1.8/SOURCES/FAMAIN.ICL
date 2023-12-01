@@ -403,7 +403,7 @@ failTr2 jsr prPrgsF
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 28-11-2023'
+        dta c'Fast Assembler 1.8 30-11-2023'
         dta b($9b)
         dta c'(c) MMMG Soft ''95, Public Domain 2023'
         dta b($9b,$00)

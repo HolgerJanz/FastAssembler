@@ -1,5 +1,5 @@
 
-Fast Assembler 1.8 28-11-2023
+Fast Assembler 1.8 30-11-2023
 =============================
 
 Purpose
@@ -38,7 +38,7 @@ text  - is a text expression given in quotation marks ('or ")
 Note: to get the character of the quotation marks inside a quotation you have to use it twice e.g.:
         'Windows ''95'
 
-Comments start with *.
+Comment lines start with * or ;.
 
 If an opcode has besides other addressing modes the implied accumulator mode then the character @ must be used for implied accumulator addressing, e.g.:
         ASL @ 

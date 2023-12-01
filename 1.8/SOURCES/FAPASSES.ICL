@@ -3,45 +3,61 @@
 * next line
 nxtLine lda flagCls ; check END in include
         bne rdAftrE
+* advanced to next line
         clc
         lda PCURLIN
         adc curLiLn
         sta PCURLIN
-        bcc B1L065F
+        bcc *+4
         inc PCURLIN+1
-B1L065F lda PCURLIN
+        lda PCURLIN
 * check for and of used buffer
         cmp bufUsed
         lda PCURLIN+1
         sbc bufUsed+1
-        bcs B1L068E
+        bcs bufFill
 * read next line until EOL
         ldy #$00
-B1L066D lda (PCURLIN),Y
+nxtLinL lda (PCURLIN),Y
         iny
-        bne B1L0677
 * ERROR: Truncated record
 * line too long
-        jsr incLinC
-        lda #$15
-        jmp prErrEx
-B1L0677 cmp #$9B
-        bne B1L066D
-B1L067B sty curLiLn
-        jsr incLinC
+        beq errTrLi
+        cmp #$9B
+        bne nxtLinL
+* set new line length
+bufNewL sty curLiLn
+* increment line counts
+        inc lineNum
+        bne *+5
+        inc lineNum+1
+        inc CURICLN
+        bne *+4
+        inc CURICLN+1
         lda #$00
         sta B1L08D3
         jmp cPrLine
+
+* error truncated line
+errTrLi inc lineNum
+ * increment line counts
+        bne *+5
+        inc lineNum+1
+        inc CURICLN
+        bne *+4
+        inc CURICLN+1
+        lda #$15
+* error and exit
+        jmp prErrEx
+
 * fill source buffer
 rdAftrE inc flagCls
 * buffer used up, fill buffer
-B1L068E jsr prPrgs
+bufFill jsr prPrgs
 * read source file
         lda bufReaV
-        sta PCURLIN
         sta FAUX1
         lda bufReaV+1
-        sta PCURLIN+1
         sta FAUX2
         lda <bufReaS
         sta FAUX4
@@ -50,11 +66,11 @@ B1L068E jsr prPrgs
         lda #$00
         sta SYSCALL
         jsr FREAD
-        bpl B1L06D3
-* reached EOF, process END
+        bpl bufFEOL
         lda FAUX4
         ora FAUX5
-        bne B1L06D3
+        bne bufFEOL
+* reached EOF, process END
         lda endStrV
         sta PCURLIN
         sta bufUsed
@@ -62,43 +78,26 @@ B1L068E jsr prPrgs
         sta PCURLIN+1
         sta bufUsed+1
         ldy #$04
-        bne B1L067B
+        bne bufNewL
 * buffer filled, check for last EOL
-B1L06D3 clc
-        lda PCURLIN
+bufFEOL clc
+        lda bufReaV
         adc FAUX4
         sta bufUsed
-        lda PCURLIN+1
+        sta PCURLIN
+        lda bufReaV+1
         adc FAUX5
         sta bufUsed+1
-        ldy #$00
-        sty bufLEOL
-        sty bufLEOL+1
-B1L06EC lda (PCURLIN),Y
-        inc PCURLIN
-        bne *+4
-        inc PCURLIN+1
-        cmp #$9B
-        bne B1L0702
-        lda PCURLIN
-        sta bufLEOL
-        lda PCURLIN+1
-        sta bufLEOL+1
-B1L0702 lda PCURLIN
-        cmp bufUsed
-        lda PCURLIN+1
-        sbc bufUsed+1
-        bcc B1L06EC
+        sta PCURLIN+1
+        jsr bufSEOL
+* EOL found ?
         lda bufLEOL
         ora bufLEOL+1
-        bne B1L071B
 * ERROR: Truncated record
 * END without EOL
-        jsr incLinC
-        lda #$15
-        jmp prErrEx
+        beq errTrLi
 * adapt file position for last EOL
-B1L071B jsr updFPos
+        jsr updFPos
         lda bufLEOL
         sta bufUsed
         lda bufLEOL+1
@@ -111,12 +110,32 @@ B1L071B jsr updFPos
         sta curLiLn
         jmp nxtLine
 
-incLinC inc lineNum
-        bne *+5
-        inc lineNum+1
-        inc CURICLN
+* buffer search EOL
+bufSEOL ldy #$00
+        sty bufLEOL
+        sty bufLEOL+1
+* loop buffer backward for last EOL
+bufSEl  lda PCURLIN
         bne *+4
-        inc CURICLN+1
+        dec PCURLIN+1
+        dec PCURLIN
+        lda (PCURLIN),Y
+        cmp #$9B
+        bne bufSEnE
+        inc PCURLIN
+        bne *+4
+        inc PCURLIN+1
+        lda PCURLIN
+        sta bufLEOL
+        lda PCURLIN+1
+        sta bufLEOL+1
+        rts
+bufSEnE lda PCURLIN
+        cmp bufReaV
+        bne bufSEl
+        lda PCURLIN+1
+        cmp bufReaV+1
+        bne bufSEl
         rts
 
 * update file position to last EOL

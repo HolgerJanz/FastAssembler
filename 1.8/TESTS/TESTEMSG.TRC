@@ -1,0 +1,153 @@
+
+D2:FA TESTEMSG /Q
+
+Error at D2:TESTEMSG.ASM:6:001E
+  Program counter overflow
+Error at TESTEMS3.ICL:3:0029
+  Improper type
+Error at D2:TESTEMSG.ASM:14:002E
+  Too big number
+Error at TESTEMS4.ICL:1:002E
+  Too big number
+Error at D2:TESTEMSG.ASM:18:0032
+  Too big number
+Error at TESTEMS5.ICL:2:0033
+  Too big number
+Error at D2:TESTEMSG.ASM:22:0036
+  Too big number
+Error at TESTEMS6.ICL:3:0038
+  Too big number
+Error at D2:TESTEMSG.ASM:26:003A
+  Too big number
+Pass 0 Lines 71
+Failed
+
+D2:FA ERRORLNG /Q
+
+Error at D2:ERRORLNG.ASM:24:0000
+  Improper type
+Error at D2:ERRORLNG.ASM:49:0000
+  Improper type
+Pass 0 Lines 249
+Failed
+
+D2:FA ERRORURS /Q
+
+Pass 0 Lines 13 Pending 4
+Pass 1 Lines 13 Pending 3
+Pass 2 Lines 13 Pending 1
+Pass 3 Lines 13 Pending 1
+Error at D2:ERRORURS.ASM:9:3002
+  Undeclared label
+Pass 4 Lines 13
+Failed
+
+D2:FA ERRORN2  /Q
+
+Error at D2:ERRORN2.ASM:6:0000
+  Improper type
+Error at D2:ERRORN2.ASM:10:3005
+  Improper type
+Pass 0 Lines 13
+Failed
+
+D2:FA ERRORREC /Q
+
+Pass 0 Lines 3 Pending 2
+Pass 1 Lines 3 Pending 2
+Error at D2:ERRORREC.ASM:1:0000
+  Undeclared label
+Error at D2:ERRORREC.ASM:2:0000
+  Undeclared label
+Pass 2 Lines 3
+Failed
+
+D2:FA ERROR225 /Q
+
+Error at D2:ERROR225.ASM:2:0000
+  Label declared twice
+Pass 0 Lines 4
+Failed
+
+D2:FA ERROR226 /Q
+
+Error at D2:ERROR226.ASM:1:0000
+  Unexpected end of line
+Error at D2:ERROR226.ASM:2:0000
+  Improper type
+Pass 0 Lines 3
+Failed
+
+D2:FA ERROR227 /Q
+
+Pass 0 Lines 33 Pending 31
+Pass 1 Lines 33 Pending 30
+Pass 2 Lines 33 Pending 29
+Pass 3 Lines 33 Pending 28
+Pass 4 Lines 33 Pending 27
+Pass 5 Lines 33 Pending 26
+Pass 6 Lines 33 Pending 25
+Pass 7 Lines 33 Pending 24
+Pass 8 Lines 33 Pending 23
+Error at D2:ERROR227.ASM:24:0000
+  Too many passes
+Pass 8 Lines 33
+Failed
+
+D2:FA ERROR228 /Q
+
+Error at D2:ERROR228.ASM:2:0003
+  Too big number
+Pass 0 Lines 3
+Failed
+
+D2:FA ERROR229 /Q
+
+Error at D2:ERROR229.ASM:2:2000
+  String error
+Pass 0 Lines 4
+Failed
+
+D2:FA ERROR231 /Q
+
+Error at D2:ERROR231.ASM:11:2080
+  Branch to far
+Pass 0 Lines 13
+Failed
+
+D2:FA ERROR233 /Q
+
+Error at D2:ERROR233.ASM:1:0000
+  Label missing
+Pass 0 Lines 3
+Failed
+
+D2:FA ERROR238 /Q
+
+Error at D2:ERROR238.ASM:3:0000
+  Overflow or invalid symbol
+Pass 0 Lines 5
+Failed
+
+D2:FA ERROR243 /Q
+
+Error at D2:ERROR243.ASM:3:0026
+  Program counter overflow
+Pass 0 Lines 4
+Failed
+
+D2:FA ERROR245 /Q
+
+Error at D2:ERROR245.ASM:5:3006
+  Truncated line
+Pass 0 Lines 5
+Failed
+
+D2:FA ERROR246 /Q
+
+Error at D2:ERROR246.ASM:7:3007
+  Truncated line
+Pass 0 Lines 7
+Failed
+
+D2:PRINT
