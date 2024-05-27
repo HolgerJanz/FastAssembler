@@ -17,8 +17,8 @@ comp     lda vtrap
          dex
          stx ftellh2
          stx ftellh2+1
-* default 16 diffs
-         ldx #16
+* default 8 diffs
+         ldx #8
          stx fmax
 * force read file with next increment
          lda <fbuffsiz-1
@@ -62,10 +62,17 @@ comp_lp  jsr comploop
 * if the maximum or end of file
 comp_ex  lda fdif
          ora fdif+1
+         bne comp_err
+* check length
+         lda flength
+         cmp flength+1
+         bne comp_err
+         lda flength+2
+         cmp flength+3
          beq comp_ok
 * if so, display the message and
 * STATUS 255 = DIFFERENT
-         lda #$ff
+comp_err lda #$ff
          sta STATUS
          jmp U_FAIL
 * if not, display a message, too
@@ -98,6 +105,11 @@ finit_0  lda #$04
          jsr PRINTF
          dta c'File #%2x length: %e bytes',b($9b,0)
          dta v(fnum),a(FAUX1)
+         ldx fnum
+         lda FAUX1
+         sta flength-1,X
+         lda FAUX1+1
+         sta flength+1,X
          rts
 
 * compare files
@@ -166,8 +178,8 @@ trap     cmp #$9C
          bne trap_0
 * info message about program
          jsr PRINTF
-         dta c'File COMParator v.1.2',b($9B)
-         dta c'(c) MMMG Soft ''95, PD 2022'
+         dta c'File COMParator v.1.3',b($9B)
+         dta c'(c) MMMG Soft ''95, PD 2024'
          dta b($9B,0)
 * if so, display message and
          jsr PRINTF

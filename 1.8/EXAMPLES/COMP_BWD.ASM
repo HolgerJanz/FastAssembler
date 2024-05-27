@@ -34,6 +34,8 @@ fbuf2    equ fbuf1+fbuffsiz
 * current index in file
 compidx  equ fbuf2+fbuffsiz
 ftellh2  equ compidx+1
-e_end    equ ftellh2+2
+* length of file1
+flength  equ ftellh2+2
+e_end    equ flength+4
 
          end

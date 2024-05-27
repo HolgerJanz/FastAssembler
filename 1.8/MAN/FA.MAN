@@ -1,4 +1,3 @@
-
 Fast Assembler 1.8 30-11-2023
 =============================
 
@@ -18,15 +17,17 @@ obj - target object file
 
 The default extensions (ext) are .ASM and .OBJ. The default obj is src.
 
-/L - list combined source at compile time
+  L - list combined source at compile time
 
-/S - print summary, e.g. block and label count, memory $code-$stat_alloc-$last $dyn_alloc-$last
+  S - print summary, e.g. block and label count, memory:
+     $code-$stat_alloc-$last $dyn_alloc-$last
 
-/E - sets assembly errors to system errors starting from 224($E0) if compile failed
+  E - sets assembly errors to system errors starting from 224($E0) if compile
+     failed
 
-/Y - writes symbol table to file obj.SYM
+  Y - writes symbol table to file obj.SYM
 
-/Q - quite, no progress output for line number processing
+  Q - quite, no progress output for line number processing
 
 Remarks
 -------
@@ -35,12 +36,13 @@ label - it's a label,
 
 text  - is a text expression given in quotation marks ('or ")
 
-Note: to get the character of the quotation marks inside a quotation you have to use it twice e.g.:
-        'Windows ''95'
+Note: to get the character of the quotation marks inside a quotation you have
+      to use it twice e.g., 'Windows ''95'
 
 Comment lines start with * or ;.
 
-If an opcode has besides other addressing modes the implied accumulator mode then the character @ must be used for implied accumulator addressing, e.g.:
+If an opcode has besides other addressing modes the implied accumulator mode
+then the character @ must be used for implied accumulator addressing, e.g.:
         ASL @ 
 
 expressions:
@@ -57,7 +59,8 @@ Numbers can be 4 bytes signed.
 - characters in ATASCII, e.g. 'A' or '''' for '
 - characters in display code, e.g. "I" or """" for "
 
-Character expressions always have a length of 1 byte and the value of the first character, e.g.:
+Character expressions always have a length of 1 byte and the value of the
+first character, e.g.:
 'A' and 'ABC' both results A.
 
 Additionally, you can use the following operators within expressions:
@@ -69,10 +72,16 @@ Additionally, you can use the following operators within expressions:
   + - addition
   - - subtraction
 
-FA correctly recognizes the sequence of operations according to the above priorities (e.g. AND always first, minus last). The operations are performed on 4 byte numbers. The maximum number of operators is limited to 32 per expression. You can change the order by using square brackets, e.g .:
+FA correctly recognizes the sequence of operations according to the above
+priorities (e.g. AND always first, minus last). The operations are performed
+on 4 byte numbers. The maximum number of operators is limited to 32 per
+expression. You can change the order by using square brackets, e.g .:
   [[4+5]*[256/21]]&$FF
 
-There are two more special characters: * and !. They indicate the current program counter. The * character can only be used at the beginning of an expression (for QA compatibility), while the ! character can be used anywhere in an expression, e.g.:
+There are two more special characters: * and !. They indicate the current
+program counter. The * character can only be used at the beginning of an
+expression (for QA compatibility), while the ! character can be used anywhere
+in an expression, e.g.:
   *+4
   !-22
   $2300+!
@@ -94,19 +103,23 @@ assembly option, the individual bits have the following meaning:
      - others DOS header.
 
 ORG a
-sets new program address and generating the file header set by OPT (DOS by default)
+sets new program address and generating the file header set by OPT (DOS by
+default)
 
 ICL next_src[.ext]
-includes source file, drive, path by default set to where FA was called (NOT TO CURRENT SOURCE!)
+includes source file, drive, path by default set to where FA was called (NOT
+TO CURRENT SOURCE!)
 
 INS next_src[.ext]
-includes binary file, drive, path by default set to where FA was called (NOT TO CURRENT SOURCE!)
+includes binary file, drive, path by default set to where FA was called (NOT
+TO CURRENT SOURCE!)
 
 END
 end of source or include file
 
 label EQU a
-assigns the value of the expression 'a' to label 'label', the label name can be up to 240 characters
+assigns the value of the expression 'a' to label 'label', the label name can
+be up to 240 characters
 
 [label] DTA x
 generates data suitable for 'x' types:
@@ -121,11 +134,13 @@ II. Additional or New Features:
 
 [label] DTA x
 new types for 'x':
-  v(a) - 2 bytes (vector), for reloc blocks the address is updated, for other blocks it is like a(a)
+  v(a) - 2 bytes (vector), for reloc blocks the address is updated, for other
+blocks it is like a(a)
   e(e) - type 3 bytes
   f(f) - type 4 bytes
   g(f) - type 4 bytes in reverse order
-In addition, numerical data can be given as expressions separated by a comma, e.g.:
+In addition, numerical data can be given as expressions separated by a comma,
+e.g.:
    dta e(0,15000,$FFAACC) etc.
 
 LST All|Bad|Not
@@ -135,32 +150,48 @@ compile-time listing option:
   B[ad] - only errors (always on version 1.8)
 
 BLK x
-declares a new program block. The total number of blocks is limited to 256. Kinds of blocks:
+declares a new program block. The total number of blocks is limited to 256.
+Kinds of blocks:
 
-  BLK N[one] a - block without headers, program counter is set to a
+BLK N[one] a
+Block without headers, program counter is set to a
 
-  BLK D[os] a  - DOS block with the $FFFF header or without if the previous block  was of the same kind, program counter is set to a
+BLK D[os]
+DOS block with the $FFFF header or without if the previous block was of the
+same kind, program counter is set to a
 
-  BLK S[parta] a - Sparta block with fix loading address with header $FFFA, program counter is set to a
+BLK S[parta] a
+Sparta block with fix loading address with header $FFFA, program counter is
+set to a
 
-  BLK R[eloc] M[ain]|E[xtended] - relocatable block placed in main or extended memory
+BLK R[eloc] M[ain]|E[xtended]
+Relocatable block placed in main or extended memory
 
-  BLK E[mpty] a M[ain]|E[xtended] - relocatable block to allocate bytes in main or extended memory. Note: the program counter is incremented immediately.
+BLK E[mpty] a M[ain]|E[xtended]
+Relocatable block to allocate bytes in main or extended memory. Note: the
+program counter is incremented immediately.
 
-  BLK U[pdate] S[ymbols] - block that updates SDX address of symbols in previous SPARTA or RELOC blocks
+BLK U[pdate] S[ymbols]
+Block that updates SDX address of symbols in previous SPARTA or RELOC blocks
 
-  BLK U[pdate] A[dress]  - block for updating addresses in RELOC blocks
+BLK U[pdate] A[dress]
+Block for updating addresses in RELOC blocks
 
-  BLK U[pdate] N[ew] a text - block declaring a new text symbol in a RELOC block with the address a. When the symbol name starts with the @ character and the address is of type main memory, such a symbol can be called from command.com
+BLK U[pdate] N[ew] a text
+Block declaring a new text symbol in a RELOC block with the address a. If
+the symbol name starts with the @ character and the address is of type main
+memory then such a symbol can be called from command shell
 
 label SMB text
-declaration of a label as SDX symbol. Thus, after using BLK UPDATE SYMBOLS the assembler will generate the correct symbol update block. For example:
+Declaration of a label as SDX symbol. Thus, after using BLK UPDATE SYMBOLS the
+assembler will generate the correct symbol update block. For example:
   pf  smb 'PRINTF'
       jsr pf
       ...
 inserts SDX symbol address for pf.
 
-This declaration is not transitive, i.e. the following example will cause a compile time error:
+This declaration is not transitive, i.e. the following example will cause a
+compile time error:
   cm  smb 'COMTAB'
   wp  equ cm-1    (Error !)
       sta wp
@@ -169,57 +200,87 @@ Use instead:
   cm  smb 'COMTAB'
       sta cm-1    (ok !)
 
-Note: All symbol declarations should be defined before label declarations and the program blocks!
+Note: All symbol declarations should be defined before label declarations and
+the program blocks!
 
 Error Messages
 --------------
 
-Undeclared label - 224($E0) - Undefined label or symbol or recursive labels.
+Undeclared label - 224($E0)
+Undefined label or symbol or recursive labels.
 
-Label declared twice - 225($E1) - Label or symbol defined twice.
+Label declared twice - 225($E1)
+Label or symbol defined twice.
 
-Unexpected end of line - 226($E2) - Unexpected line break means there should be at least one character or parameter in the line.
+Unexpected end of line - 226($E2)
+Unexpected line break means there should be at least one character or
+parameter in the line.
 
-Too many passes - 227($E3) - Too many passes when the number of passes exceeds 8.
+Too many passes - 227($E3)
+Too many passes when the number of passes exceeds 8.
 
-Too big number - 228($E4) - Number too large, the number exceeded the allowed 4 byte range.
+Too big number - 228($E4)
+Number too large, the number exceeded the allowed 4 byte range.
 
-String error - 229($E5) - Text expression error, no closing quotation mark or empty phrase.
+String error - 229($E5)
+Text expression error, no closing quotation mark or empty phrase.
 
-Illegal symbol - 230($E6) - Illegal character in line.
+Illegal symbol - 230($E6)
+Illegal character in line.
 
-Branch to far - 231($E7) - The relative jump is beyond the range of +127 and -128 bytes.
+Branch to far - 231($E7)
+The relative jump is beyond the range of +127 and -128 bytes.
 
-Improper type - 232($E8) - Addressing type not allowed for the given command.
+Improper type - 232($E8)
+Addressing type not allowed for the given command.
 
-Label missing - 233($E9) - Missing label, EQU and SMB pseudo commands must always be preceded by a label.
+Label missing - 233($E9)
+Missing label, EQU and SMB pseudo commands must always be preceded by a label.
 
-Expression expected - 234($EA) - Expected expression, after a numerical an expression must follow.
+Expression expected - 234($EA)
+Expected expression, after a numerical an expression must follow.
 
-Too many blocks - 235($EB) - Too many blocks, the total number of blocks cannot exceed 256 and the number of RELOC and EMPTY blocks cannot exceed 7.
+Too many blocks - 235($EB)
+Too many blocks, the total number of blocks cannot exceed 256 and the number
+of RELOC and EMPTY blocks cannot exceed 7.
 
-Undefined or too long - 236($EC) - Undefined or too long label, when defining labels a label block must be defined before using them, and the result of the address expression must not be larger than 2 bytes.
+Undefined or too long - 236($EC)
+Undefined or too long label, when defining labels a label block must be
+defined before using them, and the result of the address expression must
+not be larger than 2 bytes.
 
-Improper block type - 237($ED) - Wrong type of block, e.g. UPDATE NEW block cannot follow DOS block.
+Improper block type - 237($ED)
+Wrong type of block, e.g. UPDATE NEW block cannot follow DOS block.
 
-Overflow or invalid symbol - 238($EE) - The expression is too large or contains an invalid symbol.
+Overflow or invalid symbol - 238($EE)
+The expression is too large or contains an invalid symbol.
 
-Parenthesis not balanced - 239($EF) - Missing parentheses.
+Parenthesis not balanced - 239($EF)
+Missing parentheses.
 
-Too many operations - 240($F0) - Too many operations in expression, the number of operations is limited to 32.
+Too many operations - 240($F0)
+Too many operations in expression, the number of operations is limited to 32.
 
-Unexpected symbol - 241($F1) - Unexpected symbol, symbols cannot be used in blocks other than SPARTA or RELOC and in block definitions.
+Unexpected symbol - 241($F1)
+Unexpected symbol, symbols cannot be used in blocks other than SPARTA or
+RELOC and in block definitions.
 
-Internal error - 242($F2) - Internal error, please drop an email with instruction to reproduce (holgerjanz@abbuc.social)
+Internal error - 242($F2)
+Internal error, please drop an email with instruction to reproduce
+at holgerjanz@abbuc.social
 
-Program counter overflow - 243($F3) - Overflow of the program counter during compiling of statement
+Program counter overflow - 243($F3)
+Overflow of the program counter during compiling of statement
 
-DOS error - 244($F4) - Error at DOS operation, see the following DOS error message
+DOS error - 244($F4)
+Error at DOS operation, see the following DOS error message
 
-DOS error - 245($F5) - Truncated line, line is longer than 255 or no end of line in last line of source
+Truncated line - 245($F5)
+A line of the source is longer than 255 characters or no end of line in last
+line of the source.
+
 
 Note
 ----
-
-For more information about programming with SpartaDOS X please refer to the "SpartaDOS X Programming Guide".
-
+For more information about programming with SpartaDOS X please refer to the
+"SpartaDOS X Programming Guide".
