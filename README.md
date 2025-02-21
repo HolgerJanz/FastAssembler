@@ -1,12 +1,12 @@
 # Fast Assembler
 
-Assembler for SpartaDOS X and BW-DOS 1.4 on Atari 8bit
+Assembler for SpartaDOS X and BW-DOS (1.4 or higher) on Atari 8bit
 
-The current version is 1.8 30-11-2023 and it works with all versions of SpartaDOS X and with BW-DOS at least version 1.4. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
+The current version is 1.8 24-08-2024 and it works with all versions of SpartaDOS X and with BW-DOS at least version 1.4. It is part of the [SpartaDOS X Add-ons](http://sdx.atari8.info/index.php?show=en_addons).
 
 ## Projects Using Fast Assembler
 
-- [BW-DOS 1.4](https://github.com/HolgerJanz/BW-DOS) - SpartaDOS 3 compatible DOS
+- [BW-DOS](https://github.com/HolgerJanz/BW-DOS) - SpartaDOS 3 compatible DOS
 - [FujiNet Tools for SpartaDOS](https://github.com/HolgerJanz/FujiNetToolsSpartaDOS) - FujiNet Command Line Tools for all SpartaDOS 3 compatible DOS versions
 - [XL OS](https://github.com/HolgerJanz/FastAssemblerAtariXLOS) - Sources for XL operating system
 - [Game VARIUS](https://github.com/HolgerJanz/VARIUS) - small game like 2048
@@ -19,6 +19,8 @@ The current version is 1.8 30-11-2023 and it works with all versions of SpartaDO
 - fixed multiplication and division issue, because of wrong overflow handling these operations always throw error "Too big number”
 
 - new pseudo command INS to insert binary data
+
+- new block kind „padding“ for better support of compiling ROM files (see BLK PADDING)
 
 - fix END issue, processing of source was not aborted but the source in buffer was further processed
 
@@ -36,8 +38,7 @@ The current version is 1.8 30-11-2023 and it works with all versions of SpartaDO
 
 - add option /E to convert error message to DOS error if compile fails, for better use in batch processing
 
-- add option /Q for quite mode without line progress output, for better use if console output
-is redirected e.g. file
+- add option /Q for quite mode without line progress output, for better use if console output is redirected e.g. file
 
 - remove option /B
 

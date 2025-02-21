@@ -403,9 +403,9 @@ failTr2 jsr prPrgsF
 
 * print version and usage info
 prUsage jsr PRINTF
-        dta c'Fast Assembler 1.8 30-11-2023'
+        dta c'Fast Assembler 1.8 31-08-2024'
         dta b($9b)
-        dta c'(c) MMMG Soft ''95, Public Domain 2023'
+        dta c'(c) MMMG Soft ''95, Public Domain 2021'
         dta b($9b,$00)
         jsr PRINTF
         dta c'Usage: FA [/LSEY] src [dst]'
@@ -679,8 +679,8 @@ srtPass jsr initBuf
         stx CURICLF
         jsr syGetFl
         jsr stCRICL
-        ldx #$01
-        stx B1L150B
+        ldx #$02
+        stx opOrgMd ; default BLK DOS
         ldx #$10
         stx BLKPCNT+1
         inc PASSNUM

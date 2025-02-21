@@ -125,7 +125,7 @@ B1L1503 dec flagCls
 errCode lda #$09
         jmp prErrMs
 
-B1L150B dta b($00)
+opOrgMd dta b($00)
 
 * parse INS
 insCode jsr iclCode
@@ -208,30 +208,26 @@ optCode jsr B1L0B18
         lda #$0C
         jmp prErrMs
 B1L151D lda B1L09AE
-        and #$03
-        bne B1L152A
+        and #$02
         sta cmdOptL
-B1L152A ldx #$FF
-        cmp #$01
-        bne B1L1535
-        beq B1L1538
-B1L1535 stx cmdOptL
-B1L1538 ldx #$01
+        ldx #$02 ; BLK DOS
         lda B1L09AE
         and #$60
         cmp #$60
         bne B1L1544
-        dex
-B1L1544 stx B1L150B
+        ldx #$00 ; BLK NONE
+B1L1544 stx opOrgMd
 B1L1547 rts
 
+* parse ORG
 orgCode jsr B1L15AE
-        ldx B1L150B
+        ldx opOrgMd
         jmp B1L1582
 
-blkKind dta c'NDSREU'
+blkKind dta c'NPDSREU'
 
 blkKndV dta v(blkNone)
+        dta v(blkPadd)
         dta v(blkADOS)
         dta v(blkSpar)
         dta v(blkRelo)
@@ -245,11 +241,11 @@ blkCode jsr gettok1
         jmp prErrMs
 B1L156D jsr B1L15AE
         lda bfCFNAM
-        ldx #$05
-        cmp blkKind,X
+        ldx #$06
+B1L1575 cmp blkKind,X
         beq B1L1582
         dex
-        bpl *-6
+        bpl B1L1575
         lda #$06
         jmp prErrMs
 B1L1582 stx B1L1D6A
@@ -367,12 +363,44 @@ B1L1671 jsr B1L1D6C
         sta PROGCNT+1
 B1L167E rts
 
+blkPadd bne blkPdP1
+        lda PROGCNT+1
+        pha
+        lda PROGCNT
+        pha
+        jsr B1L1648
+        pla
+        tax
+        pla
+        cmp PROGCNT+1
+        beq blkPdP3
+        bcc blkPdP2
+blkPdEr lda #$13
+        jmp prErrMs
+blkPdP3 cpx PROGCNT
+        beq blkPdP2
+        bcs blkPdEr
+blkPdP2 jsr B1L0B18
+        rts
+blkPdP1 jsr B1L1D6C
+        jsr B1L0B18
+        lda B1L09AE
+blkPaLp ldx B1L1D66
+        cpx PROGCNT
+        bne blkPaNx
+        ldx B1L1D67
+        cpx PROGCNT+1
+        beq blkPaEn
+blkPaNx jsr outByte
+        jmp blkPaLp
+blkPaEn rts
+
 blkADOS beq B1L1648
         jsr B1L1671
         jsr B1L1631
         bcs B1L167E
         lda B1L1D6B
-        cmp #$01
+        cmp #$02
         beq B1L1698
         lda #$FF
         jsr B1L089F
@@ -396,7 +424,7 @@ blkSpar bne B1L16BD
         jmp B1L164A
 B1L16BD jsr B1L1671
         jsr B1L1631
-        bcs B1L167E
+        bcs blkPaEn
         lda #$FA
         jsr B1L089F
         lda #$FF

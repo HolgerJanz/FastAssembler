@@ -1,4 +1,4 @@
-* Fast Assembler for SDX 1.8 PD 2023
+* Fast Assembler for SDX 1.8
 
 * SDX Symbols
 COMTAB   smb 'COMTAB'

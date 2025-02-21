@@ -53,12 +53,13 @@ _gn_strt  lda #$ff
           sta _par_open
 * check for number
           ldy #$00
+          sty _num_buf
+          sty _num_buf+1
 _gn_nxt   lda $747+3,Y ; BW_COMFNAM+3
           cmp #$9b
           beq _gn_en
           jsr _chknum
           bcc _gn_e
-          pha
 * 10 times and add new digit
           lda _num_buf
           sta _num_buf2
@@ -85,7 +86,8 @@ _nxt_d    asl _num_buf2
           sta _num_buf+1
           bcs _gn_e
 * add new digit
-          pla
+          lda $747+3,Y
+          and #$0f
           clc
           adc _num_buf
           sta _num_buf
@@ -115,7 +117,6 @@ _chknum   cmp #'0'
           bcc _chknum_e
           cmp #'9'+1
           bcs _chknum_c
-          and #$0f
           sec
           rts
 _chknum_c clc

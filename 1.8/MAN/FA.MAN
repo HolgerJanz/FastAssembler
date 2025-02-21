@@ -1,4 +1,4 @@
-Fast Assembler 1.8 30-11-2023
+Fast Assembler 1.8 31-08-2024
 =============================
 
 Purpose
@@ -154,7 +154,14 @@ declares a new program block. The total number of blocks is limited to 256.
 Kinds of blocks:
 
 BLK N[one] a
-Block without headers, program counter is set to a
+Block without header, program counter is set to a
+
+BLK P[adding] a v
+Block without header, program counter is set to a, and the space between old
+and new program counter is filled with bytes of value v. This kind of block
+can be used to compile ROM files. If the old program counter is higher than
+the new program counter a then an error is thrwon
+(Program counter overflow - 243/$F3)
 
 BLK D[os]
 DOS block with the $FFFF header or without if the previous block was of the

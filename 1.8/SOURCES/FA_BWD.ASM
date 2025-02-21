@@ -1,10 +1,17 @@
-* Fast Assembler for BW-DOS 1.8 PD 2023
+* Fast Assembler for BW-DOS 1.8
 
 * OS equates
 DOSVEC  equ $0A
+INITAD  equ $02E2
 MEMTOP  equ $02E5
 * MEMLO is redefined to point to the end
 * MEMLO   equ $02E7
+RAMSIZ  equ $2E4
+
+* static BW-DOS variables
+BW_SPARTA equ $700 ; SpartaDOS flag 'S'
+BW_DOS    equ $703 ; BW-DOS flag 'BW'
+BW_VERS   equ $705 ; BW-DOS version
 
 * Opcode Equates:
 BIT_abs equ $2c
@@ -38,8 +45,16 @@ CURICLX equ $A2
 * $xx current file number
 CURICLF equ $A3
 
+STRTADR equ $2800
+
+* check for BW-DOS and at least 32k
+        blk dos STRTADR
+        icl 'FABWDCHK.ICL'
+        blk dos INITAD
+        dta a(STRTADR)
+
 * Program
-        blk dos $2800
+        blk dos STRTADR
         icl 'FAMAIN.ICL'
         icl 'FAPASSES.ICL'
         icl 'FAPARSE.ICL'

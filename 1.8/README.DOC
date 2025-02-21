@@ -1,12 +1,12 @@
 
-FastAssembler for SpartaDOSX/BW-DOS
+FastAssembler 1.8
 
-Sparta DOS X executable and manual:
+Sparta DOS X executable:
   >BIN>FA.COM
-  >MAN>FA.MAN
-BW-DOS 1.4 executable and manual:
+BW-DOS executable:
   >DOS>FA.COM
-  >DOS>FA
+Manual page:
+  >MAN>FA.MAN
 Start with example Rainbow:
   CD EXAMPLES
   XEDIT RAINBOW.ASM

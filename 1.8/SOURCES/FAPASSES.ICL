@@ -266,7 +266,7 @@ wrtFlsE rts
 B1L081F lda PASSNUM
         beq B1L0890
         lda B1L1D6A
-        cmp #$02
+        cmp #$03
         bcc B1L0890
         jsr B1L15F6
         bcs B1L0890
@@ -275,7 +275,7 @@ B1L081F lda PASSNUM
         sta ($92),Y
         ldx B1L1D64
         lda B1L1D6A
-        cmp #$03
+        cmp #$04
         bcs B1L0840
         ldx #$FF
 B1L0840 txa
